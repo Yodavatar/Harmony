@@ -1,7 +1,7 @@
 {
   "id": "harmony",
   "name": "Harmony",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "minAppVersion": "1.7.2",
   "description": "All-in-one modular plugin for boost productivity.",
   "author": "Yodavatar",

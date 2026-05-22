@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.9] - 2026-05-22
+
+### Fixed
+
+- Migrated hardcoded dynamic styles to `setCssProps` and CSS variables for better theming compatibility.
+- Resolved TypeScript warnings (replaced `any` with `unknown`, fixed assertion errors).
+- Fixed unsafe member access in view registry logic.
+- Resolved unhandled promise rejections and fixed incorrect async return types in event listeners.
+- Refined module lifecycle management to prevent memory leaks and event-related errors.
+
+### Changed
+
+- Improved adherence to Obsidian's plugin linting standards.
+- Optimized the separation between logic (TypeScript) and styling (CSS).
+
 ## [0.1.8] - 2026-05-15
 
 ## Fixed

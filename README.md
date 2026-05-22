@@ -3,7 +3,7 @@
 
 <br>
 
-__**Version 0.1.8**__ <br>
+__**Version 0.1.9**__ <br>
 
 ## Table of Contents
 

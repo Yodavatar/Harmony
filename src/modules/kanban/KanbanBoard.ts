@@ -97,7 +97,7 @@ export class KanbanBoard
 
     const colHeader = colEl.createDiv("mkb-column-header");
     
-    if (col.color) colHeader.setCssProps({"border-top-color": col.color});
+    if (col.color) colHeader.setCssProps({ "--col-color": col.color });;
 
     const titleEl = colHeader.createEl("span", { text: col.title, cls: "mkb-column-title" });
     titleEl.addEventListener("dblclick", () => void this.editColumnTitle(titleEl, col));
@@ -129,13 +129,13 @@ export class KanbanBoard
     cardEl.dataset.cardId = card.id;
 
     const priority = card.priority ?? "normal";
-    cardEl.setCssProps({"border-left-color": PRIORITY_COLORS[priority]});
+    cardEl.setCssProps({"--prio-color": PRIORITY_COLORS[priority]});
 
     cardEl.addEventListener("dragstart", () => { this.dragCard = card; this.dragSourceColId = colId; cardEl.addClass("mkb-dragging"); });
     cardEl.addEventListener("dragend", () => cardEl.removeClass("mkb-dragging"));
 
     const badge = cardEl.createEl("span", { text: labels[priority], cls: "mkb-priority-badge" });
-    badge.setCssProps({"color": PRIORITY_COLORS[priority]});
+    badge.setCssProps({"--prio-color": PRIORITY_COLORS[priority]});
 
     const titleEl = cardEl.createEl("span", { text: card.title, cls: "mkb-card-title" });
     titleEl.addEventListener("dblclick", () => void this.editCardTitle(titleEl, card, colId));
@@ -204,11 +204,11 @@ export class KanbanBoard
     {
       const cardEl = grid.createDiv("mkb-card mkb-card-archived");
       const priority = card.priority ?? "normal";
-      cardEl.setCssProps({"border-left-color": PRIORITY_COLORS[priority]});
+      cardEl.setCssProps({ "--prio-color": PRIORITY_COLORS[priority] });
 
       const badge = cardEl.createEl("span", { text: labels[priority], cls: "mkb-priority-badge" });
-      badge.setCssProps({"color": PRIORITY_COLORS[priority]});
-      
+      badge.setCssProps({ "--prio-color": PRIORITY_COLORS[priority] });
+
       cardEl.createEl("span", { text: card.title, cls: "mkb-card-title" });
       cardEl.createEl("span", { text: `← ${colTitle}`, cls: "mkb-card-due" });
 
@@ -312,9 +312,13 @@ export class KanbanBoard
     popup.className = "mkb-column-menu-popup";
 
     const rect = triggerEl.getBoundingClientRect();
-    popup.setCssProps({
-        "top": `${rect.bottom + 4}px`,
-        "left": `${rect.left - 150}px`
+
+    popup.addClass("mkb-column-menu-popup");
+
+    popup.setCssProps(
+    {
+      "--popup-top": `${rect.bottom + 4}px`,
+      "--popup-left": `${rect.left - 150}px`
     });
 
     const leftBtn = popup.createEl("button", { text: t(137), cls: "mkb-menu-item" });
@@ -465,8 +469,19 @@ export class KanbanBoard
     });
 
     const btns = modal.createDiv("mkb-editor-btns");
+    
     const saveBtn = btns.createEl("button", { text: t(118), cls: "mkb-btn mkb-btn-primary" });
-    saveBtn.addEventListener("click", async () => { await this.persist(); overlay.remove(); this.render(); });
+    
+    saveBtn.addEventListener("click", async () =>
+      {
+        void(async()=>
+        {
+          await this.persist();
+          overlay.remove();
+          this.render();
+        })();
+      });
+    
     const cancelBtn = btns.createEl("button", { text: t(119), cls: "mkb-btn mkb-btn-secondary" });
     cancelBtn.addEventListener("click", () => { overlay.remove(); this.render(); });
     overlay.addEventListener("click", (e) => { if (e.target === overlay) { overlay.remove(); this.render(); } });

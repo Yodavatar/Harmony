@@ -16,7 +16,7 @@ export interface IModule
 
 export interface ModuleSettings
 {
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 /**

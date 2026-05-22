@@ -73,13 +73,29 @@ export class TaskStore
     {
       const exists = await this.app.vault.adapter.exists(DATA_PATH);
       if (exists)
-        {
+      {
         const raw = await this.app.vault.adapter.read(DATA_PATH);
-        try {
-          const arr: Task[] = JSON.parse(raw);
-          this.tasks.clear(); // Security
-          for (const t of arr) this.tasks.set(t.id, t);
-        } catch (e) { console.error("Erreur JSON", e); }
+        try
+        {
+          const rawData: unknown = JSON.parse(raw);
+          
+          if (Array.isArray(rawData))
+          {
+            const arr = rawData as Task[];
+            this.tasks.clear();
+            for (const t of arr)
+            {
+              if (t && typeof t === 'object' && 'id' in t)
+              {
+                this.tasks.set(t.id, t);
+              }
+            }
+          }
+        }
+        catch (e)
+        {
+          console.error("Erreur JSON", e);
+        }
       }
       this.loaded = true;
     })();

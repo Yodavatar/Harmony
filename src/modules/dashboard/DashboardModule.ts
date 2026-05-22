@@ -47,13 +47,18 @@ export class DashboardModule implements IModule
   async onload(): Promise<void>
   {
   // @ts-ignore
-    if (!this.app.viewRegistry.viewByType[DASHBOARD_VIEW_TYPE])
-    {
-      this.plugin.registerView(
-          DASHBOARD_VIEW_TYPE,
-          (leaf) => new DashboardView(leaf, this, this.taskstore)
-      );
-    }
+  //if (!this.app.viewRegistry.viewByType[DASHBOARD_VIEW_TYPE])
+  //{
+  //  this.plugin.registerView(
+  //    DASHBOARD_VIEW_TYPE,
+  //    (leaf) => new DashboardView(leaf, this, this.taskstore)
+  //  );
+  //}
+
+    this.plugin.registerView(
+      DASHBOARD_VIEW_TYPE,
+      (leaf) => new DashboardView(leaf, this, this.taskstore)
+    );
 
     this.unsubLang = onLanguageChange(() =>
     {
@@ -97,7 +102,7 @@ export class DashboardModule implements IModule
 
     if (this.layoutEventRef)
     {
-      this.app.workspace.offref(this.layoutEventRef);
+      //this.app.workspace.offref(this.layoutEventRef);
       this.layoutEventRef = null;
     }
 

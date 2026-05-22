@@ -58,8 +58,17 @@ export default class Harmony extends Plugin {
 
   async loadSettings()
   {
-    const loadedData = await this.loadData();
-    this.settings = Object.assign({}, DEFAULT_SETTINGS, loadedData as Partial<Harmony_Settings>);
+    const loadedData:unknown = await this.loadData();
+
+    //we must sure that the Settings are good
+    if (typeof loadedData === 'object' && loadedData !== null)
+    {
+      this.settings = Object.assign({}, DEFAULT_SETTINGS, loadedData as Partial<Harmony_Settings>);
+    }
+    else
+    {
+      this.settings = { ...DEFAULT_SETTINGS };
+    }
   }
 
   async saveSettings() {

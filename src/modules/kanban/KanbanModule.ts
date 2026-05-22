@@ -30,13 +30,18 @@ export class KanbanModule implements IModule
   async onload(): Promise<void>
   {
     // @ts-ignore
-    if (!this.app.viewRegistry.viewByType[KANBAN_VIEW_TYPE])
-    {
-      this.plugin.registerView(
-          KANBAN_VIEW_TYPE,
-          (leaf) => new KanbanView(leaf, this.store)
-      );
-    }
+    //if (!this.app.viewRegistry.viewByType[KANBAN_VIEW_TYPE])
+    //{
+    //this.plugin.registerView(
+    //    KANBAN_VIEW_TYPE,
+    //    (leaf) => new KanbanView(leaf, this.store)
+    //);
+    //}
+
+    this.plugin.registerView(
+      KANBAN_VIEW_TYPE,
+      (leaf) => new KanbanView(leaf, this.store)
+    );
 
     this.unsubLang = onLanguageChange(() =>
     {

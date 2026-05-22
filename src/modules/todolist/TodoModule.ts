@@ -28,13 +28,18 @@ export class TodoModule implements IModule
   async onload()
   {
     // @ts-ignore
-    if (!this.app.viewRegistry.viewByType[TODO_VIEW_TYPE])
-    {
-      this.plugin.registerView(
-          TODO_VIEW_TYPE,
-          (leaf) => new TodoView(leaf, this.store)
-      );
-    }
+    //if (!this.app.viewRegistry.viewByType[TODO_VIEW_TYPE])
+    //{
+    //this.plugin.registerView(
+    //    TODO_VIEW_TYPE,
+    //    (leaf) => new TodoView(leaf, this.store)
+    //);
+    //}
+
+    this.plugin.registerView(
+      TODO_VIEW_TYPE,
+      (leaf) => new TodoView(leaf, this.store)
+    );
 
     this.unsubLang = onLanguageChange(() =>
     {

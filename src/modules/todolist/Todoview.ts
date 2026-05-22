@@ -78,7 +78,9 @@ export class TodoView extends ItemView
 
       const prioWrapper = itemEl.createDiv("utodo-prio-wrapper");
       const dot = prioWrapper.createDiv("utodo-prio-dot");
-      dot.setCssProps({"background-color": PRIORITY_COLORS[task.priority] || "#ccc"});
+
+      dot.setCssProps({ "--prio-color": PRIORITY_COLORS[task.priority] || "#ccc" });
+
 
       prioWrapper.onmousedown = (e) =>
       {
@@ -110,6 +112,13 @@ export class TodoView extends ItemView
     {
       "left": `${e.clientX}px`,
       "top": `${e.clientY}px`
+    });
+
+    menu.addClass("radial-menu");
+    
+    menu.setCssProps({
+        "--menu-x": `${e.clientX}px`,
+        "--menu-y": `${e.clientY}px`
     });
     
     const radius = 80; 

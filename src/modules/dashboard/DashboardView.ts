@@ -109,7 +109,8 @@ export class DashboardView extends ItemView
       if (task.dueDate)
       {
         const date = new Date(task.dueDate);
-        footer.createSpan({ 
+        footer.createSpan(
+        { 
           text: date.toLocaleDateString("fr-FR", { day: "numeric", month: "short" }), 
           cls: "dash-task-date" 
         });
@@ -230,21 +231,25 @@ export class DashboardView extends ItemView
       const fileInput = activeDocument.createElement("input");
       fileInput.type = "file";
       fileInput.accept = "image/*";
-      fileInput.addEventListener("change", () => {
-        void (async () => {
-            const file = fileInput.files?.[0];
-            if (!file) return;
-            const destDir  = ".Harmony/dashboard";
-            const destPath = `${destDir}/${file.name}`;
-            if (!(await this.app.vault.adapter.exists(destDir))) {
-              await this.app.vault.adapter.mkdir(destDir);
-            }
-            await this.app.vault.adapter.writeBinary(destPath, await file.arrayBuffer());
-            this.s.wallpaperPath = destPath;
-            wpName.textContent = file.name;
-            await this.module.saveDashboardSettings();
-            const dashRoot = this.containerEl.children[1] as HTMLElement;
-            this.applyWallpaper(dashRoot);
+      fileInput.addEventListener("change", () =>
+      {
+        void (async () =>
+        {
+          const file = fileInput.files?.[0];
+          if (!file) return;
+          const destDir  = ".Harmony/dashboard";
+          const destPath = `${destDir}/${file.name}`;
+
+          if (!(await this.app.vault.adapter.exists(destDir)))
+          {
+            await this.app.vault.adapter.mkdir(destDir);
+          }
+          await this.app.vault.adapter.writeBinary(destPath, await file.arrayBuffer());
+          this.s.wallpaperPath = destPath;
+          wpName.textContent = file.name;
+          await this.module.saveDashboardSettings();
+          const dashRoot = this.containerEl.children[1] as HTMLElement;
+          this.applyWallpaper(dashRoot);
         })();
       });
       fileInput.click();
@@ -269,11 +274,13 @@ export class DashboardView extends ItemView
     const opInput = orRight.createEl("input", { type: "range", value: String(this.s.wallpaperOpacity) });
     opInput.min = "0"; opInput.max = "1"; opInput.step = "0.05";
     const opVal = orRight.createSpan({ text: String(this.s.wallpaperOpacity), cls: "dash-setting-val" });
-    opInput.addEventListener("input", () => {
-      void (async () => {
-          this.s.wallpaperOpacity = parseFloat(opInput.value);
-          opVal.textContent = opInput.value;
-          await this.module.saveDashboardSettings();
+    opInput.addEventListener("input", () =>
+    {
+      void (async () =>
+      {
+        this.s.wallpaperOpacity = parseFloat(opInput.value);
+        opVal.textContent = opInput.value;
+        await this.module.saveDashboardSettings();
       })();
     });
 
@@ -287,20 +294,23 @@ export class DashboardView extends ItemView
     row.createSpan({ text: label, cls: "dash-setting-label" });
     const toggle = row.createEl("input", { type: "checkbox" });
     toggle.checked = this.s[key] as boolean;
-    toggle.addEventListener("change", () => {
+    toggle.addEventListener("change", () =>
+    {
       void (async () =>
       {
-        const settings = this.s;
-        (settings[key] as boolean) = toggle.checked;
+        const settings = this.s as unknown as Record<string, boolean>;
+        settings[key as string] = toggle.checked;
         await this.module.saveDashboardSettings();
       })();
     });
   }
 
-  private makeOverlay(): HTMLElement {
+  private makeOverlay(): HTMLElement
+  {
     const root = this.containerEl.children[1] as HTMLElement;
     const overlay = root.createDiv("dash-overlay-modal");
-    overlay.addEventListener("click", e => {
+    overlay.addEventListener("click", e =>
+    {
       if (e.target === overlay)
       {
         overlay.remove();
