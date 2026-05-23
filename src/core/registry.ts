@@ -7,7 +7,7 @@ export class ModuleRegistry
 
   public register(module:IModule): void
   {
-    this.modules.set(module.id,module)
+    this.modules.set(module.id, module);
   }
 
   public getAll(): IModule[]
@@ -29,15 +29,16 @@ export class ModuleRegistry
 
   public async enable(moduleId: string):Promise<void>
   {
-    const module = this.modules.get(moduleId);
-    if (!module) return;
+    // On utilise "targetModule" pour ne pas confondre avec la boucle plus bas
+    const targetModule = this.modules.get(moduleId);
+    if (!targetModule) return;
 
-    //enable module
-    if (module && !this.activeModuleIds.has(moduleId))
+    // 1. Activation du module cible
+    if (!this.activeModuleIds.has(moduleId))
     {
       try
       {
-        await module.onload();
+        await targetModule.onload();
         this.activeModuleIds.add(moduleId);
         console.log(`[Harmony] Module "${moduleId}" activé.`);
       }
@@ -48,7 +49,8 @@ export class ModuleRegistry
       }
     }
 
-    //bulldozer method (bug logo left bar)
+    // 2. Méthode Bulldozer (Nettoyage des logos fantômes sur la barre gauche)
+    // On appelle la variable "mod" pour éviter tout conflit avec "moduleId"
     for (const mod of this.getAll())
     {
       if (mod.id !== moduleId && !this.activeModuleIds.has(mod.id))
@@ -60,8 +62,10 @@ export class ModuleRegistry
         }
         catch (e)
         {
+          // On ignore l'erreur si le module n'avait rien à décharger
         }
 
+        // NETTOYAGE HTML : On cherche et on détruit l'icône directement dans l'interface Obsidian
         const ghostIcon = document.querySelector(`[data-harmony-module="${mod.id}"]`);
         if (ghostIcon)
         {
@@ -89,6 +93,7 @@ export class ModuleRegistry
       }
     }
 
+    // Sécurité supplémentaire : on s'assure que le logo disparaît du HTML même en cas de désactivation normale
     const ghostIcon = document.querySelector(`[data-harmony-module="${moduleId}"]`);
     if (ghostIcon)
     {

@@ -3,7 +3,7 @@
 
 <br>
 
-__**Version 0.1.9**__ <br>
+__**Version 0.1.10**__ <br>
 
 ## Table of Contents
 
@@ -78,7 +78,7 @@ To install Harmony, you can:
 1. **Clone the repository**:
 
    ```bash
-   git clone git@github.com:Yodavatar/Obsidian_Ultimate.git
+   git clone git@github.com:Yodavatar/Harmony.git
    ```
    
 2. **Get to zip**:
@@ -93,8 +93,6 @@ You can install Obsidian on [here](https://obsidian.md/download).<br><br>
 
 Go to settings, on the Community plugins<br>
 Then you need to activate community plugins.<br>
-
-
 
 Place the project in the "plugins" folder<br>
 of the Obsidian Vault you want to test.<br> 

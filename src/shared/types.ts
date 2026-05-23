@@ -9,7 +9,7 @@ export interface IModule
 {
   id: string;
   name: string;
-  enabled: boolean;
+  init(): void;
   onload(): Promise<void> | void;
   onunload(): void;
 }
@@ -49,5 +49,5 @@ export const DEFAULT_SETTINGS: Harmony_Settings =
     }
   },
   language: "en",
-  version: "0.1.7",
+  version: "0.1.10",
 };

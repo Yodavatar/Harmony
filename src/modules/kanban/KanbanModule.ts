@@ -10,7 +10,6 @@ export class KanbanModule implements IModule
 {
   id = "kanban";
   name = "Kanban";
-  enabled: boolean = true;
 
   private app: App;
   private plugin: Harmony;
@@ -27,27 +26,12 @@ export class KanbanModule implements IModule
     this.store = new KanbanStore(app, taskStore);
   }
 
-  async onload(): Promise<void>
+  init(): void
   {
-    // @ts-ignore
-    //if (!this.app.viewRegistry.viewByType[KANBAN_VIEW_TYPE])
-    //{
-    //this.plugin.registerView(
-    //    KANBAN_VIEW_TYPE,
-    //    (leaf) => new KanbanView(leaf, this.store)
-    //);
-    //}
-
     this.plugin.registerView(
-      KANBAN_VIEW_TYPE,
-      (leaf) => new KanbanView(leaf, this.store)
+    KANBAN_VIEW_TYPE,
+    (leaf) => new KanbanView(leaf, this.store)
     );
-
-    this.unsubLang = onLanguageChange(() =>
-    {
-      const leaves = this.app.workspace.getLeavesOfType(KANBAN_VIEW_TYPE);
-      for (const leaf of leaves) void (leaf.view as KanbanView).renderBoardSelector();
-    });
 
     this.plugin.addCommand(
     {
@@ -55,20 +39,41 @@ export class KanbanModule implements IModule
       name: t(101),
       callback: () => void this.activateView(),
     });
+  }
+
+  async onload(): Promise<void>
+  {
+    this.unsubLang = onLanguageChange(() =>
+    {
+      const leaves = this.app.workspace.getLeavesOfType(KANBAN_VIEW_TYPE);
+      for (const leaf of leaves)
+      {
+        void (leaf.view as KanbanView).renderBoardSelector();
+      }
+    });
 
     this.ribbonIconEl = this.plugin.addRibbonIcon("kanban", "Kanban", () => void this.activateView());
+    this.ribbonIconEl.setAttribute("data-harmony-module", this.id);
     console.log("[KanbanModule] Activé.");
   }
 
   onunload(): void
   {
     this.unsubLang?.();
-    // FIX: Do not deteach the view
     
     if (this.ribbonIconEl)
     {
       this.ribbonIconEl.remove();
+      this.ribbonIconEl = null;
     }
+
+    const existingLeaves = this.app.workspace.getLeavesOfType(KANBAN_VIEW_TYPE);
+    if (existingLeaves.length > 0)
+    {
+      this.app.workspace.detachLeavesOfType(KANBAN_VIEW_TYPE);
+    }
+
+
     console.log("[KanbanModule] Désactivé.");
   }
 

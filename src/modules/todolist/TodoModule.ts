@@ -10,7 +10,6 @@ export class TodoModule implements IModule
 {
   id = "todo";
   name = "Todo List";
-  enabled: boolean = true;
 
   private app: App;
   private plugin: Harmony;
@@ -25,21 +24,16 @@ export class TodoModule implements IModule
     this.store = new TodoStore(taskStore);
   }
 
-  async onload()
+  init(): void
   {
-    // @ts-ignore
-    //if (!this.app.viewRegistry.viewByType[TODO_VIEW_TYPE])
-    //{
-    //this.plugin.registerView(
-    //    TODO_VIEW_TYPE,
-    //    (leaf) => new TodoView(leaf, this.store)
-    //);
-    //}
-
     this.plugin.registerView(
-      TODO_VIEW_TYPE,
-      (leaf) => new TodoView(leaf, this.store)
+    TODO_VIEW_TYPE,
+    (leaf) => new TodoView(leaf, this.store)
     );
+  }
+
+  async onload()
+  {  
 
     this.unsubLang = onLanguageChange(() =>
     {
@@ -51,17 +45,25 @@ export class TodoModule implements IModule
     });
 
     this.ribbonIconEl = this.plugin.addRibbonIcon("check-check", "Todo List", () => void this.activateView());
+    this.ribbonIconEl.setAttribute("data-harmony-module", this.id);
     console.log("[TodoModule] Activé.");
   }
 
   onunload(): void
   {
     this.unsubLang?.();
-    // FIX: Suppression de detachLeavesOfType
     
     if (this.ribbonIconEl)
     {
       this.ribbonIconEl.remove();
+      this.ribbonIconEl = null;
+    }
+
+    const existingLeaves = this.app.workspace.getLeavesOfType(TODO_VIEW_TYPE);
+    if (existingLeaves.length > 0)
+    {
+      // FIX: Suppression de detachLeavesOfType (testing with bug)
+      this.app.workspace.detachLeavesOfType(TODO_VIEW_TYPE);
     }
 
     console.log("[TodoModule] Désactivé.");

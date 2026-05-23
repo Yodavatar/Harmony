@@ -121,14 +121,21 @@
 
 .dash-tasks-container { width: 100%; max-width: 1200px; margin-top: 20px; }
 .dash-section-title { color: #fff; font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; opacity: 0.8; }
-.dash-tasks-horizontal {
-  display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important;
-  gap: 16px; overflow-x: auto; width: 100%; padding: 15px 5px; scrollbar-width: none;
+
+.dash-root .dash-tasks-horizontal {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 16px; 
+  overflow-x: auto; 
+  width: 100%; 
+  padding: 15px 5px; 
+  scrollbar-width: none;
 }
 .dash-tasks-horizontal::-webkit-scrollbar { display: none; }
 
-.dash-task-card {
-  flex: 0 0 220px !important; min-height: 130px;
+.dash-root .dash-task-card {
+  flex: 0 0 220px; min-height: 130px;
   background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 12px;
   padding: 15px; display: flex; flex-direction: column; justify-content: space-between;
@@ -154,7 +161,12 @@
 .mkb-board { display: flex; flex-direction: column; height: 100%; padding: 12px; gap: 10px; }
 .mkb-board-header { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
 .mkb-board-title { margin: 0; font-size: 1.15em; cursor: pointer; }
-.mkb-board-title:hover { text-decoration: underline dotted; }
+
+.mkb-board-title:hover {
+    text-decoration: none;
+    border-bottom: 1px dotted;
+    padding-bottom: 2px;
+}
 .mkb-board-title-input { font-size: 1.15em; font-weight: 700; }
 .mkb-header-actions { display: flex; gap: 6px; margin-left: auto; }
 .mkb-columns { display: flex; gap: 12px; overflow-x: auto; flex: 1; padding-bottom: 8px; align-items: flex-start; }
@@ -209,7 +221,11 @@
 .mkb-tag { font-size: 0.7em; background: var(--tag-background); color: var(--tag-color); border-radius: 4px; padding: 1px 5px; }
 .mkb-card-actions { display: none; gap: 4px; justify-content: flex-end; margin-top: 2px; }
 .mkb-card:hover .mkb-card-actions { display: flex; }
-.mkb-actions-visible { display: flex !important; }
+
+.mkb-view-root .mkb-actions-visible {
+  display: flex;
+}
+
 .mkb-archive-section { padding: 12px; border-top: 1px solid var(--background-modifier-border); flex-shrink: 0; max-height: 300px; overflow-y: auto; }
 .mkb-archive-title { margin: 0 0 8px; font-size: 0.95em; color: var(--text-muted); }
 .mkb-archive-grid { display: flex; flex-wrap: wrap; gap: 8px; }

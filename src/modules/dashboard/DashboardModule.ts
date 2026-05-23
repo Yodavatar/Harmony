@@ -12,7 +12,6 @@ export class DashboardModule implements IModule
 {
   id = "dashboard";
   name = "Dashboard";
-  enabled: boolean = true;
 
   private app: App;
   private plugin: Harmony;
@@ -44,33 +43,30 @@ export class DashboardModule implements IModule
     await this.plugin.saveSettings();
   }
 
-  async onload(): Promise<void>
+  init(): void
   {
-  // @ts-ignore
-  //if (!this.app.viewRegistry.viewByType[DASHBOARD_VIEW_TYPE])
-  //{
-  //  this.plugin.registerView(
-  //    DASHBOARD_VIEW_TYPE,
-  //    (leaf) => new DashboardView(leaf, this, this.taskstore)
-  //  );
-  //}
-
     this.plugin.registerView(
       DASHBOARD_VIEW_TYPE,
       (leaf) => new DashboardView(leaf, this, this.taskstore)
     );
 
-    this.unsubLang = onLanguageChange(() =>
-    {
-      const leaves = this.app.workspace.getLeavesOfType(DASHBOARD_VIEW_TYPE);
-      for (const leaf of leaves) (leaf.view as DashboardView).render();
-    });
-
     this.plugin.addCommand(
     {
       id: "open-dashboard",
       name: t(201),
-      callback: () => this.activateView(),
+      callback: () =>
+      {
+        this.activateView();
+      },
+    });
+  }
+
+  async onload(): Promise<void>
+  {
+    this.unsubLang = onLanguageChange(() =>
+    {
+      const leaves = this.app.workspace.getLeavesOfType(DASHBOARD_VIEW_TYPE);
+      for (const leaf of leaves) (leaf.view as DashboardView).render();
     });
 
     //replace the new tab
@@ -100,14 +96,24 @@ export class DashboardModule implements IModule
   {
     this.unsubLang?.();
 
+    //if (this.layoutEventRef !== null)
+    //{
+    //  this.app.workspace.off;
+    //  this.layoutEventRef = null;
+    //}
+
     if (this.layoutEventRef)
     {
-      //this.app.workspace.offref(this.layoutEventRef);
+      this.app.workspace.offref(this.layoutEventRef);
       this.layoutEventRef = null;
     }
 
-    //fix 
-    //this.app.workspace.detachLeavesOfType(DASHBOARD_VIEW_TYPE);
+    const existingLeaves = this.app.workspace.getLeavesOfType(DASHBOARD_VIEW_TYPE);
+    if (existingLeaves.length > 0)
+    {
+      this.app.workspace.detachLeavesOfType(DASHBOARD_VIEW_TYPE);
+    }
+
     console.log("[DashboardModule] Désactivé.");
   }
 
@@ -120,11 +126,13 @@ export class DashboardModule implements IModule
       return;
     }
     const leaf = this.app.workspace.getLeaf("tab");
+
     await leaf.setViewState(
-      {
-        type: DASHBOARD_VIEW_TYPE,
-        active: true
-      });
+    {
+      type: DASHBOARD_VIEW_TYPE,
+      active: true
+    });
+    
     await this.app.workspace.revealLeaf(leaf);
   }
 }

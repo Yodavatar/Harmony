@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [0.1.10] - 2026-05-23
+
+### Fixed
+
+-Interface: Fixed the critical bug that prevented icons from being correctly removed from the sidebar (Ribbon bar) when switching modules.
+-CSS Style: Optimization of CSS selectors to fix compatibility warnings with Obsidian 1.6.5 and removal of misuse of! important.
+
+### Changed
+-Dependencies: Updating the TypeScript package to the latest stable version.
+-Architecture: Complete replacement of the builtin-modules package (deprecated) to ensure the plugin’s durability.
+
+
 ## [0.1.9] - 2026-05-22
 
 ### Fixed
@@ -58,7 +71,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Todo List: add, check, sort, and delete tasks
 
 ---
-[Unreleased]: https://github.com/Yodavatar/Harmony/compare/0.1.6...HEAD
-[0.1.6]: https://github.com/Yodavatar/Harmony/compare/0.1.6...0.1.7
+[Unreleased]: https://github.com/Yodavatar/Harmony/compare/0.1.10...HEAD
+[0.1.10]: https://github.com/Yodavatar/Harmony/compare/0.1.9...0.1.10
+[0.1.9]: https://github.com/Yodavatar/Harmony/compare/0.1.8...0.1.9
+[0.1.8]: https://github.com/Yodavatar/Harmony/compare/0.1.7...0.1.8
+[0.1.7]: https://github.com/Yodavatar/Harmony/compare/0.1.6...0.1.7
 [0.1.6]: https://github.com/Yodavatar/Harmony/compare/0.1.5...0.1.6
 [0.1.5]: https://github.com/Yodavatar/Harmony/releases/tag/0.1.5

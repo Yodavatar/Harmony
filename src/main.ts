@@ -33,14 +33,21 @@ export default class Harmony extends Plugin {
     this.registry.register(new KanbanModule(this.app, this, this.taskStore));
     this.registry.register(new TodoModule(this.app, this, this.taskStore));
 
+    this.registry.initAll();
+
     // Fix: Typer l'entrée pour éviter 'any'
     const moduleEntries = Object.entries(this.settings.enabledModules);
     
-    for (const [moduleId, enabled] of moduleEntries) {
-      if (enabled) {
-        try {
+    for (const [moduleId, enabled] of moduleEntries)
+    {
+      if (enabled)
+      {
+        try
+        {
           await this.registry.enable(moduleId);
-        } catch (e) {
+        }
+        catch (e)
+        {
           console.error(`[Harmony] Impossible d'activer le module ${moduleId} :`, e);
         }
       }
