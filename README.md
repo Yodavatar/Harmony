@@ -6,7 +6,7 @@
 [![Obsidian](https://img.shields.io/badge/Obsidian-1.7.2+-purple)](https://obsidian.md)
 [![Version](https://img.shields.io/badge/version-0.2.0-blue)](https://github.com/Yodavatar/Harmony)
 [![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-green)](https://github.com/Yodavatar/Harmony/blob/main/LICENSE)
-[![Health](https://img.shields.io/badge/health-100%-brightgreen)](https://community.obsidian.md/plugins/harmony)
+[![Harmony Multilanguage Support](https://img.shields.io/badge/Harmony-Multilingual-success?style=flat-square&logo=globe)](https://github.com/Yodavatar/Harmony)
 
 ## Table of Contents
 
@@ -55,18 +55,27 @@ Kanban is a methode of organisation for a to do list.<br>
 - Archiving features for notes
 - Sort tasks
 
-__**3 - Minimalist Todo List**__
+__**3 - Better Calendar module**__
+
+<img width="639" height="380" alt="Capture d&#39;écran 2026-05-13 104048" src="https://github.com/user-attachments/assets/9a80d921-e57a-4d81-b7bb-d3ad9c91dba4" /> <br>
+
+<img width="640" height="400" alt="image" src="https://github.com/user-attachments/assets/1b8aa571-d4cc-4287-ac52-55e15a8f4468" />
+
+
+- Multiple view (daily, weekly, monthly)
+- Create tasks (multiple priorities, due dates, delete )
+- Support for recurring tasks
+
+__**4 - Minimalist Todo List**__
 
 A simple to-do list organized by priority.<br>
 
 <img width="640" height="375" alt="image" src="https://github.com/user-attachments/assets/2f3959ae-9ffd-4040-95ea-fb914ce5c560" />
 
-
 - create a quick task
 - Change priority / delete
 
-
-__**4 - Activated/Desactivated module**__
+__**5 - Activated/Desactivated module**__
 
 Enable or disable the module you need, in the Harmony settings.<br>
 
