@@ -81,7 +81,7 @@ export class KanbanStore
       {
         const data = JSON.parse(raw) as KanbanBoardData;
         for (const col of data.columns) {
-          // FIX: Éviter le 'unsafe member access on any'
+          // FIX: pass 'unsafe member access on any'
           if ('cards' in col) {
              delete (col as unknown as {cards?: unknown}).cards;
           }
@@ -90,7 +90,6 @@ export class KanbanStore
       }
       catch (e)
       {
-        // FIX: Remplir le bloc catch vide
         console.warn(`[Harmony] Erreur de lecture du Kanban ${f}`, e);
       }
     }

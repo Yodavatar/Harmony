@@ -7,16 +7,6 @@ and reporting bugs.
 
 ## Planned Releases
 
-### v0.2.0 - Calendar
-
-**Timeline:** Mai 2026
-
-- [ ] **Calendar View**
-    - View tasks with due dates in a calendar interface
-    - Click on a date to see all tasks for that day
-    - Drag & drop tasks between dates
-    - Visual indicators for task priorities
-
 ### v0.3.0 Advanced Search
 
 **Timeline** : June 2026 
@@ -74,4 +64,4 @@ Open an issue on [GitHub Issues](https://github.com/Yodavatar/Harmony/issues) or
 
 ---
 
-_Last updated: May 13, 2026_
+_Last updated: May 25, 2026_

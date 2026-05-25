@@ -7,17 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-05-25
+
+### Added
+- **Localization**: Added Spanish language support.
+- **Calendar View**: Introduced a brand new calendar module featuring:
+  - View tasks with due dates in a clean calendar interface.
+  - Click on a specific date to view all tasks assigned to that day.
+  - Drag & drop tasks between dates for quick rescheduling.
+  - Visual indicators for task priorities.
+
+### Changed
+- **Task Module**: Updated and improved the core task module infrastructure to support the new calendar integration.
 
 ## [0.1.10] - 2026-05-23
 
 ### Fixed
 
--Interface: Fixed the critical bug that prevented icons from being correctly removed from the sidebar (Ribbon bar) when switching modules.
--CSS Style: Optimization of CSS selectors to fix compatibility warnings with Obsidian 1.6.5 and removal of misuse of! important.
+-**Interface**: Fixed the critical bug that prevented icons from being correctly removed from the sidebar (Ribbon bar) when switching modules.
+-**CSS Style**: Optimization of CSS selectors to fix compatibility warnings with Obsidian 1.6.5 and removal of misuse of! important.
 
 ### Changed
--Dependencies: Updating the TypeScript package to the latest stable version.
--Architecture: Complete replacement of the builtin-modules package (deprecated) to ensure the plugin’s durability.
+-**Dependencies**: Updating the TypeScript package to the latest stable version.
+-**Architecture**: Complete replacement of the builtin-modules package (deprecated) to ensure the plugin’s durability.
 
 
 ## [0.1.9] - 2026-05-22
@@ -38,12 +50,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.8] - 2026-05-15
 
 ## Fixed
-- CSS Styling: Migrated from direct property injection to CSS classes.
-- Type Safety: Fixed TypeScript warnings, any types, and unnecessary assertions.
-- Async Operations: Resolved unhandled promises and lifecycle return types.
+- **CSS Styling**: Migrated from direct property injection to CSS classes.
+- **Type Safety**: Fixed TypeScript warnings, any types, and unnecessary assertions.
+- **Async Operations**: Resolved unhandled promises and lifecycle return types.
 
 ## Changed
-- Dependencies: Replaced deprecated builtin-modules package.
+- **Dependencies**: Replaced deprecated builtin-modules package.
 
 ## [0.1.7] - 2026-05-15
 
@@ -71,7 +83,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Todo List: add, check, sort, and delete tasks
 
 ---
-[Unreleased]: https://github.com/Yodavatar/Harmony/compare/0.1.10...HEAD
+[Unreleased]: https://github.com/Yodavatar/Harmony/compare/0.2.0...HEAD
+[0.2.0]: https://github.com/Yodavatar/Harmony/compare/0.1.10...0.2.0
 [0.1.10]: https://github.com/Yodavatar/Harmony/compare/0.1.9...0.1.10
 [0.1.9]: https://github.com/Yodavatar/Harmony/compare/0.1.8...0.1.9
 [0.1.8]: https://github.com/Yodavatar/Harmony/compare/0.1.7...0.1.8

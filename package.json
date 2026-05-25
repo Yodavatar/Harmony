@@ -1,6 +1,6 @@
 {
   "name": "harmony",
-  "version": "0.1.10",
+  "version": "0.2.0",
   "description": "All-in-one modular plugin for boost productivity.",
   "main": "main.js",
   "scripts": {

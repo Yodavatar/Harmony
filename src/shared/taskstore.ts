@@ -16,8 +16,17 @@ export interface Task
   priority:    Priority;
   tags:        string[];
   dueDate?:    string;//ISO date string "YYYY-MM-DD"
-  noteLink?:   string;//
+  endDate?:    string;
+  noteLink?:   string;
   description?: string;
+
+  time?:        string;// Format "HH:mm"
+  duration?: number;
+  recurrence?:
+  {
+    frequency: number;     // ex: 3,6,8
+    unit: 'daily' | 'weekly' | 'monthly';
+  };
 
   //Contexte source — each module fill out his informations
 

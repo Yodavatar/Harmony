@@ -3,7 +3,10 @@
 
 <br>
 
-__**Version 0.1.10**__ <br>
+[![Obsidian](https://img.shields.io/badge/Obsidian-1.7.2+-purple)](https://obsidian.md)
+[![Version](https://img.shields.io/badge/version-0.2.0-blue)](https://github.com/Yodavatar/Harmony)
+[![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-green)](https://github.com/Yodavatar/Harmony/blob/main/LICENSE)
+[![Health](https://img.shields.io/badge/health-100%-brightgreen)](https://community.obsidian.md/plugins/harmony)
 
 ## Table of Contents
 
@@ -75,13 +78,16 @@ Enable or disable the module you need, in the Harmony settings.<br>
 
 To install Harmony, you can:
 
-1. **Clone the repository**:
+1. **Directly from the Obsidian store**:
+   Download [here](https://community.obsidian.md/plugins/harmony).<br>
+
+2. **Clone the repository**:
 
    ```bash
    git clone git@github.com:Yodavatar/Harmony.git
    ```
    
-2. **Get to zip**:
+3. **Get to zip**:
    You can get the link to the zip [here](https://github.com/Yodavatar/harmony/archive/refs/heads/main.zip).<br>
 
 ## Usage

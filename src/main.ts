@@ -8,6 +8,7 @@ import { DEFAULT_SETTINGS, type Harmony_Settings } from "./shared/types";
 import { KanbanModule } from "./modules/kanban/KanbanModule";
 import { DashboardModule } from "./modules/dashboard/DashboardModule";
 import { TodoModule } from "./modules/todolist/TodoModule";
+import { CalendarModule } from "./modules/calendar/CalendarModule";
 
 export default class Harmony extends Plugin {
   settings: Harmony_Settings;
@@ -32,6 +33,7 @@ export default class Harmony extends Plugin {
     this.registry.register(new DashboardModule(this.app, this, this.taskStore));
     this.registry.register(new KanbanModule(this.app, this, this.taskStore));
     this.registry.register(new TodoModule(this.app, this, this.taskStore));
+    this.registry.register(new CalendarModule(this.app, this, this.taskStore));
 
     this.registry.initAll();
 
