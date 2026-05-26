@@ -16,6 +16,8 @@ export class CalendarModule implements IModule
   private store:     CalendarStore;
   private taskStore: TaskStore;
   private unsubLang?: () => void;
+  private ribbonIconEl: HTMLElement | null = null;
+
 
   constructor(app: App, plugin: Harmony, taskStore: TaskStore)
   {
@@ -27,17 +29,23 @@ export class CalendarModule implements IModule
 
   async init(): Promise<void>
   {
-    await this.taskStore.load();
-    console.log("[CalendarModule] Calendar chargé.");
+    this.plugin.registerView(
+      CALENDAR_VIEW_TYPE,
+      (leaf) => new CalendarView(leaf, this.store),
+    );
+    
+    this.plugin.addCommand(
+    {
+      id:       "open-calendar",
+      name:     t(401),
+      callback: () => this.activateView(),
+    });
   }
 
 
   async onload(): Promise<void>
   {
-    this.plugin.registerView(
-      CALENDAR_VIEW_TYPE,
-      (leaf) => new CalendarView(leaf, this.store),
-    );
+    
 
     this.unsubLang = onLanguageChange(() =>
     {
@@ -45,21 +53,29 @@ export class CalendarModule implements IModule
       for (const leaf of leaves) (leaf.view as CalendarView).refresh();
     });
 
-    this.plugin.addCommand(
-    {
-      id:       "open-calendar",
-      name:     t(401),
-      callback: () => this.activateView(),
-    });
+    
 
-    this.plugin.addRibbonIcon("calendar-days", t(400), () => this.activateView());
+    this.ribbonIconEl = this.plugin.addRibbonIcon("calendar-days", t(400), () => this.activateView());
+    this.ribbonIconEl.setAttribute("data-harmony-module", this.id);
     console.log("[CalendarModule] Activé.");
   }
 
   onunload(): void
   {
     this.unsubLang?.();
-    this.app.workspace.detachLeavesOfType(CALENDAR_VIEW_TYPE);
+
+    if (this.ribbonIconEl)
+    {
+      this.ribbonIconEl.remove();
+      this.ribbonIconEl = null;
+    }
+
+    const existingLeaves = this.app.workspace.getLeavesOfType(CALENDAR_VIEW_TYPE);
+    if (existingLeaves.length > 0)
+    {
+      this.app.workspace.detachLeavesOfType(CALENDAR_VIEW_TYPE);
+    }
+
     console.log("[CalendarModule] Désactivé.");
   }
 

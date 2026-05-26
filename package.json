@@ -1,7 +1,7 @@
 {
   "name": "harmony",
-  "version": "0.2.0",
-  "description": "All-in-one modular plugin for boost productivity.",
+  "version": "0.2.1",
+  "description": "One task, multiple perspectives. The ultimate modular workspace. Instantly sync your data across Todo lists, Calendars, and Kanban views.",
   "main": "main.js",
   "scripts": {
     "dev": "node esbuild.config.mjs",
