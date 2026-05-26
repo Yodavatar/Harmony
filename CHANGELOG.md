@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
 ## [0.2.1] - 2026-05-26
 
 ### Fixed
@@ -15,7 +16,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - **Roadmap**: Updated of the project Roadmap.
-
 
 ## [0.2.0] - 2026-05-25
 
