@@ -93,7 +93,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Todo List: add, check, sort, and delete tasks
 
 ---
-[Unreleased]: https://github.com/Yodavatar/Harmony/compare/0.2.0...HEAD
+[Unreleased]: https://github.com/Yodavatar/Harmony/compare/0.2.1...HEAD
+[0.2.1]: https://github.com/Yodavatar/Harmony/compare/0.2.0...0.2.1
 [0.2.0]: https://github.com/Yodavatar/Harmony/compare/0.1.10...0.2.0
 [0.1.10]: https://github.com/Yodavatar/Harmony/compare/0.1.9...0.1.10
 [0.1.9]: https://github.com/Yodavatar/Harmony/compare/0.1.8...0.1.9
