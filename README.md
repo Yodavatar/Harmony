@@ -29,7 +29,7 @@ There are many ways to be more productive;<br>
 the methods we are trying to implement are [here](https://www.todoist.com/en/productivity-methods).<br>
 
 Harmony is open to contribution.<br>
-See the [Roadmap](ROADMAP.md) file for details.<br>
+Look at the [Roadmap](ROADMAP.md) to see what happens next.
 
 
 ## Features
