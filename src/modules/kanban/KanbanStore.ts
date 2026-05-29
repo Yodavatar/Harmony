@@ -38,6 +38,11 @@ export class KanbanStore
     return normalizePath(`${DATA_DIR}/${boardId}.json`);
   }
 
+  onTaskChange(callback: (event: 'add' | 'update' | 'delete', task: any) => void)
+  {
+    return this.taskStore.on(callback);
+  }
+
   async ensureDataDir(): Promise<void>
   {
     if (!(await this.app.vault.adapter.exists(DATA_DIR)))

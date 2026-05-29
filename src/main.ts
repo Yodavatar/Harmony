@@ -1,7 +1,10 @@
 import { Plugin } from "obsidian";
+
 import { ModuleRegistry } from "./core/ModuleRegistry";
 import { Harmony_Settings_Tab } from "./core/SettingsTab";
 import { setLanguage } from "./core/i18n";
+import { LinkService } from "./core/LinkerService";
+
 import { TaskStore } from "./shared/taskstore";
 import { DEFAULT_SETTINGS, type Harmony_Settings } from "./shared/types";
 
@@ -10,25 +13,32 @@ import { DashboardModule } from "./modules/dashboard/DashboardModule";
 import { TodoModule } from "./modules/todolist/TodoModule";
 import { CalendarModule } from "./modules/calendar/CalendarModule";
 
-export default class Harmony extends Plugin {
+export default class Harmony extends Plugin
+{
   settings: Harmony_Settings;
   registry: ModuleRegistry;
   taskStore: TaskStore;
+  linkService: LinkService;
 
-  async onload() {
-    console.log("[Harmony] Début du chargement...");
-
+  async onload()
+  {
     await this.loadSettings();
     setLanguage(this.settings.language);
 
     this.registry = new ModuleRegistry();
     this.taskStore = new TaskStore(this.app);
 
-    try {
+    try
+    {
       await this.taskStore.load();
-    } catch (e) {
-      console.error("[Harmony] Erreur lors du chargement du TaskStore :", e);
+    } 
+    catch (e)
+    {
+      console.error("[Harmony] Error of the load of TaskStore :", e);
     }
+
+    this.linkService = new LinkService(this.app, this.taskStore);
+    this.linkService.init();
 
     this.registry.register(new DashboardModule(this.app, this, this.taskStore));
     this.registry.register(new KanbanModule(this.app, this, this.taskStore));
@@ -37,7 +47,7 @@ export default class Harmony extends Plugin {
 
     this.registry.initAll();
 
-    // Fix: Typer l'entrée pour éviter 'any'
+    // Fix: Type the entry to avoid 'any’
     const moduleEntries = Object.entries(this.settings.enabledModules);
     
     for (const [moduleId, enabled] of moduleEntries)

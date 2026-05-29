@@ -17,6 +17,9 @@ export class KanbanBoard
   private dragSourceColId: string | null = null;
   onBoardChange?: () => void;
 
+  isDragging(): boolean{return this.dragCard !== null;}
+  getDragCard(): KanbanCard | null {return this.dragCard;}
+
   constructor(app: App, store: KanbanStore, board: KanbanBoardData, container: HTMLElement)
   {
     this.app = app;
@@ -473,15 +476,19 @@ export class KanbanBoard
     const saveBtn = btns.createEl("button", { text: t(118), cls: "mkb-btn mkb-btn-primary" });
     
     saveBtn.addEventListener("click", async () =>
-      {
-        void(async()=>
-        {
-          await this.persist();
-          overlay.remove();
-          this.render();
-        })();
+    {
+      await this.store.updateCard(card.id, {
+        title: card.title,
+        noteLink: card.noteLink,
+        dueDate: card.dueDate,
+        tags: card.tags,
+        priority: card.priority
       });
-    
+      
+      overlay.remove();
+      this.render();
+    });
+        
     const cancelBtn = btns.createEl("button", { text: t(119), cls: "mkb-btn mkb-btn-secondary" });
     cancelBtn.addEventListener("click", () => { overlay.remove(); this.render(); });
     overlay.addEventListener("click", (e) => { if (e.target === overlay) { overlay.remove(); this.render(); } });

@@ -45,8 +45,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Migrated hardcoded dynamic styles to `setCssProps` and CSS variables for better theming compatibility.
-- Resolved TypeScript warnings (replaced `any` with `unknown`, fixed assertion errors).
+- Migrated hardcoded dynamic styles to setCssProps and CSS variables for better theming compatibility.
+- Resolved TypeScript warnings (replaced any with unknown, fixed assertion errors).
 - Fixed unsafe member access in view registry logic.
 - Resolved unhandled promise rejections and fixed incorrect async return types in event listeners.
 - Refined module lifecycle management to prevent memory leaks and event-related errors.

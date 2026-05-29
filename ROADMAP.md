@@ -56,7 +56,7 @@ and reporting bugs.
 
 ## 📝 How to Contribute
 
-See [CONTRIBUTING.md](https://claude.ai/chat/CONTRIBUTING.md) for guidelines on how to contribute to this project.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to contribute to this project.
 
 ## 💬 Feedback
 

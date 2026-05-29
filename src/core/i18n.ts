@@ -55,7 +55,7 @@ const EN: Record<number, string> =
   122: "Delete",
   123: "Archives",
   124: "Hide the archives",
-  125: "No map archived.",
+  125: "No task archived.",
   126: "↩ Unarchive",
   127: "↑ Priority",
   128: "↓ Priority",
@@ -76,6 +76,8 @@ const EN: Record<number, string> =
   143: "High",
   144: "Normal",
   145: "Bass",
+  146: "Move to",
+  147: "in :",
 
   //Dashboard
   200: "Dashboard",
@@ -233,6 +235,8 @@ const FR: Partial<Record<number, string>> =
   143: "Haute",
   144: "Normale",
   145: "Basse",
+  146: "Déplacer vers",
+  147: "dans :",
   
 
   //Dashboard
@@ -391,6 +395,8 @@ const ES: Partial<Record<number, string>> =
   143: "Alta",
   144: "Normal",
   145: "Baja",
+  146: "Mover a",
+  147: "en :",
 
   // Dashboard
   200: "Panel",

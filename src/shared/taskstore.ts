@@ -103,7 +103,7 @@ export class TaskStore
         }
         catch (e)
         {
-          console.error("Erreur JSON", e);
+          console.error("[TaskStore] JSON error", e);
         }
       }
       this.loaded = true;
@@ -116,7 +116,7 @@ export class TaskStore
   {
     if (!this.loaded)
     {
-      console.warn("[TaskStore] Tentative de sauvegarde avant chargement, annulée.");
+      console.warn("[TaskStore] Tried to save before loading, canceled.");
       return;
     }
     

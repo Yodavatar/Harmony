@@ -21,9 +21,30 @@ export class KanbanView extends ItemView
   getDisplayText() { return this.currentBoard?.title ?? t(100); }
   getIcon() { return "kanban"; }
 
+  private async loadBoard(boardId: string, root: HTMLElement): Promise<void>
+  {
+    const boardData = await this.store.loadBoard(boardId);
+    if (!boardData) return;
+    
+    const select = root.querySelector(".mkb-select") as HTMLSelectElement;
+    if (select) select.value = boardId;
+
+    this.openBoard(boardData, root); 
+  }
+
   async onOpen(): Promise<void>
   {
     await this.renderBoardSelector();
+    const unsubscribe = this.store.onTaskChange(async (event, task) =>
+    {
+      if (this.currentBoard) {
+        const root = this.containerEl.children[1] as HTMLElement;
+        const freshBoard = await this.store.loadBoard(this.currentBoard.id);
+        if (freshBoard) this.openBoard(freshBoard, root);
+      }
+    });
+
+    this.register(() => unsubscribe());
   }
 
   async onClose(): Promise<void>{}
@@ -47,18 +68,128 @@ export class KanbanView extends ItemView
 
     const bar = root.createDiv("mkb-selector-bar");
     const select = bar.createEl("select", { cls: "mkb-select" });
+    
     for (const b of boards)
     {
       const opt = select.createEl("option", { text: b.title, value: b.id });
       if (this.currentBoard && b.id === this.currentBoard.id) opt.selected = true;
     }
 
-    select.addEventListener("change", () => {
+    select.addEventListener("change", () =>
+    {
       void (async () =>
       {
         const board = await this.store.loadBoard(select.value);
         if (board) this.openBoard(board, root);
       })();
+    });
+
+    const dragZoneContainer = bar.createDiv("mkb-interboard-dropzone");
+
+    for (const b of boards)
+    {
+      if (this.currentBoard && b.id === this.currentBoard.id) continue;
+
+      const zone = dragZoneContainer.createEl("button",
+      { 
+        cls: "mkb-btn mkb-btn-secondary mkb-drop-target", 
+        text: `${b.title}` 
+      });
+
+      zone.addEventListener("dragover", (e) =>
+      {
+        e.preventDefault();
+        zone.addClass("mkb-drag-over");
+      });
+
+      zone.addEventListener("dragleave", () =>
+      {
+        zone.removeClass("mkb-drag-over");
+      });
+
+      zone.addEventListener("drop", async (e) =>
+      {
+        e.preventDefault();
+        zone.removeClass("mkb-drag-over");
+
+        type DraggableComponent = KanbanBoard & { dragCard?: { id: string } };
+        const typedBoard = this.boardComponent as unknown as DraggableComponent;
+
+        if (typedBoard && typedBoard.isDragging())
+        {
+          const cardToMove = typedBoard.dragCard;
+          
+          if (cardToMove)
+          {
+            const targetBoardData = await this.store.loadBoard(b.id);
+            if (!targetBoardData || targetBoardData.columns.length === 0)
+            {
+              console.error("[Harmony] The target table has no columns!");
+              return;
+            }
+
+            const overlay = root.createDiv("mkb-editor-overlay");
+            const menu = overlay.createDiv("mkb-prompt-box mkb-column-selector-menu");
+            
+            menu.createEl("h3", { text: `${t(146)} "${b.title}" ${t(147)}`, cls: "mkb-menu-title" });
+            
+            const optionsContainer = menu.createDiv("mkb-menu-options");
+
+            for (const col of targetBoardData.columns)
+            {
+              const colBtn = optionsContainer.createEl("button",
+              { 
+                cls: "mkb-btn mkb-btn-secondary mkb-menu-option-btn", 
+                text: col.title 
+              });
+              
+              if (col.color)
+              {
+                colBtn.setAttribute("style", `border-left: 4px solid ${col.color};`);
+              }
+
+              colBtn.addEventListener("click", async () =>
+              {
+                await this.store.updateCard(cardToMove.id,
+                {
+                  columnId: col.id,
+                  boardId: b.id
+                });
+                
+                overlay.remove();
+
+                if (this.currentBoard)
+                {
+                  const rootContainer = this.containerEl.children[1] as HTMLElement;
+                  const freshBoardData = await this.store.loadBoard(this.currentBoard.id);
+                  if (freshBoardData) this.openBoard(freshBoardData, rootContainer);
+                }
+              });
+            }
+
+            const cancelBtn = menu.createEl("button", { text: t(119), cls: "mkb-btn mkb-btn-ghost" });
+            cancelBtn.addEventListener("click", () => overlay.remove());
+            overlay.addEventListener("click", (evt) => { if (evt.target === overlay) overlay.remove(); });
+          }
+        }
+      });
+    }
+
+    root.addEventListener("dragenter", (e) =>
+    {
+      if (this.boardComponent?.isDragging())
+      {
+        dragZoneContainer.setCssStyles({ display: "flex" });
+      }
+    });
+
+    root.addEventListener("dragend", () =>
+    {
+      dragZoneContainer.setCssStyles({ display: "none" });
+    });
+    root.addEventListener("drop", () =>
+    {
+      dragZoneContainer.setCssStyles({ display: "none" });
     });
 
     const newBtn = bar.createEl("button", { cls: "mkb-btn mkb-btn-secondary", text: t(106) });

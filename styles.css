@@ -253,6 +253,12 @@
 .mkb-menu-item:hover { background: var(--background-modifier-hover); }
 .mkb-menu-item.mkb-menu-danger:hover { background: var(--background-modifier-error); color: var(--text-error); }
 
+
+/* Zone de Drop Inter-Boar*/
+.mkb-interboard-dropzone {display: flex;gap: 5px;margin-left: 10px;}
+.mkb-interboard-dropzone.mkb-hidden {display: none;}
+.mkb-drag-over {background-color: var(--background-modifier-hover);border: 1px dashed var(--text-accent);}
+
 /* =========================================
    3. TODO LIST STYLES
    ========================================= */
@@ -310,7 +316,7 @@
 
 
 /* =========================================
-   2. Calendar STYLES
+   4. Calendar STYLES
    ========================================= */
 
 
