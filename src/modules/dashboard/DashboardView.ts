@@ -1,4 +1,4 @@
-import { ItemView, WorkspaceLeaf, FileSystemAdapter, setIcon } from "obsidian";
+import { ItemView, WorkspaceLeaf, FileSystemAdapter, setIcon, Menu } from "obsidian";
 import { PRIORITY_COLORS, PRIORITY_ORDER, getPriorityLabels, Priority, TaskStore } from "../../shared/taskstore";
 import type { DashboardSettings } from "./DashboardSettings";
 import { DashboardModule, DASHBOARD_VIEW_TYPE } from "./DashboardModule";
@@ -91,6 +91,14 @@ export class DashboardView extends ItemView
     for (const task of urgentTasks)
     {
       const taskCard = tasksGrid.createDiv("dash-task-card");
+      taskCard.style.cursor = "pointer";
+
+      taskCard.addEventListener("click", (e: MouseEvent) =>
+      {
+        this.handleTaskClick(e, task);
+      });
+
+
       const header = taskCard.createDiv("dash-card-header");
       
       const priority = (task.priority ?? "normal");
@@ -149,9 +157,11 @@ export class DashboardView extends ItemView
     this.clockInterval = window.setInterval(tick, 1000);
   }
 
-  private renderSearch(parent: HTMLElement): void {
+  private renderSearch(parent: HTMLElement): void
+  {
     const wrap = parent.createDiv("dash-search-wrap");
-    const input = wrap.createEl("input", {
+    const input = wrap.createEl("input",
+    {
       type: "text",
       placeholder: t(202),
       cls: "dash-search",
@@ -203,6 +213,11 @@ export class DashboardView extends ItemView
     {
       if (!wrap.contains(e.target as Node)) results.addClass("is-hidden");
     });
+
+    setTimeout(() =>
+    {
+      input.focus();
+    }, 50);
   }
 
   private openSettings(): void {
@@ -318,5 +333,73 @@ export class DashboardView extends ItemView
       }
     });
     return overlay;
+  }
+
+  private handleTaskClick(e: MouseEvent, task: any): void
+  {
+    const options: { id: string; title: string; icon: string }[] = [];
+
+    if (task.boardId || task.source === "kanban")
+    {
+      options.push({ id: 'calendar', title: t(222), icon: 'calendar' });
+    }
+    if (task.boardId || task.source === "calendar")
+    {
+      options.push({ id: 'kanban', title: t(223), icon: 'columns' });
+    }
+    if (task.source === "todo" || options.length === 0)
+    {
+      options.push({ id: 'todo', title: t(224), icon: 'check-square' });
+    }
+
+    if (options.length === 1)
+    {
+      this.openTaskInModule(task, options[0].id);
+      return;
+    }
+
+    const menu = new Menu();
+    options.forEach(opt =>
+    {
+      menu.addItem((item) =>
+      {
+        item
+          .setTitle(opt.title)
+          .setIcon(opt.icon)
+          .onClick(() =>
+          {
+            this.openTaskInModule(task, opt.id);
+          });
+      });
+    });
+
+    menu.showAtMouseEvent(e);
+  }
+
+  private async openTaskInModule(task: any, moduleId: string): Promise<void>
+  {
+
+    let viewType = "";
+    switch (moduleId)
+    {
+      case "calendar": viewType = "Harmony-calendar"; break;
+      case "kanban": viewType = "Harmony-kanban"; break;
+      case "todo": viewType = "Harmony-todo"; break;
+    }
+
+    if (!viewType) return;
+
+    const existingLeaves = this.app.workspace.getLeavesOfType(viewType);
+    if (existingLeaves.length > 0)
+    {
+      await this.app.workspace.revealLeaf(existingLeaves[0]);
+      // Bonus : flash the stain
+    }
+    else
+    {
+      const leaf = this.app.workspace.getLeaf("tab");
+      await leaf.setViewState({ type: viewType, active: true });
+      await this.app.workspace.revealLeaf(leaf);
+    }
   }
 }

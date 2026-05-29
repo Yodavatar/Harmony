@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.2] - 2026-05-29
+
+### Added
+-**Core feature**: Can rename the file and the link follows the new file name.
+-**Kanban**: Now you can move a task from one board to another.
+-**Calendar**: New features
+  - Button to hide the vertical bar on the left to select a day.
+  - Use of the left right arrow keys to move the calendar into weeks and months.
+-**Dashboard**:
+  - Automatic focus on the keyboard to go directly into the search bar.
+  - The tasks on the dashboard make sense and direct us to the kanban/todo/calendar task view. 
+
+### Fixed
+-**Kanban**: The linkage in the kanban is saved; when you restart it, it no longer disappears.
 
 ## [0.2.1] - 2026-05-26
 
@@ -92,7 +106,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Todo List: add, check, sort, and delete tasks
 
 ---
-[Unreleased]: https://github.com/Yodavatar/Harmony/compare/0.2.1...HEAD
+[Unreleased]: https://github.com/Yodavatar/Harmony/compare/0.2.2...HEAD
+[0.2.2]: https://github.com/Yodavatar/Harmony/compare/0.2.1...0.2.2
 [0.2.1]: https://github.com/Yodavatar/Harmony/compare/0.2.0...0.2.1
 [0.2.0]: https://github.com/Yodavatar/Harmony/compare/0.1.10...0.2.0
 [0.1.10]: https://github.com/Yodavatar/Harmony/compare/0.1.9...0.1.10

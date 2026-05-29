@@ -26,6 +26,9 @@ export class CalendarView extends ItemView
   private monthPagination: Map<string, number> = new Map();
   private lastRenderedMonthKey: string = "";
 
+  private isSidebarCollapsed: boolean = false;
+  private isScrolling: boolean = false;
+
   constructor(leaf: WorkspaceLeaf, store: CalendarStore)
   {
     super(leaf);
@@ -37,7 +40,27 @@ export class CalendarView extends ItemView
   getDisplayText() { return t(400); }
   getIcon()        { return "calendar-days"; }
 
-  async onOpen():  Promise<void> { this.renderCalendar(); }
+  async onOpen():  Promise<void>
+  {
+    this.renderCalendar();
+    this.containerEl.setAttribute("tabindex", "0");
+    this.containerEl.addEventListener("keydown", (e: KeyboardEvent) => 
+    {
+      if (this.containerEl.querySelector(".mcal-overlay")) return;
+      if (document.activeElement?.tagName === "INPUT" || document.activeElement?.tagName === "TEXTAREA") return;
+      if (e.key === "ArrowLeft") 
+      {
+        e.preventDefault();
+        this.navigate(-1);
+      } 
+      else if (e.key === "ArrowRight") 
+      {
+        e.preventDefault();
+        this.navigate(1);
+      }
+    });
+  }
+  
   async onClose(): Promise<void> {}
   public refresh(): void { this.renderCalendar(); }
 
@@ -52,6 +75,33 @@ export class CalendarView extends ItemView
     this.renderSidebar(workspace);
     const mainView = workspace.createDiv("mcal-main-view");
 
+    mainView.addEventListener("wheel", (e: WheelEvent) =>
+    {
+      const target = e.target as HTMLElement;
+      
+      if (target.closest(".mcal-day-scroll-area")) return;
+
+      if (this.isScrolling) return;
+      if (Math.abs(e.deltaY) < 10) return;
+
+      this.isScrolling = true;
+
+      if (e.deltaY < 0)
+      {
+        this.navigate(1);
+      }
+      else
+      {
+        this.navigate(-1);
+      }
+      window.setTimeout(() =>
+      {
+        this.isScrolling = false;
+      }, 250); 
+    });
+
+
+
     if (this.viewMode === "monthly") this.renderMonthView(mainView);
     else if (this.viewMode === "weekly") this.renderWeekView(mainView);
     else this.renderDayView(mainView);
@@ -59,6 +109,8 @@ export class CalendarView extends ItemView
 
   private renderSidebar(container: HTMLElement): void
   {
+    if (this.isSidebarCollapsed) return;
+
     const sidebar = container.createDiv("mcal-sidebar");
     
     const miniCal = sidebar.createDiv("mcal-mini-cal");
@@ -109,6 +161,14 @@ export class CalendarView extends ItemView
   private renderToolbar(root: HTMLElement): void
   {
     const bar = root.createDiv("mcal-toolbar");
+
+    const sidebarBtn = bar.createEl("button", { cls: "mcal-btn-icon", title: "Afficher/Masquer le panneau" });
+    setIcon(sidebarBtn, "panel-left");
+    sidebarBtn.addEventListener("click", () =>
+    {
+      this.isSidebarCollapsed = !this.isSidebarCollapsed;
+      this.renderCalendar();
+    });
 
     const prevBtn = bar.createEl("button", { cls: "mcal-btn-icon" });
     setIcon(prevBtn, "chevron-left");

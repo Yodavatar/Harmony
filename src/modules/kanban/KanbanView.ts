@@ -80,15 +80,19 @@ export class KanbanView extends ItemView
       void (async () =>
       {
         const board = await this.store.loadBoard(select.value);
-        if (board) this.openBoard(board, root);
+        if (board)
+        {
+          this.openBoard(board, root);
+          await this.renderBoardSelector();
+        }
       })();
     });
 
-    const dragZoneContainer = bar.createDiv("mkb-interboard-dropzone");
-
+    const dragZoneContainer = bar.createDiv("mkb-interboard-dropzone mkb-hidden");
     for (const b of boards)
     {
-      if (this.currentBoard && b.id === this.currentBoard.id) continue;
+      if (this.currentBoard && String(b.id) === String(this.currentBoard.id)) continue;
+      if (select && String(b.id) === String(select.value)) continue;
 
       const zone = dragZoneContainer.createEl("button",
       { 
@@ -111,14 +115,12 @@ export class KanbanView extends ItemView
       {
         e.preventDefault();
         zone.removeClass("mkb-drag-over");
+        dragZoneContainer.addClass("mkb-hidden");
 
-        type DraggableComponent = KanbanBoard & { dragCard?: { id: string } };
-        const typedBoard = this.boardComponent as unknown as DraggableComponent;
-
-        if (typedBoard && typedBoard.isDragging())
+        if (this.boardComponent && this.boardComponent.isDragging())
         {
-          const cardToMove = typedBoard.dragCard;
-          
+          const cardToMove = this.boardComponent.getDragCard();
+
           if (cardToMove)
           {
             const targetBoardData = await this.store.loadBoard(b.id);

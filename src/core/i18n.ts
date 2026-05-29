@@ -102,6 +102,11 @@ const EN: Record<number, string> =
   219: "Note path",
   220: "Add link",
   221: "Priority Tasks",
+  222: "Open in the calendar",
+  223: "Open in Kanban",
+  224: "Open in the Todo list",
+
+
   //for time
   250: "Monday",
   251: "Tuesday",
@@ -262,6 +267,10 @@ const FR: Partial<Record<number, string>> =
   219: "Chemin de la note",
   220: "Ajouter le lien",
   221: "Tâches Prioritaires",
+  222: "Ouvrir dans le Calendrier",
+  223: "Ouvrir dans le Kanban",
+  224: "Ouvrir dans la Todo list",
+
   //for time
   250: "Lundi",
   251: "Mardi",
@@ -421,6 +430,10 @@ const ES: Partial<Record<number, string>> =
   219: "Ruta de la nota",
   220: "Agregar enlace",
   221: "Tareas prioritarias",
+  222: "Abrir en el calendario",
+  223: "Abrir en el Kanban",
+  224: "Abrir en la Todo list",
+  
   // Days
   250: "Lunes",
   251: "Martes",
