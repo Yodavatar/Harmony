@@ -127,19 +127,9 @@ The final step is to activate the plugin. <br>
 
 ## Contribution
 
-I appreciate the others contributions from the community!<br>
-To contribute to Harmony, follow these steps:<br>
+__**Want to contribute to Harmony.**__
 
-
-__**If you want contribute to this project.**__
-
-
-1. Fork the repository.
-2. Create a branch for your feature (`git checkout -b addmanyfeature`).
-3. Commit your changes (`git commit -m 'addmanyfeature'`).
-4. Push to the branch (`git push origin addmanyfeature`).
-5. Open a Pull Request (`And add your message of your modifications`).
-
+We love community contributions! You can find all the guidelines, code standards, and workflow steps in our [Contribution Guide](CONTRIBUTING.md).
 
 ## License
 
