@@ -1,5 +1,6 @@
 import { ItemView, WorkspaceLeaf, setIcon } from "obsidian";
 import type { KanbanStore, KanbanBoardData } from "./KanbanStore";
+import type { FocusContext } from "../../core/navigation/FocusContext";
 import { KanbanBoard } from "./KanbanBoard";
 import { t } from "../../core/i18n";
 
@@ -262,5 +263,41 @@ export class KanbanView extends ItemView
     await this.store.saveBoard(board);
     this.currentBoard = board;
     await this.renderBoardSelector();
+  }
+
+
+  public async focusTask(taskId: string, context?: FocusContext): Promise<void>
+  {
+    const task = context?.task;
+    
+    if (!task || !task.boardId) return;
+
+    if (!this.currentBoard || this.currentBoard.id !== task.boardId)
+    {
+      const root = this.containerEl.children[1] as HTMLElement;
+      await this.loadBoard(task.boardId, root);
+    }
+
+    if (this.boardComponent)
+    {
+      this.boardComponent.setShowArchived(!!task.archived);
+      this.boardComponent.render();
+
+      setTimeout(() =>
+      {
+        const cardElement = this.containerEl.querySelector(`[data-card-id="${taskId}"]`) as HTMLElement;
+        
+        if (cardElement)
+        {
+          cardElement.scrollIntoView({ behavior: "smooth", block: "center" });
+          cardElement.addClass("mkb-flash-card");
+          setTimeout(() => cardElement.removeClass("mkb-flash-card"), 2000);
+        }
+        else
+        {
+          console.warn(`[KanbanView] : ${taskId}`);
+        }
+      }, 150);
+    }
   }
 }

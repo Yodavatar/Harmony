@@ -20,6 +20,11 @@ export class KanbanBoard
   isDragging(): boolean{return this.dragCard !== null;}
   getDragCard(): KanbanCard | null {return this.dragCard;}
 
+  public setShowArchived(show: boolean): void
+  {
+    this.showArchived = show;
+  }
+
   constructor(app: App, store: KanbanStore, board: KanbanBoardData, container: HTMLElement)
   {
     this.app = app;

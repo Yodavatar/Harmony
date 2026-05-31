@@ -13,7 +13,7 @@ export class DashboardModule implements IModule
   id = "dashboard";
   name = "Dashboard";
 
-  private app: App;
+  public app: App;
   private plugin: Harmony;
   public taskstore: TaskStore;
   private settings: DashboardSettings;
@@ -79,6 +79,11 @@ export class DashboardModule implements IModule
       }
     });
 
+    this.plugin.router.registerRoute(this.id,
+    {
+      viewType: DASHBOARD_VIEW_TYPE
+    });
+
     if (this.layoutEventRef)
     {
       this.plugin.registerEvent(this.layoutEventRef);
@@ -89,18 +94,12 @@ export class DashboardModule implements IModule
       this.app.workspace.onLayoutReady(() => this.activateView());
     }
 
-    console.log("[DashboardModule] Activé.");
   }
 
   onunload(): void
   {
     this.unsubLang?.();
-
-    //if (this.layoutEventRef !== null)
-    //{
-    //  this.app.workspace.off;
-    //  this.layoutEventRef = null;
-    //}
+    this.plugin.router.unregisterRoute(this.id);
 
     if (this.layoutEventRef)
     {
@@ -113,8 +112,6 @@ export class DashboardModule implements IModule
     {
       this.app.workspace.detachLeavesOfType(DASHBOARD_VIEW_TYPE);
     }
-
-    console.log("[DashboardModule] Désactivé.");
   }
 
   async activateView(): Promise<void>

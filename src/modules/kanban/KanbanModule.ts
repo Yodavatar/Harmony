@@ -52,6 +52,11 @@ export class KanbanModule implements IModule
       }
     });
 
+    this.plugin.router.registerRoute(this.id,
+    {
+      viewType: KANBAN_VIEW_TYPE
+    });
+
     this.ribbonIconEl = this.plugin.addRibbonIcon("kanban", "Kanban", () => void this.activateView());
     this.ribbonIconEl.setAttribute("data-harmony-module", this.id);
     console.log("[KanbanModule] Activé.");
@@ -60,6 +65,7 @@ export class KanbanModule implements IModule
   onunload(): void
   {
     this.unsubLang?.();
+    this.plugin.router.unregisterRoute(this.id);
     
     if (this.ribbonIconEl)
     {

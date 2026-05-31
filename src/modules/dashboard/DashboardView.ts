@@ -1,5 +1,5 @@
 import { ItemView, WorkspaceLeaf, FileSystemAdapter, setIcon, Menu } from "obsidian";
-import { PRIORITY_COLORS, PRIORITY_ORDER, getPriorityLabels, Priority, TaskStore } from "../../shared/taskstore";
+import { PRIORITY_COLORS, PRIORITY_ORDER, getPriorityLabels, Priority,Task, TaskStore } from "../../shared/taskstore";
 import type { DashboardSettings } from "./DashboardSettings";
 import { DashboardModule, DASHBOARD_VIEW_TYPE } from "./DashboardModule";
 import { t } from "../../core/i18n";
@@ -376,30 +376,12 @@ export class DashboardView extends ItemView
     menu.showAtMouseEvent(e);
   }
 
-  private async openTaskInModule(task: any, moduleId: string): Promise<void>
+  private async openTaskInModule(task: Task, moduleId: string): Promise<void>
   {
-
-    let viewType = "";
-    switch (moduleId)
+    await (this.module as any).plugin.router.navigateToTask(moduleId, task.id,
     {
-      case "calendar": viewType = "Harmony-calendar"; break;
-      case "kanban": viewType = "Harmony-kanban"; break;
-      case "todo": viewType = "Harmony-todo"; break;
-    }
-
-    if (!viewType) return;
-
-    const existingLeaves = this.app.workspace.getLeavesOfType(viewType);
-    if (existingLeaves.length > 0)
-    {
-      await this.app.workspace.revealLeaf(existingLeaves[0]);
-      // Bonus : flash the stain
-    }
-    else
-    {
-      const leaf = this.app.workspace.getLeaf("tab");
-      await leaf.setViewState({ type: viewType, active: true });
-      await this.app.workspace.revealLeaf(leaf);
-    }
+      date: task.dueDate,
+      task: task,
+    });
   }
 }
