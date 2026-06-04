@@ -1,6 +1,8 @@
 import { ItemView, WorkspaceLeaf, setIcon } from "obsidian";
 import type { KanbanStore, KanbanBoardData } from "./KanbanStore";
 import type { FocusContext } from "../../core/navigation/FocusContext";
+import type { HarmonyRouter } from "../../core/navigation/Router";
+import type { Task } from "../../shared/taskstore";
 import { KanbanBoard } from "./KanbanBoard";
 import { t } from "../../core/i18n";
 
@@ -241,6 +243,12 @@ export class KanbanView extends ItemView
       }
       this.app.workspace.requestSaveLayout();
     };
+
+    this.boardComponent.onCardDateClick = (card) =>
+    {
+      void this.openTaskInModule(card, "calendar");
+    };
+
     this.boardComponent.render();
   }
 
@@ -291,13 +299,40 @@ export class KanbanView extends ItemView
         {
           cardElement.scrollIntoView({ behavior: "smooth", block: "center" });
           cardElement.addClass("mkb-flash-card");
-          setTimeout(() => cardElement.removeClass("mkb-flash-card"), 2000);
+          cardElement.addClass("mkb-highlight-task");
+          setTimeout(() =>
+          {
+            cardElement.removeClass("mkb-flash-card");
+            cardElement.addClass("mkb-highlight-task");
+          },  2000);
         }
         else
         {
           console.warn(`[KanbanView] : ${taskId}`);
         }
       }, 150);
+    }
+  }
+
+  private async openTaskInModule(task: Task, moduleId: string): Promise<void>
+  {
+    const harmonyPlugin = (this.app as unknown as
+    { 
+      plugins: { getPlugin(id: string): { router: HarmonyRouter } | null } 
+    }).plugins.getPlugin("harmony");
+
+    if (harmonyPlugin?.router)
+    {
+      await harmonyPlugin.router.navigateToTask(moduleId, task.id,
+      {
+        date: task.dueDate,
+        task,
+      });
+      //console.log(`[KanbanView] Navigating to task ${task.id} in module ${moduleId}`);
+    }
+    else
+    {
+      console.error("[KanbanView] Impossible d'accéder au HarmonyRouter.");
     }
   }
 }

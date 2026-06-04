@@ -34,6 +34,10 @@ export class TodoModule implements IModule
 
   async onload()
   {  
+    this.plugin.router.registerRoute(this.id,
+    {
+      viewType: TODO_VIEW_TYPE
+    });
 
     this.unsubLang = onLanguageChange(() =>
     {
@@ -46,12 +50,15 @@ export class TodoModule implements IModule
 
     this.ribbonIconEl = this.plugin.addRibbonIcon("check-check", "Todo List", () => void this.activateView());
     this.ribbonIconEl.setAttribute("data-harmony-module", this.id);
-    console.log("[TodoModule] Activé.");
+    //console.log("[TodoModule] Activé.");
   }
 
   onunload(): void
   {
     this.unsubLang?.();
+
+    this.plugin.router.unregisterRoute(this.id);
+
     
     if (this.ribbonIconEl)
     {
@@ -66,7 +73,7 @@ export class TodoModule implements IModule
       this.app.workspace.detachLeavesOfType(TODO_VIEW_TYPE);
     }
 
-    console.log("[TodoModule] Désactivé.");
+    //console.log("[TodoModule] Désactivé.");
   }
 
   private async activateView()

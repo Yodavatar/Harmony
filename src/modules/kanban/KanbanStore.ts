@@ -20,7 +20,7 @@ export interface KanbanBoardData
   updatedAt: string;
 }
 
-const DATA_DIR = normalizePath(".Harmony/kanban");
+const DATA_DIR = normalizePath("Harmony/kanban");
 
 export class KanbanStore
 {

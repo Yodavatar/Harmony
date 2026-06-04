@@ -2,6 +2,7 @@ import { App, setIcon, Modal } from "obsidian";
 import type { KanbanBoardData, KanbanCard, KanbanColumn, KanbanStore } from "./KanbanStore";
 import { PRIORITY_ORDER, PRIORITY_COLORS, getPriorityLabels, Priority } from "../../shared/taskstore";
 import { t } from "../../core/i18n";
+import type { Task } from "../../shared/taskstore";
 
 type SortOrder = "asc" | "desc" | null;
 
@@ -16,6 +17,7 @@ export class KanbanBoard
   private dragCard: KanbanCard | null = null;
   private dragSourceColId: string | null = null;
   onBoardChange?: () => void;
+  onCardDateClick?: (card: Task) => void;
 
   isDragging(): boolean{return this.dragCard !== null;}
   getDragCard(): KanbanCard | null {return this.dragCard;}
@@ -158,13 +160,24 @@ export class KanbanBoard
       });
     }
 
-    if (card.dueDate) {
+    if (card.dueDate)
+    {
       const due = new Date(card.dueDate);
       const isOverdue = due < new Date();
-      cardEl.createEl("span",
-        {
-          text: `📅 ${due.toLocaleDateString("fr-FR")}`, cls: `mkb-card-due ${isOverdue ? "mkb-overdue" : ""}`
-        });
+      
+      const dueEl = cardEl.createEl("span",
+      {
+        text: `📅 ${due.toLocaleDateString("fr-FR")}`, 
+        cls: `mkb-card-due mkb-card-due-clickable ${isOverdue ? "mkb-overdue" : ""}`
+      });
+
+      dueEl.style.cursor = "pointer";
+      dueEl.addEventListener("click", (e) =>
+      {
+        e.preventDefault();
+        e.stopPropagation();
+        this.onCardDateClick?.(card);
+      });
     }
 
     if (card.tags.length > 0)

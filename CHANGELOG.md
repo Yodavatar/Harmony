@@ -6,7 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- **Localization**: Added German language support.
+## [0.2.3] - 2026-06-04
+
+### Added
+- **Localization**: Added full German language support.
+- **Data Migration**: Added automatic migration from `.Harmony` to `Harmony` folder to ensure compatibility with unofficial sync services.
+- **Task Management**: Introduced a new seamless task view-switching system for a smoother workflow.
 
 
 ## [0.2.2] - 2026-05-29
@@ -109,7 +114,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Todo List: add, check, sort, and delete tasks
 
 ---
-[Unreleased]: https://github.com/Yodavatar/Harmony/compare/0.2.2...HEAD
+[Unreleased]: https://github.com/Yodavatar/Harmony/compare/0.2.3...HEAD
+[0.2.3]: https://github.com/Yodavatar/Harmony/compare/0.2.2...0.2.3
 [0.2.2]: https://github.com/Yodavatar/Harmony/compare/0.2.1...0.2.2
 [0.2.1]: https://github.com/Yodavatar/Harmony/compare/0.2.0...0.2.1
 [0.2.0]: https://github.com/Yodavatar/Harmony/compare/0.1.10...0.2.0

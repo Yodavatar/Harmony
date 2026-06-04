@@ -17,6 +17,45 @@ export class Harmony_Settings_Tab extends PluginSettingTab
     const { containerEl } = this;
     containerEl.empty();
 
+    // --- WARNING BANNER MIGRATION v0.2.3 ---
+    const warningBanner = containerEl.createDiv();
+    warningBanner.setAttr("style", `
+      background-color: var(--background-secondary-alt); 
+      border-left: 4px solid var(--text-accent); 
+      padding: 16px; 
+      margin-bottom: 20px; 
+      border-radius: 4px;
+    `);
+
+    warningBanner.createEl("h3", { 
+      text: t(16), 
+      attr: { style: "margin-top: 0; color: var(--text-accent);" }
+    });
+
+    warningBanner.createEl("p", {
+      text: t(17),
+      attr: { style: "margin-bottom: 8px; font-size: 0.9em; opacity: 0.85;" }
+    });
+
+    warningBanner.createEl("p", {
+      text: t(18),
+      attr: { style: "margin-bottom: 12px; font-size: 0.85em; font-style: italic; opacity: 0.75;" }
+    });
+
+    new Setting(warningBanner)
+      .setName(t(19))
+      .setDesc(t(20))
+      .addButton(btn => btn
+        .setButtonText(t(21))
+        .setCta()
+        .onClick(() => {
+          window.open("https://github.com/Yodavatar/Harmony/issues", "_blank"); 
+        })
+      );
+    
+    containerEl.createEl("hr");
+    // -------------------------------------------------
+
     new Setting(containerEl)
       .setName(t(1))
       .setHeading();

@@ -28,6 +28,12 @@ const EN: Record<number, string> =
   13: "Language",
   14: "Interface language",
   15: "Select the interface language",
+  16: "⚠️ Attention: Sync & Path Update (v0.2.2 ➔ v0.2.3)",
+  17: "The storage path for your tasks has been modified to a visible folder to support external synchronization tools (Dropbox, iCloud, etc.). The plugin automatically handles moving your data. If you can no longer see your tasks, they are safe and likely located in the hidden '.Harmony' folder inside your vault (the new folder path is 'Harmony').",
+  18: "💡 Tip: Keep your file explorer clean! If you find the Harmony folder cluttering your sidebar, you can easily hide it using the 'Hidden Folder' community plugin:\n\n1. Install the 'Hidden Folder' plugin from the Community Plugins browser.\n2. In the plugin settings, enable it and add '^Harmony$' to the Rules section.\n3. Save your changes—the folder will instantly disappear from your view while remaining fully accessible and synced.",
+  19: "Encountered an issue?",
+  20: "In case of migration errors or missing tasks, please click the button to file a bug report.",
+  21: "Report a Bug",
 
   //Kanban
   100: "Kanban",
@@ -192,6 +198,12 @@ const FR: Partial<Record<number, string>> =
   13: "Langue",
   14: "Langue de l'interface",
   15: "Selectionner la langue de l'interface",
+  16: "⚠️ Attention : Sync & Path Update (v0.2.2 ➔ v0.2.3)",
+  17: "Le chemin de stockage de vos tâches a été modifié en un dossier visible pour prendre en charge les outils de synchronisation externes (Dropbox, iCloud, etc.). Le plugin gère automatiquement le déplacement de vos données. Si vous ne pouvez plus voir vos tâches, elles sont en sécurité et se trouvent probablement dans le dossier caché '.Harmony' à l'intérieur de votre coffre-fort (le nouveau chemin du dossier est 'Harmony').",
+  18: "💡 Astuce : gardez votre explorateur de fichiers propre ! Si vous trouvez que le dossier Harmony encombre votre menu latéral, vous pouvez facilement le masquer en utilisant le plug-in communautaire 'Hidden Folder':\n\n1. Installez le plug-in 'Hidden Folder' à partir du navigateur des plugins de communauté.\n2. Dans les paramètres du plug-in, activez-le et ajoutez '^Harmony$' à la section Règles.\n3. Enregistrez vos modifications : le dossier disparaîtra instantanément de votre vue tout en restant entièrement accessible et synchronisé",
+  19: "Rencontré un problème ?",
+  20: "En cas d'erreurs de migration ou de tâches manquantes, veuillez cliquer sur le bouton pour déposer un rapport de bug.",
+  21: "Signaler un bug",
 
   //Kanban
   100: "Kanban",
@@ -356,6 +368,12 @@ const ES: Partial<Record<number, string>> =
   13: "Idioma",
   14: "Idioma de la interfaz",
   15: "Seleccionar el idioma de la interfaz",
+  16: "⚠️ Atención: Actualización de ruta y sincronización (v0.2.2 v0.2.3)",
+  17: "La ruta de almacenamiento para tus tareas se ha modificado a una carpeta visible para admitir herramientas de sincronización externas (Dropbox, iCloud, etc.). El plugin se encarga automáticamente de mover tus datos. Si ya no puedes ver tus tareas, son seguras y probablemente se encuentren en la carpeta oculta '.Harmony' dentro de tu bóveda (la nueva ruta de la carpeta es 'Harmony')",
+  18: "💡 Consejo: ¡Mantén limpio tu explorador de archivos! Si encuentras la carpeta de Harmony saturando tu barra lateral, puedes ocultarla fácilmente usando el plugin comunitario 'Hidden Folder': \n\n1. Instalar el plugin 'Hidden Folder' desde el navegador de plugins de la comunidad. \n2. En la configuración del plugin, habilitarlo y agregar '^Harmony$' a la sección de reglas. \n3. Guarda tus cambios: la carpeta desaparecerá instantáneamente de tu vista y seguirá siendo totalmente accesible y sincronizada.",
+  19: "¿Ha encontrado un problema?",
+  20: "En caso de errores de migración o tareas faltantes, haga clic en el botón para presentar un informe de error.",
+  21: "Reportar un bug",
 
   // Kanban
   100: "Kanban",
@@ -520,6 +538,12 @@ const DE: Record<number, string> =
   13: "Sprache",
   14: "Oberflächensprache",
   15: "Wähle die Oberflächensprache",
+  16: "⚠️ Achtung: Synchronisierung und Pfadaktualisierung (v0.2.2 ➔ v0.2.3)",
+  17: "Der Speicherpfad für Ihre Aufgaben wurde in einen sichtbaren Ordner geändert, um externe Synchronisierungstools (Dropbox, iCloud usw.) zu unterstützen. Das Plugin übernimmt automatisch die Verschiebung Ihrer Daten. Wenn Sie Ihre Aufgaben nicht mehr sehen können, sind sie sicher und befinden sich wahrscheinlich im Verborgenen '.Harmony' -Ordner in Ihrem Tresor (der neue Ordnerpfad ist 'Harmony' ).",
+  18: "💡 Tipp: Halten Sie Ihren Datei-Explorer sauber! Wenn Sie feststellen, dass der Harmony-Ordner Ihre Seitenleiste überfüllt, können Sie ihn ganz einfach mit dem Community-Plugin 'Hidden Folder' ausblenden:\n\n1. Installieren Sie das Plugin 'Hidden Folder' aus dem Community Plugins-Browser.\n2. Aktivieren Sie es in den Plugin-Einstellungen und fügen Sie '^Harmony$' zum Abschnitt „Regeln“ hinzu.\n3. Speichern Sie Ihre Änderungen—der Ordner verschwindet sofort aus Ihrer Ansicht, bleibt aber vollständig zugänglich und synchronisiert",
+  19: "Auf ein Problem gestoßen?",
+  20: "Bei Migrationsfehlern oder fehlenden Aufgaben klicken Sie bitte auf die Schaltfläche, um einen Fehlerbericht einzureichen.",
+  21: "Fehler melden",
 
   // Kanban
   100: "Kanban",

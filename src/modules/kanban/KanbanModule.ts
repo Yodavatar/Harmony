@@ -59,7 +59,7 @@ export class KanbanModule implements IModule
 
     this.ribbonIconEl = this.plugin.addRibbonIcon("kanban", "Kanban", () => void this.activateView());
     this.ribbonIconEl.setAttribute("data-harmony-module", this.id);
-    console.log("[KanbanModule] Activé.");
+    //console.log("[KanbanModule] Activé.");
   }
 
   onunload(): void
@@ -78,9 +78,7 @@ export class KanbanModule implements IModule
     {
       this.app.workspace.detachLeavesOfType(KANBAN_VIEW_TYPE);
     }
-
-
-    console.log("[KanbanModule] Désactivé.");
+    //console.log("[KanbanModule] Désactivé.");
   }
 
   private async activateView(): Promise<void>

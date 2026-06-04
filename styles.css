@@ -1,4 +1,20 @@
 /* =========================================
+   0. CORE STYLES
+   ========================================= */
+
+@keyframes blink-animation {
+  0%, 100% { background-color: var(--background-secondary); }
+  50% { background-color: var(--interactive-accent); }
+}
+
+.mkb-highlight-task,
+.utodo-view .utodo-list .utodo-item.mkb-highlight-task {
+  animation: blink-animation 0.5s ease-in-out 3;
+  border: 2px solid var(--interactive-accent);
+  transition: background-color 0.3s ease;
+}
+
+/* =========================================
    1. DASHBOARD STYLES
    ========================================= */
 
@@ -258,6 +274,11 @@
 .mkb-interboard-dropzone {display: flex;gap: 5px;margin-left: 10px;}
 .mkb-interboard-dropzone.mkb-hidden {display: none;}
 .mkb-drag-over {background-color: var(--background-modifier-hover);border: 1px dashed var(--text-accent);}
+
+/* Visual effect on hover on the task date */
+.mkb-card-due-clickable {transition: color 0.15s ease, text-decoration 0.15s ease;}
+.mkb-card-due-clickable:hover {color: var(--text-accent);text-decoration: underline;}
+
 
 /* =========================================
    3. TODO LIST STYLES

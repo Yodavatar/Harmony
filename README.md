@@ -1,10 +1,10 @@
-<img alt="image" src="https://github.com/user-attachments/assets/642010d8-7f93-4c3f-ac06-da061db50676" />
+<img alt="image" src="data/1.png" />
 
 
 <br>
 
 [![Obsidian](https://img.shields.io/badge/Obsidian-1.7.2+-purple)](https://community.obsidian.md/plugins/harmony)
-[![Version](https://img.shields.io/badge/version-0.2.2-blue)](https://github.com/Yodavatar/Harmony)
+[![Version](https://img.shields.io/badge/version-0.2.3-blue)](https://github.com/Yodavatar/Harmony)
 [![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-green)](https://github.com/Yodavatar/Harmony/blob/main/LICENSE)
 [![Harmony Multilanguage Support](https://img.shields.io/badge/Harmony-Multilingual-success?style=flat-square&logo=globe)](https://github.com/Yodavatar/Harmony)
 

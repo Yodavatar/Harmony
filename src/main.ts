@@ -5,6 +5,7 @@ import { Harmony_Settings_Tab } from "./core/SettingsTab";
 import { setLanguage } from "./core/i18n";
 import { LinkService } from "./core/LinkerService";
 import { HarmonyRouter } from "./core/navigation/Router";
+import { MigrationService } from "./core/MigrationService";
 
 import { TaskStore } from "./shared/taskstore";
 import { DEFAULT_SETTINGS, type Harmony_Settings } from "./shared/types";
@@ -27,6 +28,11 @@ export default class Harmony extends Plugin
   {
     await this.loadSettings();
     setLanguage(this.settings.language);
+
+    // --- EXECUTE THE FILE MIGRATION ---
+    const migrationService = new MigrationService(this.app);
+    await migrationService.migrate();
+    // ----------------------------------------------
 
     this.router = new HarmonyRouter(this.app);
     this.registry = new ModuleRegistry();

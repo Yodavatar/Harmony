@@ -38,7 +38,8 @@ export const DEFAULT_SETTINGS: Harmony_Settings =
   {
     "dashboard": true,
     "kanban": true,
-    "todolist": true,
+    "todo": true,
+    "calendar": true,
   },
   moduleSettings:
   {

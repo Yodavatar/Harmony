@@ -45,7 +45,10 @@ export class CalendarModule implements IModule
 
   async onload(): Promise<void>
   {
-    
+    (this.plugin as any).router.registerRoute(this.id,
+    {
+      viewType: CALENDAR_VIEW_TYPE
+    });
 
     this.unsubLang = onLanguageChange(() =>
     {
@@ -57,12 +60,14 @@ export class CalendarModule implements IModule
 
     this.ribbonIconEl = this.plugin.addRibbonIcon("calendar-days", t(400), () => this.activateView());
     this.ribbonIconEl.setAttribute("data-harmony-module", this.id);
-    console.log("[CalendarModule] Activé.");
+    //console.log("[CalendarModule] Activé.");
   }
 
   onunload(): void
   {
     this.unsubLang?.();
+
+    (this.plugin as any).router.unregisterRoute(this.id);
 
     if (this.ribbonIconEl)
     {
@@ -76,7 +81,7 @@ export class CalendarModule implements IModule
       this.app.workspace.detachLeavesOfType(CALENDAR_VIEW_TYPE);
     }
 
-    console.log("[CalendarModule] Désactivé.");
+    //console.log("[CalendarModule] Désactivé.");
   }
 
   private async activateView(): Promise<void>

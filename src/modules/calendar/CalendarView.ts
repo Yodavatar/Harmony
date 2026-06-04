@@ -2,6 +2,7 @@ import { ItemView, WorkspaceLeaf, setIcon } from "obsidian";
 import type { CalendarStore } from "./CalendarStore";
 import type { Task, Priority } from "../../shared/taskstore";
 import { PRIORITY_COLORS, PRIORITY_ORDER, getPriorityLabels } from "../../shared/taskstore";
+import type { FocusContext } from "../../core/navigation/FocusContext";
 import { t } from "../../core/i18n";
 
 export const CALENDAR_VIEW_TYPE = "harmony-calendar";
@@ -318,24 +319,28 @@ export class CalendarView extends ItemView
         const task = sorted[pageIdx];
         
         const pill = cell.createDiv(`mcal-pill${task.done ? " mcal-done" : ""}`);
+        pill.setAttribute("data-card-id", task.id);
         pill.style.setProperty("--pill-color", PRIORITY_COLORS[task.priority]);
         pill.createSpan({ cls: "mcal-pill-text", text: task.title });
         this.setupDraggable(pill, task);
         pill.addEventListener("click", (e) => { e.stopPropagation(); this.openTaskEditor(task, task.dueDate ?? "", root); });
 
-        if (sorted.length > 1) {
+        if (sorted.length > 1)
+        {
           const nav = cell.createDiv("mcal-month-nav");
           const prev = nav.createEl("button", { cls: "mcal-nav-btn", text: "◀" });
           nav.createSpan({ text: `${pageIdx + 1}/${sorted.length}`, cls: "mcal-nav-counter" });
           const next = nav.createEl("button", { cls: "mcal-nav-btn", text: "▶" });
 
-          prev.addEventListener("click", (e) => {
+          prev.addEventListener("click", (e) =>
+          {
             e.stopPropagation();
             this.monthPagination.set(ds, pageIdx > 0 ? pageIdx - 1 : sorted.length - 1);
             this.renderCalendar();
           });
 
-          next.addEventListener("click", (e) => {
+          next.addEventListener("click", (e) =>
+          {
             e.stopPropagation();
             this.monthPagination.set(ds, (pageIdx + 1) % sorted.length);
             this.renderCalendar();
@@ -378,6 +383,7 @@ export class CalendarView extends ItemView
       for (const task of this.sortByPriority(tasks))
       {
         const card = colBody.createDiv(`mcal-week-card${task.done ? " mcal-done" : ""}`);
+        card.setAttribute("data-card-id", task.id);
         card.style.setProperty("--card-color", PRIORITY_COLORS[task.priority]);
         card.createSpan({ text: task.title });
         this.setupDraggable(card, task);
@@ -392,48 +398,34 @@ export class CalendarView extends ItemView
     const dayCont = root.createDiv("mcal-day-view");
     this.setupDropZone(dayCont, ds);
 
-    // 1. RÉCUPÉRATION ET FILTRAGE DES TÂCHES
     let allDayTasks = this.store.getTasksForDate(ds).filter(tk => this.activeSources.has(tk.source));
     if (!this.showDone) allDayTasks = allDayTasks.filter(tk => !tk.done);
 
-    // Séparation stricte : heures précises VS pas d'heure (Toute la journée)
     const timedTasks = allDayTasks.filter(tk => tk.time && tk.time.trim() !== "");
     const continuousTasks = allDayTasks.filter(tk => !tk.time || tk.time.trim() === "");
 
-    // 2. AMÉLIORATION : CRÉATION D'UNE VRAIE SECTION "TOUTE LA JOURNÉE" (SANS BOUTONS)
     if (continuousTasks.length > 0)
     {
-      // Conteneur principal de la zone supérieure
       const allDaySection = dayCont.createDiv("mcal-day-allday-section");
-      
-      // Petit titre discret sur le côté ou au-dessus
       allDaySection.createDiv({ cls: "mcal-day-allday-title", text: t(432) || "Toute la journée" });
-
-      // Conteneur de la liste des pilules
       const pillsContainer = allDaySection.createDiv("mcal-day-allday-list");
-      
-      // On trie par priorité pour que ce soit plus joli
       const sortedContinuous = this.sortByPriority(continuousTasks);
-
-      // On boucle sur TOUTES les tâches sans horaire pour les afficher proprement
       for (const task of sortedContinuous)
       {
         const pill = pillsContainer.createDiv(`mcal-pill${task.done ? " mcal-done" : ""}`);
+        pill.setAttribute("data-card-id", task.id);
         pill.style.setProperty("--pill-color", PRIORITY_COLORS[task.priority]);
         pill.createSpan({ cls: "mcal-pill-text", text: task.title });
-        
-        // Rendre la pilule déplaçable (Drag & Drop)
         this.setupDraggable(pill, task);
         
-        // Ouvrir l'éditeur au clic pour pouvoir la modifier ou la supprimer
-        pill.addEventListener("click", (e) => { 
+        pill.addEventListener("click", (e) =>
+        { 
           e.stopPropagation(); 
           this.openTaskEditor(task, task.dueDate ?? ds, root); 
         });
       }
     }
     
-    // 3. ZONE DE DÉFILEMENT POUR LA GRILLE HORAIRE (24H)
     const scrollArea = dayCont.createDiv("mcal-day-scroll-area");
     const totalHours = 24;
 
@@ -450,7 +442,6 @@ export class CalendarView extends ItemView
       });
     }
 
-    // 4. PLACEMENT DES TÂCHES TIMÉES UNIQUEMENT (On exclut complètement les tâches sans heure)
     const tasksContainer = scrollArea.createDiv("mcal-day-tasks");
 
     const tasksWithLayout: CalendarLayoutItem[] = timedTasks.map(t => {
@@ -473,16 +464,18 @@ export class CalendarView extends ItemView
 
     tasksWithLayout.sort((a, b) => a.start - b.start);
 
-    // Ton algorithme d'origine pour gérer les collisions dans la grille
     const clusters: CalendarLayoutItem[][] = [];
     let currentCluster: CalendarLayoutItem[] = [];
     let clusterEnd = 0;
 
     for (const item of tasksWithLayout) {
-      if (currentCluster.length === 0 || item.start < clusterEnd) {
+      if (currentCluster.length === 0 || item.start < clusterEnd)
+      {
         currentCluster.push(item);
         if (item.end > clusterEnd) clusterEnd = item.end;
-      } else {
+      }
+      else
+      {
         clusters.push(currentCluster);
         currentCluster = [item];
         clusterEnd = item.end;
@@ -490,25 +483,30 @@ export class CalendarView extends ItemView
     }
     if (currentCluster.length > 0) clusters.push(currentCluster);
 
-    for (const cluster of clusters) {
+    for (const cluster of clusters)
+    {
       const columnsEndTrack: number[] = [];
-      for (const item of cluster) {
+      for (const item of cluster)
+      {
         let colIdx = 0;
-        while (colIdx < columnsEndTrack.length && columnsEndTrack[colIdx] > item.start) {
+        while (colIdx < columnsEndTrack.length && columnsEndTrack[colIdx] > item.start)
+        {
           colIdx++;
         }
         columnsEndTrack[colIdx] = item.end;
         item.columnIndex = colIdx;
       }
-      for (const item of cluster) {
+      for (const item of cluster)
+      {
         item.columns = columnsEndTrack.length;
       }
     }
 
-    // Rendu des cartes de la grille horaire
-    for (const item of tasksWithLayout) {
+    for (const item of tasksWithLayout)
+    {
       const task = item.task;
       const card = tasksContainer.createDiv(`mcal-day-card${task.done ? " mcal-done" : ""}`);
+      card.setAttribute("data-card-id", task.id);
       card.style.setProperty("--card-color", PRIORITY_COLORS[task.priority]);
       
       card.style.top = `${item.start}%`;
@@ -687,6 +685,55 @@ export class CalendarView extends ItemView
   private dateStr(date: Date): string
   {
     return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+  }
+
+  public async focusTask(taskId: string, context?: FocusContext): Promise<void>
+  {
+    const task = context?.task;
+    if (!task || !task.dueDate) return;
+
+    if (this.viewMode !== "weekly")
+    {
+      this.viewMode = "weekly";
+      this.currentDate = new Date(task.dueDate);
+      this.renderCalendar();
+    }
+    else 
+    {
+      const ws = this.getWeekStart(this.currentDate);
+      const we = new Date(ws);
+      we.setDate(we.getDate() + 6);
+      const targetDate = new Date(task.dueDate);
+
+      if (targetDate < ws || targetDate > we)
+      {
+        this.currentDate = targetDate;
+        this.renderCalendar();
+      }
+    }
+
+    setTimeout(() =>
+    {
+      const cardElement = this.containerEl.querySelector(`[data-card-id="${taskId}"]`) as HTMLElement;
+      
+      if (cardElement)
+      {
+        cardElement.scrollIntoView({ behavior: "smooth", block: "center" });
+        
+        cardElement.addClass("mkb-flash-card");
+        cardElement.addClass("mkb-highlight-task");
+        
+        setTimeout(() =>
+        {
+          cardElement.removeClass("mkb-flash-card");
+          cardElement.removeClass("mkb-highlight-task");
+        }, 2000);
+      }
+      else
+      {
+        console.warn(`[CalendarView] : task ${taskId} not found`);
+      }
+    }, 150);
   }
 }
 

@@ -1,8 +1,11 @@
-import { ItemView, WorkspaceLeaf, FileSystemAdapter, setIcon, Menu } from "obsidian";
+import { ItemView, WorkspaceLeaf, FileSystemAdapter, setIcon, Menu, normalizePath } from "obsidian";
 import { PRIORITY_COLORS, PRIORITY_ORDER, getPriorityLabels, Priority,Task, TaskStore } from "../../shared/taskstore";
 import type { DashboardSettings } from "./DashboardSettings";
 import { DashboardModule, DASHBOARD_VIEW_TYPE } from "./DashboardModule";
+import type { HarmonyRouter } from "../../core/navigation/Router";
+
 import { t } from "../../core/i18n";
+
 
 export class DashboardView extends ItemView
 {
@@ -252,7 +255,7 @@ export class DashboardView extends ItemView
         {
           const file = fileInput.files?.[0];
           if (!file) return;
-          const destDir  = ".Harmony/dashboard";
+          const destDir = normalizePath("Harmony/dashboard");
           const destPath = `${destDir}/${file.name}`;
 
           if (!(await this.app.vault.adapter.exists(destDir)))
@@ -335,21 +338,23 @@ export class DashboardView extends ItemView
     return overlay;
   }
 
-  private handleTaskClick(e: MouseEvent, task: any): void
+  private handleTaskClick(e: MouseEvent, task: Task): void
   {
     const options: { id: string; title: string; icon: string }[] = [];
 
+    if (task.dueDate || task.source === "calendar")
+    {
+      options.push({ id: 'calendar', title: t(222), icon: 'calendar-days' });
+    }
+
     if (task.boardId || task.source === "kanban")
     {
-      options.push({ id: 'calendar', title: t(222), icon: 'calendar' });
+      options.push({ id: 'kanban', title: t(223), icon: 'kanban' });
     }
-    if (task.boardId || task.source === "calendar")
-    {
-      options.push({ id: 'kanban', title: t(223), icon: 'columns' });
-    }
+
     if (task.source === "todo" || options.length === 0)
     {
-      options.push({ id: 'todo', title: t(224), icon: 'check-square' });
+      options.push({ id: 'todo', title: t(224), icon: 'check-check' });
     }
 
     if (options.length === 1)
@@ -378,10 +383,23 @@ export class DashboardView extends ItemView
 
   private async openTaskInModule(task: Task, moduleId: string): Promise<void>
   {
-    await (this.module as any).plugin.router.navigateToTask(moduleId, task.id,
+    const harmonyPlugin = (this.app as unknown as
+    { 
+      plugins: { getPlugin(id: string): { router: HarmonyRouter } | null } 
+    }).plugins.getPlugin("harmony");
+
+    if (harmonyPlugin?.router)
     {
-      date: task.dueDate,
-      task: task,
-    });
+      await harmonyPlugin.router.navigateToTask(moduleId, task.id,
+      {
+        date: task.dueDate,
+        task,
+      });
+      console.log(`[DashboardView] Navigating to task ${task.id} in module ${moduleId}`);
+    }
+    else
+    {
+      console.error("[DashboardView] Impossible d'accéder au HarmonyRouter.");
+    }
   }
 }

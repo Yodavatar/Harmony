@@ -54,7 +54,8 @@ type ChangeListener = (event: ChangeEvent, task: Task) => void;
 
 //Constants
 
-const DATA_PATH = normalizePath(".Harmony/tasks.json");
+const DATA_DIR = normalizePath("Harmony");
+const DATA_PATH = normalizePath("Harmony/tasks.json");
 
 //TaskStore
 
@@ -120,9 +121,8 @@ export class TaskStore
       return;
     }
     
-    const dir = normalizePath(".Harmony");
-    if (!(await this.app.vault.adapter.exists(dir)))
-      await this.app.vault.adapter.mkdir(dir);
+    if (!(await this.app.vault.adapter.exists(DATA_DIR)))
+      await this.app.vault.adapter.mkdir(DATA_DIR);
 
     const arr = Array.from(this.tasks.values());
     await this.app.vault.adapter.write(DATA_PATH, JSON.stringify(arr, null, 2));

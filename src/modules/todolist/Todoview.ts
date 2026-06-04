@@ -1,6 +1,7 @@
 import { ItemView, WorkspaceLeaf, setIcon } from "obsidian";
 import { TodoStore } from "./TodoStore";
 import { PRIORITY_COLORS, PRIORITY_ORDER, getPriorityLabels, Priority } from "../../shared/taskstore";
+import type { FocusContext } from "../../core/navigation/FocusContext";
 import { t } from "../../core/i18n";
 
 export const TODO_VIEW_TYPE = "Harmony-todo";
@@ -63,6 +64,8 @@ export class TodoView extends ItemView
       const itemEl = listEl.createDiv({
         cls: `utodo-item ${task.done ? "is-done" : ""}`
       });
+
+      itemEl.setAttribute("data-task-id", task.id);
       
       const checkBtn = itemEl.createDiv("utodo-checkbox");
       if (task.done)
@@ -166,5 +169,37 @@ export class TodoView extends ItemView
       this.activeMenu.remove();
       this.activeMenu = null;
     }
+  }
+
+  public async focusTask(taskId: string, context?: FocusContext): Promise<void>
+  {
+    let attempts = 0;
+    const maxAttempts = 20;
+    const tryFocus = () => 
+    {
+      const cardElement = this.containerEl.querySelector(`[data-task-id="${taskId}"]`) as HTMLElement;
+
+      if (cardElement) 
+      {
+        cardElement.scrollIntoView({ behavior: "smooth", block: "center" });
+        cardElement.addClass("mkb-highlight-task");
+
+        setTimeout(() => 
+        {
+          cardElement.removeClass("mkb-highlight-task");
+        }, 2000);
+      } 
+      else if (attempts < maxAttempts) 
+      {
+        attempts++;
+        setTimeout(tryFocus, 50);
+      } 
+      else 
+      {
+        console.warn(`[TodoView] Tâche introuvable après attente du DOM : ${taskId}`);
+      }
+    };
+
+    tryFocus();
   }
 }
