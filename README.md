@@ -38,7 +38,7 @@ __**1 - Dashboard module**__
 
 Dashboard in a new window.<br>
 
-<img width="640" height="380" alt="image" src="https://github.com/user-attachments/assets/09d308ef-9482-4999-906d-eaeb1bcfda9f" />
+<img width="640" height="380" alt="image" src="data/2.png" />
 <br>
 
 - Urgent tasks<br>
@@ -49,7 +49,7 @@ __**2 - Better Kanban module**__
 
 Kanban is a methode of organisation for a to do list.<br>
 
-<img width="639" height="380" alt="image" src="https://github.com/user-attachments/assets/9a80d921-e57a-4d81-b7bb-d3ad9c91dba4" /> <br>
+<img width="639" height="380" alt="image" src="data/3.png" /> <br>
 
 - Support for multiple boards
 - Multiple columns (move left/right, change color, delete)
@@ -59,7 +59,7 @@ Kanban is a methode of organisation for a to do list.<br>
 
 __**3 - Better Calendar module**__
 
-<img width="640" height="400" alt="image" src="https://github.com/user-attachments/assets/1b8aa571-d4cc-4287-ac52-55e15a8f4468" />
+<img width="640" height="400" alt="image" src="data/4.png" />
 
 
 - Multiple view (daily, weekly, monthly)
@@ -70,7 +70,7 @@ __**4 - Minimalist Todo List**__
 
 A simple to-do list organized by priority.<br>
 
-<img width="640" height="375" alt="image" src="https://github.com/user-attachments/assets/2f3959ae-9ffd-4040-95ea-fb914ce5c560" />
+<img width="640" height="375" alt="image" src="data/5.png" />
 
 - create a quick task
 - Change priority / delete
