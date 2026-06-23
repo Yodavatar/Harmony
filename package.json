@@ -9,7 +9,7 @@
   },
   "devDependencies": {
     "@types/node": "^16.11.6",
-    "esbuild": "^0.28.0",
+    "esbuild": "^0.28.1",
     "obsidian": "latest",
     "tslib": "2.4.0",
     "typescript": "^6.0.3"
