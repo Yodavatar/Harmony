@@ -14,6 +14,7 @@ import { KanbanModule } from "./modules/kanban/KanbanModule";
 import { DashboardModule } from "./modules/dashboard/DashboardModule";
 import { TodoModule } from "./modules/todolist/TodoModule";
 import { CalendarModule } from "./modules/calendar/CalendarModule";
+import { AgentModule } from "./modules/agent/AgentModule";
 
 
 export default class Harmony extends Plugin
@@ -51,6 +52,7 @@ export default class Harmony extends Plugin
     this.registry.register(new KanbanModule(this.app, this, this.taskStore));
     this.registry.register(new TodoModule(this.app, this, this.taskStore));
     this.registry.register(new CalendarModule(this.app, this, this.taskStore));
+    this.registry.register(new AgentModule(this.app, this, this.taskStore));
 
     this.registry.initAll();
 
