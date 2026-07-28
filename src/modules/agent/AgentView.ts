@@ -1,71 +1,87 @@
 import { ItemView, WorkspaceLeaf, Setting, MarkdownRenderer } from "obsidian";
 import type { TaskStore } from "../../shared/taskstore";
-import { AgentService, PendingAction, ChatMessage } from "./AgentService";
+import { AgentService, PendingAction, ChatMessage, AIProvider, AgentSettings } from "./AgentService";
 import type Harmony from "../../main";
+import {t} from "../../core/i18n";
 
 export const AGENT_VIEW_TYPE = "Harmony-agent";
 
-export class AgentView extends ItemView
-{
+export class AgentView extends ItemView {
   private plugin: Harmony;
   private taskStore: TaskStore;
   private agentService: AgentService | null = null;
   private chatHistory: ChatMessage[] = [];
   private isLoading: boolean = false;
   private isEditingConfig: boolean = false;
-  private apiKeyInput: string = "";
 
-  constructor(leaf: WorkspaceLeaf, plugin: Harmony, taskStore: TaskStore)
-  {
+  private apiKeyInput: string = "";
+  private providerInput: AIProvider = "mistral";
+  private modelInput: string = "mistral-small-latest";
+  private usernameInput: string = "Username";
+  private botnameInput: string = "Jarvis";
+
+  constructor(leaf: WorkspaceLeaf, plugin: Harmony, taskStore: TaskStore) {
     super(leaf);
     this.plugin = plugin;
     this.taskStore = taskStore;
   }
 
-  getViewType()
-  {
+  getViewType() {
     return AGENT_VIEW_TYPE;
   }
 
-  getDisplayText()
-  {
-    return "Jarvis Agent";
+  getDisplayText() {
+    return "Agent";
   }
 
-  getIcon()
-  {
+  getIcon() {
     return "bot";
   }
 
-  async onOpen()
-  {
-    const settings = this.plugin.settings as any;
-    const savedKey = settings?.modules?.agent?.apiKey || "";
-    this.apiKeyInput = savedKey;
-    
-    if (savedKey && savedKey.trim() !== "")
+  async onOpen() {
+    const rawSettings = (this.plugin.settings.moduleSettings?.["agent"] as any) || {};
+
+    this.apiKeyInput = rawSettings.apiKey || "";
+    this.providerInput = rawSettings.provider || "mistral";
+    this.modelInput = rawSettings.modelName || "mistral-small-latest";
+    this.usernameInput = rawSettings.username || "username";
+    this.botnameInput = rawSettings.botname || "Jarvis";
+
+    if (this.apiKeyInput.trim() !== "" || this.providerInput === "ollama")
     {
-      this.agentService = new AgentService(this.taskStore, savedKey);
+      this.initAgentService();
     }
-    
+
     if (this.chatHistory.length === 0)
     {
-      this.chatHistory.push(
-      {
+      this.chatHistory.push({
         role: "assistant",
-        content: "Bonjour ! Je suis Jarvis. Discutons naturellement de ton emploi du temps. Tu peux me demander d'organiser des choses ou me parler de tes priorités."
+        content: `${t(500)}${this.botnameInput}${t(501)}`
       });
     }
     this.render();
+  }
+
+  private initAgentService()
+  {
+    const config: AgentSettings =
+    {
+      apiKey: this.apiKeyInput,
+      provider: this.providerInput,
+      modelName: this.modelInput,
+      username: this.usernameInput,
+      botname: this.botnameInput
+    };
+
+    this.agentService = new AgentService(this.app, this.taskStore, config);
   }
 
   private render() {
     const container = this.contentEl;
     container.empty();
     container.addClass("mkb-view-root", "harmony-agent-view");
-    
-    if (!this.agentService || this.isEditingConfig)
-    {
+
+    if (!this.agentService || this.isEditingConfig) {
       this.renderConfigScreen(container);
       return;
     }
@@ -74,43 +90,136 @@ export class AgentView extends ItemView
 
   private renderConfigScreen(container: HTMLElement) {
     const configDiv = container.createDiv("agent-config-container");
-    configDiv.createEl("h2", { text: "Configuration de Jarvis" });
-    configDiv.createEl("p", { text: "Pour activer les fonctionnalités intelligentes, connecte ton module à l'API Mistral.", cls: "mkb-empty" });
+    configDiv.createEl("h2", { text: t(502) });
+    configDiv.createEl("p", {
+      text: t(503),
+      cls: "mkb-empty"
+    });
+
+
+    const warningBanner = configDiv.createDiv();
+        warningBanner.setAttr("style", `
+          background-color: var(--background-secondary-alt); 
+          border-left: 4px solid var(--text-accent); 
+          padding: 16px; 
+          margin-bottom: 20px; 
+          border-radius: 4px;
+        `);
+    
+        warningBanner.createEl("h3", { 
+          text: t(504), 
+          attr: { style: "margin-top: 0; color: var(--text-accent);" }
+        });
+    
+        warningBanner.createEl("p", {
+          text: t(505),
+          attr: { style: "margin-bottom: 8px; font-size: 0.9em; opacity: 0.85;" }
+        });
+    
+        new Setting(warningBanner)
+          .setName(t(506))
+          .setDesc(t(507))
+          .addButton(btn => btn
+            .setButtonText(t(508))
+            .setCta()
+            .onClick(() => {
+              window.open("https://docs.mistral.ai/getting-started/quickstarts/studio/activate-and-generate-api-key", "_blank"); 
+            })
+          );
+
     
     new Setting(configDiv)
-      .setName("Clé API Mistral")
-      .setDesc("Obtiens une clé sur console.mistral.ai")
+      .setName(t(509))
+      .setDesc(t(510))
+      .addDropdown((dropdown) =>
+        dropdown
+          .addOption("mistral", "Mistral AI")
+          .addOption("openai", "OpenAI (ChatGPT)")
+          .addOption("gemini", "Google Gemini")
+          .addOption("ollama", "Ollama (Local)")
+          .setValue(this.providerInput)
+          .onChange((value) => {
+            this.providerInput = value as AIProvider;
+          })
+      );
+
+    // 2. Modèle
+    new Setting(configDiv)
+      .setName(t(511))
+      .setDesc("Ex: mistral-small-latest, gpt-4o, llama3...")
       .addText((text) =>
         text
-          .setPlaceholder("Votre clé api...")
+          .setValue(this.modelInput)
+          .onChange((value) => {
+            this.modelInput = value.trim();
+          })
+      );
+
+    // 3. Clé API
+    new Setting(configDiv)
+      .setName(t(512))
+      .setDesc(t(513))
+      .addText((text) =>
+        text
+          .setPlaceholder(t(514))
           .setValue(this.apiKeyInput)
           .onChange((value) => {
             this.apiKeyInput = value.trim();
           })
       );
-      
+
+    // 4. Nom du bot
+    new Setting(configDiv)
+      .setName(t(515))
+      .addText((text) =>
+        text
+          .setValue(this.botnameInput)
+          .onChange((value) => {
+            this.botnameInput = value.trim();
+          })
+      );
+
+    // 5. Nom de l'utilisateur
+    new Setting(configDiv)
+      .setName(t(516))
+      .addText((text) =>
+        text
+          .setValue(this.usernameInput)
+          .onChange((value) => {
+            this.usernameInput = value.trim();
+          })
+      );
+
     const actionsDiv = configDiv.createDiv("mkb-card-actions mkb-actions-visible");
-    const saveBtn = actionsDiv.createEl("button", { cls: "mkb-btn mkb-btn-primary", text: "Enregistrer" });
-    
+    const saveBtn = actionsDiv.createEl("button", { cls: "mkb-btn mkb-btn-primary", text: t(517) });
+
     saveBtn.addEventListener("click", async () => {
-      const settings = this.plugin.settings as any;
-      if (!settings.modules) settings.modules = {};
-      if (!settings.modules.agent) settings.modules.agent = {};
-      settings.modules.agent.apiKey = this.apiKeyInput;
-      
+      if (!this.plugin.settings.moduleSettings) {
+        this.plugin.settings.moduleSettings = {};
+      }
+
+      this.plugin.settings.moduleSettings["agent"] = {
+        apiKey: this.apiKeyInput,
+        provider: this.providerInput,
+        modelName: this.modelInput,
+        username: this.usernameInput,
+        botname: this.botnameInput
+      };
+
       await this.plugin.saveSettings();
-      
-      if (this.apiKeyInput && this.apiKeyInput.trim() !== "") {
-        this.agentService = new AgentService(this.taskStore, this.apiKeyInput);
+
+      if (this.apiKeyInput.trim() !== "" || this.providerInput === "ollama") {
+        this.initAgentService();
         this.isEditingConfig = false;
       } else {
         this.agentService = null;
       }
+
       this.render();
     });
-    
+
     if (this.isEditingConfig) {
-      const cancelBtn = actionsDiv.createEl("button", { cls: "mkb-btn mkb-btn-secondary", text: "Annuler" });
+      const cancelBtn = actionsDiv.createEl("button", { cls: "mkb-btn mkb-btn-secondary", text: t(518) });
       cancelBtn.addEventListener("click", () => {
         this.isEditingConfig = false;
         this.render();
@@ -133,9 +242,9 @@ export class AgentView extends ItemView
     header.style.alignItems = "center";
     header.style.paddingBottom = "10px";
     header.style.flex = "0 0 auto";
-    header.createEl("h2", { text: "Jarvis" });
-    
-    const configLink = header.createEl("button", { text: "⚙️ Config", cls: "mkb-btn mkb-btn-secondary agent-config-btn" });
+    header.createEl("h2", { text: `Agent : ${this.botnameInput}` });
+
+    const configLink = header.createEl("button", { text: t(519), cls: "mkb-btn mkb-btn-secondary agent-config-btn" });
     configLink.addEventListener("click", () => {
       this.isEditingConfig = true;
       this.render();
@@ -160,7 +269,7 @@ export class AgentView extends ItemView
       msgEl.style.borderRadius = "6px";
       msgEl.style.maxWidth = "85%";
       msgEl.style.width = "fit-content";
-      
+
       if (msg.role === "user") {
         msgEl.style.backgroundColor = "var(--background-primary-alt)";
         msgEl.style.marginLeft = "auto";
@@ -172,7 +281,7 @@ export class AgentView extends ItemView
       }
 
       const author = msgEl.createEl("strong");
-      author.setText(msg.role === "user" ? "Moi" : "Jarvis");
+      author.setText(msg.role === "user" ? this.usernameInput : this.botnameInput);
       author.style.display = "block";
       author.style.fontSize = "0.8em";
       author.style.opacity = "0.6";
@@ -201,34 +310,41 @@ export class AgentView extends ItemView
           let cardTitle = "";
           let cardChanges: string[] = [];
 
-          if (action.type === "createTask") {
-            cardTitle = `➕ Créer : "${action.payload.title}"`;
-            cardChanges.push(`Priorité: ${action.payload.priority}`);
-            if (action.payload.dueDate) cardChanges.push(`Échéance: ${action.payload.dueDate}`);
-          } 
-          else if (action.type === "updateTask") {
-            const targetTask = allTasks.find(t => t.id === action.payload.taskId);
-            const taskLabel = targetTask ? `"${targetTask.title}"` : `Tâche #${action.payload.taskId.slice(0,6)}`;
-            
-            cardTitle = `✏️ Modifier : ${taskLabel}`;
-            
-            if (action.payload.done !== undefined) {
-              cardChanges.push(action.payload.done ? "✅ Marquer comme fait" : "⏳ Remettre à faire");
+          if (action.type === "createTask")
+          {
+            cardTitle = `${t(522)} "${action.payload.title}"`;
+            cardChanges.push(`${t(523)} ${action.payload.priority}`);
+            if (action.payload.dueDate) cardChanges.push(`${t(520)} ${action.payload.dueDate}`);
+          }
+          else if (action.type === "updateTask")
+          {
+            const targetTask = allTasks.find((t) => t.id === action.payload.taskId);
+            const taskLabel = targetTask ? `"${targetTask.title}"` : `${t(521)}${action.payload.taskId.slice(0, 6)}`;
+
+            cardTitle = `${t(524)} ${taskLabel}`;
+
+            if (action.payload.done !== undefined)
+            {
+              cardChanges.push(action.payload.done ? t(525) : t(526));
             }
-            if (action.payload.priority) {
-              cardChanges.push(`⚡ Priorité ➔ ${action.payload.priority}`);
+            if (action.payload.priority)
+            {
+              cardChanges.push(`${t(527)} ${action.payload.priority}`);
             }
-            if (action.payload.dueDate !== undefined) {
-              cardChanges.push(`📅 Échéance ➔ ${action.payload.dueDate || "Aucune"}`);
+            if (action.payload.dueDate !== undefined)
+            {
+              cardChanges.push(`${t(528)} ${action.payload.dueDate || t(529) }`);
             }
-            if (action.payload.title) {
-              cardChanges.push(`📛 Renommer ➔ "${action.payload.title}"`);
+            if (action.payload.title)
+            {
+              cardChanges.push(`${t(530)} "${action.payload.title}"`);
             }
-            if (action.payload.archived !== undefined) {
-              cardChanges.push(action.payload.archived ? "📦 Archiver" : "📤 Désarchiver");
+            if (action.payload.archived !== undefined)
+            {
+              cardChanges.push(action.payload.archived ? t(531) : t(532));
             }
           }
-          
+
           const titleEl = infoDiv.createDiv({ cls: "mkb-card-title" });
           titleEl.setText(cardTitle);
           titleEl.style.fontWeight = "bold";
@@ -247,34 +363,41 @@ export class AgentView extends ItemView
           acceptBtn.style.padding = "2px 8px";
           acceptBtn.addEventListener("click", async () => {
             await this.executeAction(action);
-            msg.actions = msg.actions?.filter(a => a.id !== action.id);
+            msg.actions = msg.actions?.filter((a : PendingAction) => a.id !== action.id);
             this.render();
           });
 
           const rejectBtn = controls.createEl("button", { text: "✕", cls: "mkb-btn mkb-btn-secondary" });
           rejectBtn.style.padding = "2px 8px";
           rejectBtn.addEventListener("click", () => {
-            msg.actions = msg.actions?.filter(a => a.id !== action.id);
+            msg.actions = msg.actions?.filter((a : PendingAction) => a.id !== action.id);
             this.render();
           });
         }
       }
     }
 
-    setTimeout(() => { chatContainer.scrollTop = chatContainer.scrollHeight; }, 30);
+    setTimeout(() => {
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }, 30);
 
     const inputSection = wrapper.createDiv("agent-input-bar");
     inputSection.style.display = "flex";
     inputSection.style.gap = "8px";
     inputSection.style.flex = "0 0 auto";
 
-    const input = inputSection.createEl("input", { 
-      cls: "mkb-inline-input", 
-      attr: { type: "text", placeholder: "Discute avec Jarvis ou demande un changement..." } 
+    const input = inputSection.createEl("input",
+    {
+      cls: "mkb-inline-input",
+      attr: { type: "text", placeholder: t(533) }
     });
     input.style.flex = "1";
 
-    const submitBtn = inputSection.createEl("button", { text: this.isLoading ? "..." : "Envoyer", cls: "mkb-btn mkb-btn-primary" });
+    const submitBtn = inputSection.createEl("button",
+    {
+      text: this.isLoading ? "..." : t(534),
+      cls: "mkb-btn mkb-btn-primary"
+    });
     if (this.isLoading) submitBtn.disabled = true;
 
     const handleSend = async () => {
@@ -292,7 +415,7 @@ export class AgentView extends ItemView
       const day = String(now.getDate()).padStart(2, "0");
       const hours = String(now.getHours()).padStart(2, "0");
       const minutes = String(now.getMinutes()).padStart(2, "0");
-      const currentDateStr = `${year}-${month}-${day} (Heure actuelle: ${hours}:${minutes})`;
+      const currentDateStr = `${year}-${month}-${day} (${t(535)} ${hours}:${minutes})`;
 
       const response = await this.agentService.sendChat(this.chatHistory, currentDateStr);
       this.chatHistory.push({
@@ -306,7 +429,8 @@ export class AgentView extends ItemView
     };
 
     submitBtn.addEventListener("click", handleSend);
-    input.addEventListener("keydown", (e) => {
+    input.addEventListener("keydown", (e) =>
+    {
       if (e.key === "Enter") handleSend();
     });
   }
@@ -324,12 +448,16 @@ export class AgentView extends ItemView
           source: "dashboard",
           tags: []
         });
-      } else if (action.type === "updateTask") {
+      }
+      else if (action.type === "updateTask")
+      {
         const { taskId, ...fieldsToUpdate } = action.payload;
         await this.taskStore.updateTask(taskId, fieldsToUpdate);
       }
-    } catch (err) {
-      console.error("Erreur d'exécution de l'action Jarvis :", err);
+    }
+    catch (err)
+    {
+      console.error(t(536), err);
     }
   }
 }

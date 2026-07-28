@@ -3,11 +3,13 @@ import type Harmony from "../../main";
 import type { IModule } from "../../shared/types";
 import type { TaskStore } from "../../shared/taskstore";
 import { AgentView, AGENT_VIEW_TYPE } from "./AgentView";
+import { t, onLanguageChange } from "../../core/i18n";
+
 
 export class AgentModule implements IModule
 {
   id = "agent";
-  name = "agent";
+  name = "agent ai (BETA)";
 
   private app: App;
   private plugin: Harmony;
@@ -36,7 +38,7 @@ export class AgentModule implements IModule
       viewType: AGENT_VIEW_TYPE
     });
 
-    this.ribbonIconEl = this.plugin.addRibbonIcon("bot", "Agent Jarvis", () => void this.activateView());
+    this.ribbonIconEl = this.plugin.addRibbonIcon("bot", "Agent", () => void this.activateView());
     this.ribbonIconEl.setAttribute("data-harmony-module", this.id);
   }
 

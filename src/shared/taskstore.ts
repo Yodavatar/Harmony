@@ -54,8 +54,8 @@ type ChangeListener = (event: ChangeEvent, task: Task) => void;
 
 //Constants
 
-const DATA_DIR = normalizePath("Harmony");
-const DATA_PATH = normalizePath("Harmony/tasks.json");
+export const DATA_DIR = normalizePath("Harmony");
+export const DATA_PATH = normalizePath("Harmony/tasks.json");
 
 //TaskStore
 
