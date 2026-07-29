@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.4] - 2026-07-29
+
+### Added
+- **New module**: Agent in Beta version, have a natural discussion of the tasks to be done.
+To have advice, recommendations, ask to delete creates or edits tasks.
+
+### Changed
+- **Dependency**: Bump esbuild from 0.28.0 to 0.28.1 
+
+
 ## [0.2.3] - 2026-06-04
 
 ### Added
@@ -114,7 +124,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Todo List: add, check, sort, and delete tasks
 
 ---
-[Unreleased]: https://github.com/Yodavatar/Harmony/compare/0.2.3...HEAD
+[Unreleased]: https://github.com/Yodavatar/Harmony/compare/0.2.4...HEAD
+[0.2.4]: https://github.com/Yodavatar/Harmony/compare/0.2.3...0.2.4
 [0.2.3]: https://github.com/Yodavatar/Harmony/compare/0.2.2...0.2.3
 [0.2.2]: https://github.com/Yodavatar/Harmony/compare/0.2.1...0.2.2
 [0.2.1]: https://github.com/Yodavatar/Harmony/compare/0.2.0...0.2.1
