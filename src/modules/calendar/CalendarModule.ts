@@ -56,11 +56,8 @@ export class CalendarModule implements IModule
       for (const leaf of leaves) (leaf.view as CalendarView).refresh();
     });
 
-    
-
     this.ribbonIconEl = this.plugin.addRibbonIcon("calendar-days", t(400), () => this.activateView());
     this.ribbonIconEl.setAttribute("data-harmony-module", this.id);
-    //console.log("[CalendarModule] Activé.");
   }
 
   onunload(): void
@@ -80,8 +77,6 @@ export class CalendarModule implements IModule
     {
       this.app.workspace.detachLeavesOfType(CALENDAR_VIEW_TYPE);
     }
-
-    //console.log("[CalendarModule] Désactivé.");
   }
 
   private async activateView(): Promise<void>

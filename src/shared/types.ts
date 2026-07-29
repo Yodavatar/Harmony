@@ -40,6 +40,7 @@ export const DEFAULT_SETTINGS: Harmony_Settings =
     "kanban": true,
     "todo": true,
     "calendar": true,
+    "agent" : true,
   },
   moduleSettings:
   {
@@ -50,5 +51,5 @@ export const DEFAULT_SETTINGS: Harmony_Settings =
     }
   },
   language: "en",
-  version: "0.1.10",
+  version: "0.2.4",
 };

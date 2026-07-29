@@ -5,7 +5,7 @@ import { t } from "../core/i18n";
 
 export type Priority = "urgent" | "high" | "normal" | "low";
 export type ViewType = "kanban" | "todo" | "calendar" | (string & {});
-export type TaskSource = "kanban" | "todo" | "dashboard" | "calendar";
+export type TaskSource = "kanban" | "todo" | "dashboard" | "calendar" | "agent";
 
 export interface Task
 {
@@ -54,8 +54,8 @@ type ChangeListener = (event: ChangeEvent, task: Task) => void;
 
 //Constants
 
-const DATA_DIR = normalizePath("Harmony");
-const DATA_PATH = normalizePath("Harmony/tasks.json");
+export const DATA_DIR = normalizePath("Harmony");
+export const DATA_PATH = normalizePath("Harmony/tasks.json");
 
 //TaskStore
 
