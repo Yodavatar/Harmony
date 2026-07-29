@@ -8,56 +8,109 @@ export class AgentLogger {
   private logFolder = normalizePath(`${DATA_DIR}/Agent/logs`);
   private logFileName = "agent.log";
 
-  constructor(app: App) {
+  private logQueue: Promise<void> = Promise.resolve();
+
+  constructor(app: App)
+  {
     this.app = app;
   }
 
-  async log(level: "INFO" | "DEBUG" | "ERROR", message: string, data?: any): Promise<void> {
-    const adapter = this.app.vault.adapter;
-    const filePath = `${this.logFolder}/${this.logFileName}`;
-
-    try
+  async log(level: "INFO" | "DEBUG" | "ERROR", message: string, data?: unknown): Promise<void>
+  {
+    this.logQueue = this.logQueue.then(async () =>
     {
-      if (!(await adapter.exists(this.logFolder)))
+      const adapter = this.app.vault.adapter;
+      const filePath = `${this.logFolder}/${this.logFileName}`;
+
+      try
       {
-        await adapter.mkdir(this.logFolder);
+        if (!(await adapter.exists(this.logFolder)))
+        {
+          await adapter.mkdir(this.logFolder);
+        }
       }
-    }
-    catch
-    {}
+      catch
+      {}
 
-    const timestamp = new Date().toISOString();
-    let logLine = `[${timestamp}] [${level}] ${message}`;
-    if (data) {
-      logLine += ` | Data: ${typeof data === "object" ? JSON.stringify(data) : data}`;
-    }
-    logLine += "\n";
-
-    try
-    {
-      if (await adapter.exists(filePath))
-      {
-        await adapter.append(filePath, logLine);
-      } 
-      else
-      {
-        await adapter.write(filePath, logLine);
+      const timestamp = new Date().toISOString();
+      let logLine = `[${timestamp}] [${level}] ${message}`;
+      if (data) {
+        logLine += ` | Data: ${typeof data === "object" ? JSON.stringify(data) : data}`;
       }
-    }
-    catch (err)
-    {
-      console.error("Harmony Agent Logger Error:", err);
-    }
-  }
+      logLine += "\n";
+
+      try
+      {
+        if (await adapter.exists(filePath))
+        {
+          await adapter.append(filePath, logLine);
+        } 
+        else
+        {
+          await adapter.write(filePath, logLine);
+        }
+      }
+      catch (err)
+      {
+        console.error("Harmony Agent Logger Error:", err);
+      }
+    }).catch(() => {});
+
+    return this.logQueue;
+}
 }
 
-export interface PendingAction
+
+export interface CreateTaskPayload
+{
+  title: string;
+  priority?: "urgent" | "high" | "normal" | "low";
+  dueDate?: string;
+  reason?: string;
+}
+
+export interface UpdateTaskPayload
+{
+  taskId: string;
+  title?: string;
+  priority?: "urgent" | "high" | "normal" | "low";
+  dueDate?: string;
+  done?: boolean;
+  archived?: boolean;
+  reason?: string;
+}
+
+export interface DeleteTaskPayload
+{
+  taskId: string;
+  reason?: string;
+}
+
+export interface CreateTaskAction
 {
   id: string;
-  type: "createTask" | "updateTask" | "deleteTask";
-  payload: any;
   description: string;
+  type: "createTask";
+  payload: CreateTaskPayload;
 }
+
+export interface UpdateTaskAction
+{
+  id: string;
+  description: string;
+  type: "updateTask";
+  payload: UpdateTaskPayload;
+}
+
+export interface DeleteTaskAction
+{
+  id: string;
+  description: string;
+  type: "deleteTask";
+  payload: DeleteTaskPayload;
+}
+
+export type PendingAction = CreateTaskAction | UpdateTaskAction | DeleteTaskAction;
 
 export interface ChatMessage
 {
@@ -65,6 +118,25 @@ export interface ChatMessage
   name?: string;
   content: string;
   actions?: PendingAction[];
+  tool_call_id?: string;
+}
+
+export interface LLMTool
+{
+  type: "function";
+  function:
+  {
+    name: string;
+    description: string;
+    parameters: Record<string, unknown>; 
+  };
+}
+
+export interface LLMMessage
+{
+  role: "system" | "user" | "assistant" | "tool";
+  content?: string;
+  name?: string;
   tool_call_id?: string;
 }
 
@@ -119,7 +191,7 @@ export class AgentService
     const systemPrompt = `${t(539)} ${botname}, ${t(540)} ${username}. 
  ${t(541)} ${currentDateStr}. ${t(542)}`;
 
-    const tools: any[] = [];
+    const tools: LLMTool[] = [];
 
     if (this.permissions.read)
     {
@@ -201,7 +273,8 @@ export class AgentService
       });
     }
 
-    let apiMessages = [
+    let apiMessages: LLMMessage[] =
+    [
       { role: "system", content: systemPrompt },
       ...history.map(m => ({
         role: m.role,
@@ -269,7 +342,8 @@ export class AgentService
         }
       }
 
-      const content = choice.content || t(551);
+
+      let content = choice.content || "";
       const toolCalls = choice.tool_calls || [];
       const actions: PendingAction[] = [];
 
@@ -279,10 +353,20 @@ export class AgentService
         const args = JSON.parse(call.function.arguments);
         actions.push({
           id: `action-${Date.now()}-${Math.random()}`,
-          type: call.function.name as any,
+          type: call.function.name as PendingAction["type"],
           payload: args,
           description: args.reason || `Action: ${call.function.name}`
         });
+      }
+
+      if (!content && actions.length > 0)
+      {
+        const actionNames = actions.map(a => a.type).join(", ");
+        content = `${t(551)} ${actionNames}]`;
+      }
+      else if (!content)
+      {
+        content = t(551);
       }
 
       await this.logger.log("INFO", "Received response from LLM", { actionsCount: actions.length });
@@ -297,7 +381,7 @@ export class AgentService
     }
   }
 
-  private async callLLM(messages: any[], tools: any[])
+  private async callLLM(messages: LLMMessage[], tools: LLMTool[])
   {
     const res = await requestUrl(
     {

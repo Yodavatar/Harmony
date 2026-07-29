@@ -3,8 +3,6 @@ import type Harmony from "../../main";
 import type { IModule } from "../../shared/types";
 import type { TaskStore } from "../../shared/taskstore";
 import { AgentView, AGENT_VIEW_TYPE } from "./AgentView";
-import { t, onLanguageChange } from "../../core/i18n";
-
 
 export class AgentModule implements IModule
 {

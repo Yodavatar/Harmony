@@ -39,7 +39,7 @@ export class AgentView extends ItemView {
   }
 
   async onOpen() {
-    const rawSettings = (this.plugin.settings.moduleSettings?.["agent"] as any) || {};
+    const rawSettings = (this.plugin.settings.moduleSettings?.["agent"] as Partial<AgentSettings>) || {};
 
     this.apiKeyInput = rawSettings.apiKey || "";
     this.providerInput = rawSettings.provider || "mistral";
@@ -56,7 +56,7 @@ export class AgentView extends ItemView {
     {
       this.chatHistory.push({
         role: "assistant",
-        content: `${t(500)}${this.botnameInput}${t(501)}`
+        content: `${t(500)} ${this.botnameInput}. ${t(501)}`
       });
     }
     this.render();
@@ -262,7 +262,8 @@ export class AgentView extends ItemView {
     const archivedTasks = this.taskStore.getTasks({ archived: true }) || [];
     const allTasks = [...activeTasks, ...archivedTasks];
 
-    for (const msg of this.chatHistory) {
+    for (const msg of this.chatHistory)
+    {
       const msgEl = chatContainer.createDiv(`agent-msg agent-msg-${msg.role}`);
       msgEl.style.marginBottom = "12px";
       msgEl.style.padding = "10px 14px";
@@ -270,11 +271,14 @@ export class AgentView extends ItemView {
       msgEl.style.maxWidth = "85%";
       msgEl.style.width = "fit-content";
 
-      if (msg.role === "user") {
+      if (msg.role === "user")
+      {
         msgEl.style.backgroundColor = "var(--background-primary-alt)";
         msgEl.style.marginLeft = "auto";
         msgEl.style.borderRight = "3px solid var(--interactive-accent)";
-      } else {
+      }
+      else
+      {
         msgEl.style.backgroundColor = "var(--background-secondary)";
         msgEl.style.marginRight = "auto";
         msgEl.style.borderLeft = "3px solid var(--color-purple)";
@@ -290,13 +294,15 @@ export class AgentView extends ItemView {
       const textContainer = msgEl.createDiv("agent-msg-content");
       MarkdownRenderer.renderMarkdown(msg.content, textContainer, "", this);
 
-      if (msg.actions && msg.actions.length > 0) {
+      if (msg.actions && msg.actions.length > 0)
+      {
         const actionsWrapper = msgEl.createDiv("agent-msg-actions-wrapper");
         actionsWrapper.style.marginTop = "8px";
         actionsWrapper.style.paddingTop = "8px";
         actionsWrapper.style.borderTop = "1px dashed var(--background-modifier-border)";
 
-        for (const action of msg.actions) {
+        for (const action of msg.actions)
+        {
           const actionCard = actionsWrapper.createDiv("mkb-card");
           actionCard.style.display = "flex";
           actionCard.style.justifyContent = "space-between";
@@ -344,6 +350,14 @@ export class AgentView extends ItemView {
               cardChanges.push(action.payload.archived ? t(531) : t(532));
             }
           }
+          else if (action.type === "deleteTask")
+          {
+            const targetTask = allTasks.find((t) => t.id === action.payload.taskId);
+            const taskLabel = targetTask ? `"${targetTask.title}"` : `${t(521)}${action.payload.taskId.slice(0, 6)}`;
+            
+            cardTitle = `${t(553)} ${taskLabel}`;
+            cardChanges.push(action.payload.reason || t(554));
+          }
 
           const titleEl = infoDiv.createDiv({ cls: "mkb-card-title" });
           titleEl.setText(cardTitle);
@@ -377,9 +391,13 @@ export class AgentView extends ItemView {
       }
     }
 
-    setTimeout(() => {
-      chatContainer.scrollTop = chatContainer.scrollHeight;
-    }, 30);
+    requestAnimationFrame(() =>
+    {
+      chatContainer.scrollTo({
+        top: chatContainer.scrollHeight,
+        behavior: "smooth"
+      });
+    });
 
     const inputSection = wrapper.createDiv("agent-input-bar");
     inputSection.style.display = "flex";
@@ -392,6 +410,18 @@ export class AgentView extends ItemView {
       attr: { type: "text", placeholder: t(533) }
     });
     input.style.flex = "1";
+
+    if (this.isLoading)
+    {
+      input.disabled = true;
+      input.style.opacity = "0.5";
+      input.style.cursor = "not-allowed";
+    }
+    else
+    {
+      setTimeout(() => input.focus(), 50); 
+    }
+
 
     const submitBtn = inputSection.createEl("button",
     {
@@ -442,7 +472,7 @@ export class AgentView extends ItemView {
           id: this.taskStore.generateId("card"),
           title: action.payload.title,
           priority: action.payload.priority || "normal",
-          dueDate: action.payload.dueDate || null,
+          dueDate: action.payload.dueDate,
           done: false,
           archived: false,
           source: "dashboard",
@@ -453,6 +483,10 @@ export class AgentView extends ItemView {
       {
         const { taskId, ...fieldsToUpdate } = action.payload;
         await this.taskStore.updateTask(taskId, fieldsToUpdate);
+      }
+      else if (action.type === "deleteTask")
+      {
+        await this.taskStore.deleteTask(action.payload.taskId);
       }
     }
     catch (err)

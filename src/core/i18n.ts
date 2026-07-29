@@ -188,7 +188,7 @@ const EN: Record<number, string> =
   506: "Information for the API key",
   507: "For now, only the Mistral supplier is working. To be able to use it for free, you must create an account and then generate a free API key.",
   508: "Docs Mistral",
-  509: "Fournisseur IA",
+  509: "AI Provider",
   510: "Choose the service to use",
   511: "Template Name",
   512: "Key API",
@@ -231,7 +231,9 @@ const EN: Record<number, string> =
   549: "Permanently delete a task from the system.",
   550: "The ID of the task to destroy",
   551: "I have prepared the requested actions.",
-  552: "Error communicating with agent.",  
+  552: "Error communicating with agent.", 
+  553: "Delete the task:",
+  554: "No reason provided", 
 };
 
 //French dictionary
@@ -456,7 +458,9 @@ const FR: Partial<Record<number, string>> =
   549: "Supprimer définitivement une tâche du système.",
   550: "L'ID de la tâche à détruire",
   551: "J'ai préparé les actions demandées.",
-  552: "Erreur de communication avec l'agent."
+  552: "Erreur de communication avec l'agent.",
+  553: "Supprimer la tâche :",
+  554: "Aucune raison fournie",
 };
 
 // Spanish dictionary
@@ -682,6 +686,8 @@ const ES: Partial<Record<number, string>> =
   550: "El ID de la tarea a eliminar",
   551: "He preparado las acciones solicitadas.",
   552: "Error de comunicación con el agente.",
+  553: "Eliminar la tarea:",
+  554: "No se da ninguna razón",
 };
 
 // German dictionary
@@ -904,7 +910,9 @@ const DE: Record<number, string> =
   549: "Eine Aufgabe dauerhaft aus dem System löschen.",
   550: "Die ID der zu löschenden Aufgabe",
   551: "Ich habe die angeforderten Aktionen vorbereitet.",
-  552: "Fehler bei der Kommunikation mit dem Agenten."
+  552: "Fehler bei der Kommunikation mit dem Agenten.",
+  553: "Aufgabe löschen:",
+  554: "Kein Grund angegeben",
 };
 
 //Language Registry
