@@ -8,6 +8,7 @@
 [![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-green)](https://github.com/Yodavatar/Harmony/blob/main/LICENSE)
 [![Harmony Multilanguage Support](https://img.shields.io/badge/Harmony-Multilingual-success?style=flat-square&logo=globe)](https://github.com/Yodavatar/Harmony)
 [![Harmony Website](https://img.shields.io/badge/Website-Harmony-pink)](https://harmony.yodavatar.me)
+[![wakatime](https://wakatime.com/badge/user/17a8cdf0-54fb-45e9-92bc-ada49bd926d7/project/2ec1945d-e96e-4557-b324-f72582394db7.svg)](https://wakatime.com/badge/user/17a8cdf0-54fb-45e9-92bc-ada49bd926d7/project/2ec1945d-e96e-4557-b324-f72582394db7)
 
 ## Table of Contents
 
@@ -21,15 +22,15 @@
 
 ## Introduction
 
-The goal of Harmony is to make Obsidian<br>
-as powerful as a professional tool (like Notion),<br>
-but 100% local and open source.<br><br>
+The goal of Harmony is to make Obsidian.
+as powerful as a professional tool (like Notion),
+but 100% local and open source.
 
-Be as productive as possible by staying in control of your data.<br>
-There are many ways to be more productive;<br>
-the methods we are trying to implement are [here](https://www.todoist.com/en/productivity-methods).<br>
+Be as productive as possible by staying in control of your data.
+There are many ways to be more productive;
+the methods we are trying to implement are [here](https://www.todoist.com/en/productivity-methods).
 
-Harmony is open to contribution.<br>
+Harmony is open to contribution.
 Look at the [Roadmap](ROADMAP.md) to see what happens next.
 
 

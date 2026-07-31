@@ -24,7 +24,7 @@ export class ModuleRegistry
         module.init();
       }
     }
-    console.log("[Harmony] Tous les modules sont initialisés (Vues enregistrées).");
+    //console.log("[Harmony] Tous les modules sont initialisés (Vues enregistrées).");
   }
 
   public async enable(moduleId: string):Promise<void>
@@ -39,7 +39,7 @@ export class ModuleRegistry
       {
         await module.onload();
         this.activeModuleIds.add(moduleId);
-        console.log(`[Harmony] Module "${moduleId}" activé.`);
+        //console.log(`[Harmony] Module "${moduleId}" activé.`);
       }
       catch (e)
       {
@@ -56,16 +56,17 @@ export class ModuleRegistry
         try
         {
           mod.onunload();
-          console.log(`[Harmony] Nettoyage : Désactivation forcée du module "${mod.id}" avant d'activer "${moduleId}".`);
+          //console.log(`[Harmony] Nettoyage : Désactivation forcée du module "${mod.id}" avant d'activer "${moduleId}".`);
         }
-        catch (e)
+        catch
         {
+          //ignore
         }
 
         const ghostIcon = document.querySelector(`[data-harmony-module="${mod.id}"]`);
         if (ghostIcon)
         {
-          console.log(`[Harmony] Bulldozer : Suppression du logo fantôme de "${mod.id}".`);
+          //console.log(`[Harmony] Bulldozer : Suppression du logo fantôme de "${mod.id}".`);
           ghostIcon.remove();
         }
       }
@@ -81,7 +82,7 @@ export class ModuleRegistry
       {
         module.onunload();
         this.activeModuleIds.delete(moduleId);
-        console.log(`[Harmony] ${moduleId} désactivé.`);
+        //console.log(`[Harmony] ${moduleId} désactivé.`);
       }
       catch(e)
       {

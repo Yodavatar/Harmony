@@ -30,7 +30,9 @@ export class AgentLogger {
         }
       }
       catch
-      {}
+      {
+        //ignore
+      }
 
       const timestamp = new Date().toISOString();
       let logLine = `[${timestamp}] [${level}] ${message}`;

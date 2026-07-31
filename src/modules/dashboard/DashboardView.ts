@@ -217,7 +217,7 @@ export class DashboardView extends ItemView
       if (!wrap.contains(e.target as Node)) results.addClass("is-hidden");
     });
 
-    setTimeout(() =>
+    window.setTimeout(() =>
     {
       input.focus();
     }, 50);
@@ -246,7 +246,7 @@ export class DashboardView extends ItemView
 
     const wpBtn = wpRight.createEl("button", { text: t(211), cls: "dash-btn" });
     wpBtn.addEventListener("click", () => {
-      const fileInput = activeDocument.createElement("input");
+      const fileInput = document.createElement("input");
       fileInput.type = "file";
       fileInput.accept = "image/*";
       fileInput.addEventListener("change", () =>
@@ -395,7 +395,7 @@ export class DashboardView extends ItemView
         date: task.dueDate,
         task,
       });
-      console.log(`[DashboardView] Navigating to task ${task.id} in module ${moduleId}`);
+      //console.log(`[DashboardView] Navigating to task ${task.id} in module ${moduleId}`);
     }
     else
     {
