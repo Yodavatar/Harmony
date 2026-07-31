@@ -17,29 +17,22 @@ export class Harmony_Settings_Tab extends PluginSettingTab
     const { containerEl } = this;
     containerEl.empty();
 
-    // --- WARNING BANNER MIGRATION v0.2.3 ---
-    const warningBanner = containerEl.createDiv();
-    warningBanner.setAttr("style", `
-      background-color: var(--background-secondary-alt); 
-      border-left: 4px solid var(--text-accent); 
-      padding: 16px; 
-      margin-bottom: 20px; 
-      border-radius: 4px;
-    `);
+    // --- AVERTISSEMENT / BANNIÈRE ---
+    const warningBanner = containerEl.createDiv({ cls: "harmony-warning-banner" });
 
     warningBanner.createEl("h3", { 
       text: t(16), 
-      attr: { style: "margin-top: 0; color: var(--text-accent);" }
+      cls: "harmony-warning-title" 
     });
 
     warningBanner.createEl("p", {
       text: t(17),
-      attr: { style: "margin-bottom: 8px; font-size: 0.9em; opacity: 0.85;" }
+      cls: "harmony-warning-text"
     });
 
     warningBanner.createEl("p", {
       text: t(18),
-      attr: { style: "margin-bottom: 12px; font-size: 0.85em; font-style: italic; opacity: 0.75;" }
+      cls: "harmony-warning-subtext"
     });
 
     new Setting(warningBanner)
@@ -54,8 +47,8 @@ export class Harmony_Settings_Tab extends PluginSettingTab
       );
     
     containerEl.createEl("hr");
-    // -------------------------------------------------
 
+    // --- SECTION GÉNÉRALE / LANGUE ---
     new Setting(containerEl)
       .setName(t(1))
       .setHeading();
@@ -89,11 +82,11 @@ export class Harmony_Settings_Tab extends PluginSettingTab
             setLanguage(value as Language);
             this.display();
           });
-
-      });    
+      });
 
     containerEl.createEl("hr");
 
+    // --- LIENS & COMMUNAUTÉ ---
     new Setting(containerEl)
       .setName(t(3))
       .setHeading();
@@ -120,9 +113,9 @@ export class Harmony_Settings_Tab extends PluginSettingTab
         })
       );
 
-    
     containerEl.createEl("hr");
 
+    // --- GESTION DES MODULES ---
     new Setting(containerEl)
       .setName(t(10))
       .setHeading();
@@ -136,7 +129,6 @@ export class Harmony_Settings_Tab extends PluginSettingTab
         .setDesc(`ID : ${module.id}`)
         .addToggle(toggle => toggle
             .setValue(this.plugin.settings.enabledModules[module.id] ?? false)
-
             .onChange(async (value) =>
             {
               this.plugin.settings.enabledModules[module.id] = value;
@@ -148,11 +140,10 @@ export class Harmony_Settings_Tab extends PluginSettingTab
               }
               else
               {
-                await this.plugin.registry.disable(module.id);
+                this.plugin.registry.disable(module.id);
               }
             })
         );
     }
-
   }
 }

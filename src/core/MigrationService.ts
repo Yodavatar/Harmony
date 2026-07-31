@@ -32,7 +32,7 @@ export class MigrationService {
         };
         
         await adapter.write(this.CHECKPOINT_PATH, JSON.stringify(checkpointData, null, 2));
-        console.log("Harmony: Migration complete. Checkpoint file 'migration-done.json' created safely.");
+        //console.log("Harmony: Migration complete. Checkpoint file 'migration-done.json' created safely.");
       }
       catch (error)
       {

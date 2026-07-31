@@ -1,4 +1,12 @@
 /* =========================================
+  Task Priority STYLES
+   ========================================= */
+
+.hp-task-priority {
+    color: var(--priority-color);
+}
+
+/* =========================================
    0. CORE STYLES
    ========================================= */
 
@@ -12,6 +20,33 @@
   animation: blink-animation 0.5s ease-in-out 3;
   border: 2px solid var(--interactive-accent);
   transition: background-color 0.3s ease;
+}
+
+
+.harmony-warning-banner {
+  background-color: var(--background-secondary-alt);
+  border-left: 4px solid var(--text-accent);
+  padding: 16px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+}
+
+.harmony-warning-title {
+  margin-top: 0;
+  color: var(--text-accent);
+}
+
+.harmony-warning-text {
+  margin-bottom: 8px;
+  font-size: 0.9em;
+  opacity: 0.85;
+}
+
+.harmony-warning-subtext {
+  margin-bottom: 12px;
+  font-size: 0.85em;
+  font-style: italic;
+  opacity: 0.75;
 }
 
 /* =========================================
@@ -436,12 +471,105 @@
 .mcal-confirm-row {display: flex;align-items: center;gap: 8px;}
 .mcal-confirm-label {font-size: 0.85em;color: var(--text-muted);white-space: nowrap;}
 
-
 /* =========================================
-   4. Task Priority STYLES
+   5. Agent STYLES
    ========================================= */
 
-.hp-task-priority {
-    color: var(--priority-color);
+.harmony-agent-warning-banner {background-color: var(--background-secondary-alt);border-left: 4px solid var(--text-accent);padding: 16px;margin-bottom: 20px;border-radius: 4px;}
+.harmony-agent-warning-title {margin-top: 0;color: var(--text-accent);}
+.harmony-agent-warning-desc {margin-bottom: 8px;font-size: 0.9em;opacity: 0.85;}
+.harmony-agent-wrapper {display: flex;flex-direction: column;height: 100%;width: 100%;box-sizing: border-box;padding: 10px;}
+.harmony-agent-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+    flex: 0 0 auto;
 }
 
+.harmony-agent-chat-messages {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 10px;
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.harmony-agent-msg {
+    margin-bottom: 12px;
+    padding: 10px 14px;
+    border-radius: 6px;
+    max-width: 85%;
+    width: fit-content;
+}
+
+.harmony-agent-msg-user {
+    background-color: var(--background-primary-alt);
+    margin-left: auto;
+    border-right: 3px solid var(--interactive-accent);
+}
+
+.harmony-agent-msg-assistant {
+    background-color: var(--background-secondary);
+    margin-right: auto;
+    border-left: 3px solid var(--color-purple);
+}
+
+.harmony-agent-msg-author {
+    display: block;
+    font-size: 0.8em;
+    opacity: 0.6;
+    margin-bottom: 4px;
+}
+
+.harmony-agent-actions-wrapper {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--background-modifier-border);
+}
+
+.harmony-agent-action-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin-top: 6px;
+    background-color: var(--background-primary);
+    min-width: 280px;
+}
+
+.harmony-agent-card-title {
+    font-weight: bold;
+}
+
+.harmony-agent-card-desc {
+    font-size: 0.85em;
+    margin-top: 4px;
+    opacity: 0.8;
+}
+
+.harmony-agent-action-controls {
+    display: flex;
+    gap: 6px;
+}
+
+.harmony-agent-btn-action {
+    padding: 2px 8px;
+}
+
+/* --- Barre de Saisie --- */
+.harmony-agent-input-bar {
+    display: flex;
+    gap: 8px;
+    flex: 0 0 auto;
+}
+
+.harmony-agent-input-field {
+    flex: 1;
+}
+
+.harmony-agent-input-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

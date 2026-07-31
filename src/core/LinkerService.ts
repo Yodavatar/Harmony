@@ -23,7 +23,7 @@ export class LinkService
 
         for (const task of tasksToUpdate)
         {
-            console.log(`[LinkService] Match trouvé : ${task.noteLink} -> ${cleanNewPath}`);
+            //console.log(`[LinkService] Match trouvé : ${task.noteLink} -> ${cleanNewPath}`);
             await this.taskStore.updateTask(task.id, { noteLink: cleanNewPath });
         }
     }

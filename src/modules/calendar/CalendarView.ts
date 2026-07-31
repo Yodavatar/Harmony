@@ -1,4 +1,4 @@
-import { ItemView, WorkspaceLeaf, setIcon } from "obsidian";
+  import { ItemView, WorkspaceLeaf, setIcon } from "obsidian";
 import type { CalendarStore } from "./CalendarStore";
 import type { Task, Priority } from "../../shared/taskstore";
 import { PRIORITY_COLORS, PRIORITY_ORDER, getPriorityLabels } from "../../shared/taskstore";
@@ -712,7 +712,7 @@ export class CalendarView extends ItemView
       }
     }
 
-    setTimeout(() =>
+    window.setTimeout(() =>
     {
       const cardElement = this.containerEl.querySelector(`[data-card-id="${taskId}"]`) as HTMLElement;
       
@@ -723,7 +723,7 @@ export class CalendarView extends ItemView
         cardElement.addClass("mkb-flash-card");
         cardElement.addClass("mkb-highlight-task");
         
-        setTimeout(() =>
+        window.setTimeout(() =>
         {
           cardElement.removeClass("mkb-flash-card");
           cardElement.removeClass("mkb-highlight-task");

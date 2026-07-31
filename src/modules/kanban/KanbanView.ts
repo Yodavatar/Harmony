@@ -291,7 +291,7 @@ export class KanbanView extends ItemView
       this.boardComponent.setShowArchived(!!task.archived);
       this.boardComponent.render();
 
-      setTimeout(() =>
+      window.setTimeout(() =>
       {
         const cardElement = this.containerEl.querySelector(`[data-card-id="${taskId}"]`) as HTMLElement;
         
@@ -300,7 +300,7 @@ export class KanbanView extends ItemView
           cardElement.scrollIntoView({ behavior: "smooth", block: "center" });
           cardElement.addClass("mkb-flash-card");
           cardElement.addClass("mkb-highlight-task");
-          setTimeout(() =>
+          window.setTimeout(() =>
           {
             cardElement.removeClass("mkb-flash-card");
             cardElement.addClass("mkb-highlight-task");

@@ -43,7 +43,10 @@ export default class Harmony extends Plugin
     {
       await this.taskStore.load();
     } 
-    catch (e){}
+    catch
+    {
+      //ignore
+    }
 
     this.linkService = new LinkService(this.app, this.taskStore);
     this.linkService.init();
@@ -66,7 +69,10 @@ export default class Harmony extends Plugin
         {
           await this.registry.enable(moduleId);
         }
-        catch (e){}
+        catch
+        {
+          //ignore
+        }
       }
     }
     this.addSettingTab(new Harmony_Settings_Tab(this.app, this));

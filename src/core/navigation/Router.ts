@@ -58,7 +58,7 @@ export class HarmonyRouter
       await targetLeaf.setViewState({ type: viewType, active: true });
       await this.app.workspace.revealLeaf(targetLeaf);
 
-      setTimeout(() =>
+      window.setTimeout(() =>
       {
         if (targetLeaf)
         {

@@ -109,10 +109,13 @@ export class KanbanBoard
     
     if (col.color) colHeader.setCssProps({ "--col-color": col.color });;
 
-    const titleEl = colHeader.createEl("span", { text: col.title, cls: "mkb-column-title" });
+    const titleEl = colHeader.createSpan({ text: col.title, cls: "mkb-column-title" });
+
     titleEl.addEventListener("dblclick", () => void this.editColumnTitle(titleEl, col));
 
     colHeader.createEl("span", { text: String(cards.length), cls: "mkb-column-count" });
+
+    colHeader.createSpan({ text: String(cards.length), cls: "mkb-column-count" });
 
     const menuBtn = colHeader.createEl("button", { cls: "mkb-btn-icon mkb-column-menu" });
     setIcon(menuBtn, "ellipsis-vertical");
@@ -144,10 +147,10 @@ export class KanbanBoard
     cardEl.addEventListener("dragstart", () => { this.dragCard = card; this.dragSourceColId = colId; cardEl.addClass("mkb-dragging"); });
     cardEl.addEventListener("dragend", () => cardEl.removeClass("mkb-dragging"));
 
-    const badge = cardEl.createEl("span", { text: labels[priority], cls: "mkb-priority-badge" });
+    const badge = cardEl.createSpan({ text: labels[priority], cls: "mkb-priority-badge" });
     badge.setCssProps({"--prio-color": PRIORITY_COLORS[priority]});
 
-    const titleEl = cardEl.createEl("span", { text: card.title, cls: "mkb-card-title" });
+    const titleEl = cardEl.createSpan({ text: card.title, cls: "mkb-card-title" });
     titleEl.addEventListener("dblclick", () => void this.editCardTitle(titleEl, card, colId));
 
     if (card.noteLink)
@@ -165,11 +168,7 @@ export class KanbanBoard
       const due = new Date(card.dueDate);
       const isOverdue = due < new Date();
       
-      const dueEl = cardEl.createEl("span",
-      {
-        text: `📅 ${due.toLocaleDateString("fr-FR")}`, 
-        cls: `mkb-card-due mkb-card-due-clickable ${isOverdue ? "mkb-overdue" : ""}`
-      });
+      const dueEl = cardEl.createSpan({text: `📅 ${due.toLocaleDateString("fr-FR")}`, cls: `mkb-card-due mkb-card-due-clickable ${isOverdue ? "mkb-overdue" : ""}`});
 
       dueEl.style.cursor = "pointer";
       dueEl.addEventListener("click", (e) =>
@@ -185,7 +184,7 @@ export class KanbanBoard
       const tagsEl = cardEl.createDiv("mkb-card-tags");
       for (const tag of card.tags)
       {
-        tagsEl.createEl("span", { text: `#${tag}`, cls: "mkb-tag" });
+        tagsEl.createSpan({ text: `#${tag}`, cls: "mkb-tag" });
       }
     }
 
@@ -227,11 +226,11 @@ export class KanbanBoard
       const priority = card.priority ?? "normal";
       cardEl.setCssProps({ "--prio-color": PRIORITY_COLORS[priority] });
 
-      const badge = cardEl.createEl("span", { text: labels[priority], cls: "mkb-priority-badge" });
+      const badge = cardEl.createSpan({ text: labels[priority], cls: "mkb-priority-badge" });
       badge.setCssProps({ "--prio-color": PRIORITY_COLORS[priority] });
 
-      cardEl.createEl("span", { text: card.title, cls: "mkb-card-title" });
-      cardEl.createEl("span", { text: `← ${colTitle}`, cls: "mkb-card-due" });
+      cardEl.createSpan({ text: card.title, cls: "mkb-card-title" });
+      cardEl.createSpan({ text: `← ${colTitle}`, cls: "mkb-card-due" });
 
       const actions = cardEl.createDiv("mkb-card-actions mkb-actions-visible");
 
@@ -254,12 +253,15 @@ export class KanbanBoard
   }
 
   private async editBoardTitle(el: HTMLElement): Promise<void> {
-    const input = activeDocument.createElement("input");
-    input.type = "text";
-    input.value = this.board.title;
-    input.className = "mkb-inline-input mkb-board-title-input";
+    const input = el.createEl("input",
+    {
+      type : "text",
+      attr: {value : this.board.title},
+      cls: "mkb-inline-input mkb-board-title-input",
+    });    
     el.replaceWith(input);
     input.focus();
+
     const save = async () => {
       const val = input.value.trim();
       if (val) this.board.title = val;
@@ -303,12 +305,15 @@ export class KanbanBoard
 
   private async editColumnTitle(el: HTMLElement, col: KanbanColumn): Promise<void>
   {
-    const input = activeDocument.createElement("input");
-    input.type = "text";
-    input.value = col.title;
-    input.className = "mkb-inline-input";
+    const input = el.createEl("input",
+    {
+      type : "text",
+      attr: {value : col.title},
+      cls: "mkb-inline-input",
+    });    
     el.replaceWith(input);
     input.focus();
+
     const save = async () =>
       {
         col.title = input.value.trim() || col.title; await this.persist();
@@ -328,10 +333,7 @@ export class KanbanBoard
   {
     const existing = activeDocument.querySelectorAll(".mkb-column-menu-popup");
     existing.forEach(el => el.remove());
-
-    const popup = activeDocument.createElement("div");
-    popup.className = "mkb-column-menu-popup";
-
+    const popup = triggerEl.createDiv({cls :"mkb-column-menu-popup", });
     const rect = triggerEl.getBoundingClientRect();
 
     popup.addClass("mkb-column-menu-popup");
@@ -368,6 +370,8 @@ export class KanbanBoard
     const colorBtn = popup.createEl("button", { text: t(139), cls: "mkb-menu-item" });
     colorBtn.addEventListener("click", (e) => {
       e.stopPropagation();
+
+      // eslint-disable-next-line obsidianmd/prefer-create-el
       const input = activeDocument.createElement("input");
       input.type = "color";
       input.value = col.color || "#6c8ebf";
@@ -443,6 +447,7 @@ export class KanbanBoard
 
   private async editCardTitle(el: HTMLElement, card: KanbanCard, colId: string): Promise<void>
   {
+    // eslint-disable-next-line obsidianmd/prefer-create-el
     const input = activeDocument.createElement("input");
     input.type = "text";
     input.value = card.title;

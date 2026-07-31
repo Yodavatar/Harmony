@@ -184,7 +184,7 @@ export class TodoView extends ItemView
         cardElement.scrollIntoView({ behavior: "smooth", block: "center" });
         cardElement.addClass("mkb-highlight-task");
 
-        setTimeout(() => 
+        window.setTimeout(() => 
         {
           cardElement.removeClass("mkb-highlight-task");
         }, 2000);
@@ -192,7 +192,7 @@ export class TodoView extends ItemView
       else if (attempts < maxAttempts) 
       {
         attempts++;
-        setTimeout(tryFocus, 50);
+        window.setTimeout(tryFocus, 50);
       } 
       else 
       {
