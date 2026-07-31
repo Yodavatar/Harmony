@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - **Min App Version**: It goes from "1.7.2" to "1.13.0"
+
+### Fixed
 - **Lot of little correction**: Use new Setting(containerEl), Sets styles directly instead of using CSS classes, and others.
 
 ## [0.2.4] - 2026-07-29
