@@ -51,5 +51,5 @@ export const DEFAULT_SETTINGS: Harmony_Settings =
     }
   },
   language: "en",
-  version: "0.2.4",
+  version: "0.2.5",
 };
