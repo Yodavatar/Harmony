@@ -12,6 +12,11 @@ export class Harmony_Settings_Tab extends PluginSettingTab
     this.plugin = plugin;
   }
 
+  getSettingDefinitions()
+  {
+    return [];
+  }
+
   display(): void
   {
     const { containerEl } = this;
@@ -20,10 +25,11 @@ export class Harmony_Settings_Tab extends PluginSettingTab
     // --- AVERTISSEMENT / BANNIÈRE ---
     const warningBanner = containerEl.createDiv({ cls: "harmony-warning-banner" });
 
-    warningBanner.createEl("h3", { 
-      text: t(16), 
-      cls: "harmony-warning-title" 
-    });
+    const warningSetting = new Setting(warningBanner)
+    .setName(t(16))
+    .setHeading();
+
+    warningSetting.nameEl.addClass("harmony-warning-title")
 
     warningBanner.createEl("p", {
       text: t(17),

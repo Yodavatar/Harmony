@@ -169,8 +169,7 @@ export class KanbanBoard
       const isOverdue = due < new Date();
       
       const dueEl = cardEl.createSpan({text: `📅 ${due.toLocaleDateString("fr-FR")}`, cls: `mkb-card-due mkb-card-due-clickable ${isOverdue ? "mkb-overdue" : ""}`});
-
-      dueEl.style.cursor = "pointer";
+      dueEl.setCssStyles({cursor:"pointer"});
       dueEl.addEventListener("click", (e) =>
       {
         e.preventDefault();
@@ -371,10 +370,11 @@ export class KanbanBoard
     colorBtn.addEventListener("click", (e) => {
       e.stopPropagation();
 
-      // eslint-disable-next-line obsidianmd/prefer-create-el
-      const input = activeDocument.createElement("input");
-      input.type = "color";
-      input.value = col.color || "#6c8ebf";
+      const input = activeDocument.body.createEl("input", {
+          type: "color",
+          attr: { value: col.color || "#6c8ebf" }
+      });
+
       input.addEventListener("change", () =>
       {
         void (async () =>
@@ -447,11 +447,12 @@ export class KanbanBoard
 
   private async editCardTitle(el: HTMLElement, card: KanbanCard, colId: string): Promise<void>
   {
-    // eslint-disable-next-line obsidianmd/prefer-create-el
-    const input = activeDocument.createElement("input");
-    input.type = "text";
-    input.value = card.title;
-    input.className = "mkb-inline-input";
+    const input = activeDocument.body.createEl("input",
+    {
+      type: "text",
+      attr: { value: card.title },
+      cls: "mkb-inline-input"
+    });
     el.replaceWith(input);
     input.focus();
     const save = async () => { card.title = input.value.trim() || card.title; await this.persist(); this.render(); };

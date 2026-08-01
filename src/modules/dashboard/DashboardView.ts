@@ -94,7 +94,7 @@ export class DashboardView extends ItemView
     for (const task of urgentTasks)
     {
       const taskCard = tasksGrid.createDiv("dash-task-card");
-      taskCard.style.cursor = "pointer";
+      taskCard.setCssStyles({cursor:"pointer"})
 
       taskCard.addEventListener("click", (e: MouseEvent) =>
       {
@@ -283,6 +283,7 @@ export class DashboardView extends ItemView
         await this.module.saveDashboardSettings();
         const rootEl = this.containerEl.children[1] as HTMLElement;
         rootEl.style.setProperty("--dash-bg", "none");
+        rootEl.setCssProps({"--dash-bg":"none"})
       })();
     });
 

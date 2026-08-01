@@ -111,7 +111,7 @@ export class TodoView extends ItemView
     const menu = activeDocument.body.createDiv("utodo-radial-container");
     this.activeMenu = menu;
     
-    menu.setCssProps(
+    menu.setCssStyles(
     {
       "left": `${e.clientX}px`,
       "top": `${e.clientY}px`

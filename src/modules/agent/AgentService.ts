@@ -1,6 +1,39 @@
 import { requestUrl, Notice, App, normalizePath } from "obsidian";
 import { TaskStore, DATA_DIR } from "../../shared/taskstore";
-import {t} from "../../core/i18n";
+import { t } from "../../core/i18n";
+
+// Interfaces pour le typage strict des réponses de l'API LLM
+export interface ToolCallFunction {
+  name: string;
+  arguments: string;
+}
+
+export interface ToolCall{
+  id: string;
+  type: "function";
+  function: ToolCallFunction;
+}
+
+export interface LLMChoiceMessage
+{
+  role: "assistant";
+  content: string | null;
+  tool_calls?: ToolCall[];
+}
+
+export interface LLMResponse
+{
+  choices: Array<
+  {
+    message: LLMChoiceMessage;
+  }>;
+}
+
+// Interfaces pour parser les arguments des fonctions
+export interface SearchTasksArgs {
+  done?: boolean;
+  searchQuery?: string;
+}
 
 // Système de logs local
 export class AgentLogger {
@@ -10,69 +43,55 @@ export class AgentLogger {
 
   private logQueue: Promise<void> = Promise.resolve();
 
-  constructor(app: App)
-  {
+  constructor(app: App) {
     this.app = app;
   }
 
-  async log(level: "INFO" | "DEBUG" | "ERROR", message: string, data?: unknown): Promise<void>
-  {
-    this.logQueue = this.logQueue.then(async () =>
-    {
-      const adapter = this.app.vault.adapter;
-      const filePath = `${this.logFolder}/${this.logFileName}`;
+  async log(level: "INFO" | "DEBUG" | "ERROR", message: string, data?: unknown): Promise<void> {
+    this.logQueue = this.logQueue
+      .then(async () => {
+        const adapter = this.app.vault.adapter;
+        const filePath = `${this.logFolder}/${this.logFileName}`;
 
-      try
-      {
-        if (!(await adapter.exists(this.logFolder)))
-        {
-          await adapter.mkdir(this.logFolder);
+        try {
+          if (!(await adapter.exists(this.logFolder))) {
+            await adapter.mkdir(this.logFolder);
+          }
+        } catch {
+          //ignore
         }
-      }
-      catch
-      {
-        //ignore
-      }
 
-      const timestamp = new Date().toISOString();
-      let logLine = `[${timestamp}] [${level}] ${message}`;
-      if (data) {
-        logLine += ` | Data: ${typeof data === "object" ? JSON.stringify(data) : data}`;
-      }
-      logLine += "\n";
-
-      try
-      {
-        if (await adapter.exists(filePath))
-        {
-          await adapter.append(filePath, logLine);
-        } 
-        else
-        {
-          await adapter.write(filePath, logLine);
+        const timestamp = new Date().toISOString();
+        let logLine = `[${timestamp}] [${level}] ${message}`;
+        if (data) {
+          logLine += ` | Data: ${typeof data === "object" ? JSON.stringify(data) : String(data)}`;
         }
-      }
-      catch (err)
-      {
-        console.error("Harmony Agent Logger Error:", err);
-      }
-    }).catch(() => {});
+        logLine += "\n";
+
+        try {
+          if (await adapter.exists(filePath)) {
+            await adapter.append(filePath, logLine);
+          } else {
+            await adapter.write(filePath, logLine);
+          }
+        } catch (err) {
+          console.error("Harmony Agent Logger Error:", err);
+        }
+      })
+      .catch(() => {});
 
     return this.logQueue;
-}
+  }
 }
 
-
-export interface CreateTaskPayload
-{
+export interface CreateTaskPayload {
   title: string;
   priority?: "urgent" | "high" | "normal" | "low";
   dueDate?: string;
   reason?: string;
 }
 
-export interface UpdateTaskPayload
-{
+export interface UpdateTaskPayload {
   taskId: string;
   title?: string;
   priority?: "urgent" | "high" | "normal" | "low";
@@ -82,30 +101,26 @@ export interface UpdateTaskPayload
   reason?: string;
 }
 
-export interface DeleteTaskPayload
-{
+export interface DeleteTaskPayload {
   taskId: string;
   reason?: string;
 }
 
-export interface CreateTaskAction
-{
+export interface CreateTaskAction {
   id: string;
   description: string;
   type: "createTask";
   payload: CreateTaskPayload;
 }
 
-export interface UpdateTaskAction
-{
+export interface UpdateTaskAction {
   id: string;
   description: string;
   type: "updateTask";
   payload: UpdateTaskPayload;
 }
 
-export interface DeleteTaskAction
-{
+export interface DeleteTaskAction {
   id: string;
   description: string;
   type: "deleteTask";
@@ -114,8 +129,7 @@ export interface DeleteTaskAction
 
 export type PendingAction = CreateTaskAction | UpdateTaskAction | DeleteTaskAction;
 
-export interface ChatMessage
-{
+export interface ChatMessage {
   role: "user" | "assistant" | "system" | "tool";
   name?: string;
   content: string;
@@ -123,29 +137,26 @@ export interface ChatMessage
   tool_call_id?: string;
 }
 
-export interface LLMTool
-{
+export interface LLMTool {
   type: "function";
-  function:
-  {
+  function: {
     name: string;
     description: string;
-    parameters: Record<string, unknown>; 
+    parameters: Record<string, unknown>;
   };
 }
 
-export interface LLMMessage
-{
+export interface LLMMessage {
   role: "system" | "user" | "assistant" | "tool";
-  content?: string;
+  content?: string | null;
   name?: string;
   tool_call_id?: string;
+  tool_calls?: ToolCall[];
 }
 
 export type AIProvider = "mistral" | "openai" | "gemini" | "ollama";
 
-export interface AgentSettings
-{
+export interface AgentSettings {
   apiKey: string;
   username: string;
   botname: string;
@@ -153,15 +164,13 @@ export interface AgentSettings
   modelName: string;
 }
 
-export interface AgentPermissions
-{
+export interface AgentPermissions {
   read: boolean;
   write: boolean;
   delete: boolean;
 }
 
-export class AgentService
-{
+export class AgentService {
   private taskStore: TaskStore;
   private settings: AgentSettings;
   private permissions: AgentPermissions;
@@ -179,10 +188,11 @@ export class AgentService
     this.logger = new AgentLogger(app);
   }
 
-  public async sendChat(history: ChatMessage[], currentDateStr: string): Promise<{ content: string; actions: PendingAction[] }>
-  {
-    if (!this.settings.apiKey && this.settings.provider !== "ollama")
-    {
+  public async sendChat(
+    history: ChatMessage[],
+    currentDateStr: string
+  ): Promise<{ content: string; actions: PendingAction[] }> {
+    if (!this.settings.apiKey && this.settings.provider !== "ollama") {
       new Notice(t(537));
       return { content: t(538), actions: [] };
     }
@@ -195,8 +205,7 @@ export class AgentService
 
     const tools: LLMTool[] = [];
 
-    if (this.permissions.read)
-    {
+    if (this.permissions.read) {
       tools.push({
         type: "function",
         function: {
@@ -206,15 +215,14 @@ export class AgentService
             type: "object",
             properties: {
               done: { type: "boolean", description: t(544) },
-              searchQuery: { type: "string", description: t(545) }
-            }
-          }
-        }
+              searchQuery: { type: "string", description: t(545) },
+            },
+          },
+        },
       });
     }
 
-    if (this.permissions.write)
-    {
+    if (this.permissions.write) {
       tools.push(
         {
           type: "function",
@@ -227,11 +235,11 @@ export class AgentService
                 title: { type: "string" },
                 priority: { type: "string", enum: ["urgent", "high", "normal", "low"] },
                 dueDate: { type: "string", description: t(547) },
-                reason: { type: "string" }
+                reason: { type: "string" },
               },
-              required: ["title", "priority"]
-            }
-          }
+              required: ["title", "priority"],
+            },
+          },
         },
         {
           type: "function",
@@ -247,17 +255,16 @@ export class AgentService
                 dueDate: { type: "string" },
                 done: { type: "boolean" },
                 archived: { type: "boolean" },
-                reason: { type: "string" }
+                reason: { type: "string" },
               },
-              required: ["taskId"]
-            }
-          }
+              required: ["taskId"],
+            },
+          },
         }
       );
     }
 
-    if (this.permissions.delete)
-    {
+    if (this.permissions.delete) {
       tools.push({
         type: "function",
         function: {
@@ -267,33 +274,34 @@ export class AgentService
             type: "object",
             properties: {
               taskId: { type: "string", description: t(550) },
-              reason: { type: "string" }
+              reason: { type: "string" },
             },
-            required: ["taskId"]
-          }
-        }
+            required: ["taskId"],
+          },
+        },
       });
     }
 
-    let apiMessages: LLMMessage[] =
-    [
+    const apiMessages: LLMMessage[] = [
       { role: "system", content: systemPrompt },
-      ...history.map(m => ({
+      ...history.map((m) => ({
         role: m.role,
         content: m.content,
         ...(m.name ? { name: m.name } : {}),
-        ...(m.tool_call_id ? { tool_call_id: m.tool_call_id } : {})
-      }))
+        ...(m.tool_call_id ? { tool_call_id: m.tool_call_id } : {}),
+      })),
     ];
 
-    try {
-      const lastUserMessage = history.filter(m => m.role === "user").pop()?.content || "";
+    try
+    {
+      const lastUserMessage = history.filter((m) => m.role === "user").pop()?.content || "";
       await this.logger.log("INFO", `Sending request to API (${this.settings.provider})`, { lastUserMessage });
 
-      let response = await this.callLLM(apiMessages, tools);
-      let choice = response.choices[0].message;
+      let response: LLMResponse = await this.callLLM(apiMessages, tools);
+      let choice: LLMChoiceMessage = response.choices[0].message;
 
-      if (choice.tool_calls && choice.tool_calls.length > 0) {
+      if (choice.tool_calls && choice.tool_calls.length > 0)
+      {
         const localCalls = choice.tool_calls;
         let requiresUserValidation = false;
 
@@ -307,34 +315,46 @@ export class AgentService
 
         if (!requiresUserValidation)
         {
-          apiMessages.push(choice);
+          const assistantMsg: LLMMessage =
+          {
+            role: "assistant",
+            content: choice.content,
+            tool_calls: choice.tool_calls,
+          };
+          apiMessages.push(assistantMsg);
 
           for (const call of localCalls)
           {
             if (call.function.name === "searchTasks")
             {
-              const args = JSON.parse(call.function.arguments);
+              const args = JSON.parse(call.function.arguments) as SearchTasksArgs;
 
               await this.logger.log("DEBUG", "Executing internal searchTasks tool", args);
               const allTasks = this.taskStore.getTasks({ archived: false }) || [];
               let filtered = allTasks;
 
-              if (args.done !== undefined) filtered = filtered.filter(t => t.done === args.done);
-              if (args.searchQuery) filtered = filtered.filter(t => t.title.toLowerCase().includes(args.searchQuery.toLowerCase()));
+              if (args.done !== undefined) filtered = filtered.filter((t) => t.done === args.done);
+              if (args.searchQuery)
+              {
+                const query = args.searchQuery.toLowerCase();
+                filtered = filtered.filter((t) => t.title.toLowerCase().includes(query));
+              }
 
-              const resultData = filtered.slice(0, 30).map(t => ({
+              const resultData = filtered.slice(0, 30).map((t) => (
+              {
                 id: t.id,
                 title: t.title,
                 priority: t.priority,
                 dueDate: t.dueDate,
-                done: t.done
+                done: t.done,
               }));
 
-              apiMessages.push({
+              apiMessages.push(
+              {
                 role: "tool",
                 name: "searchTasks",
                 tool_call_id: call.id,
-                content: JSON.stringify(resultData)
+                content: JSON.stringify(resultData),
               });
             }
           }
@@ -344,7 +364,6 @@ export class AgentService
         }
       }
 
-
       let content = choice.content || "";
       const toolCalls = choice.tool_calls || [];
       const actions: PendingAction[] = [];
@@ -352,18 +371,22 @@ export class AgentService
       for (const call of toolCalls)
       {
         if (call.function.name === "searchTasks") continue;
-        const args = JSON.parse(call.function.arguments);
-        actions.push({
+        const args = JSON.parse(call.function.arguments) as Record<string, unknown>;
+        
+        const reason = typeof args.reason === "string" ? args.reason : `Action: ${call.function.name}`;
+
+        actions.push(
+        {
           id: `action-${Date.now()}-${Math.random()}`,
           type: call.function.name as PendingAction["type"],
-          payload: args,
-          description: args.reason || `Action: ${call.function.name}`
+          payload: args as unknown as CreateTaskPayload & UpdateTaskPayload & DeleteTaskPayload,
+          description: reason,
         });
       }
 
       if (!content && actions.length > 0)
       {
-        const actionNames = actions.map(a => a.type).join(", ");
+        const actionNames = actions.map((a) => a.type).join(", ");
         content = `${t(551)} ${actionNames}]`;
       }
       else if (!content)
@@ -383,24 +406,27 @@ export class AgentService
     }
   }
 
-  private async callLLM(messages: LLMMessage[], tools: LLMTool[])
+  private async callLLM(messages: LLMMessage[], tools: LLMTool[]): Promise<LLMResponse>
   {
     const res = await requestUrl(
     {
       url: "https://api.mistral.ai/v1/chat/completions",
       method: "POST",
-      headers: {
+      headers:
+      {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${this.settings.apiKey}`
+        Authorization: `Bearer ${this.settings.apiKey}`,
       },
       body: JSON.stringify(
       {
         model: this.settings.modelName || "mistral-small-latest",
         messages: messages,
         tools: tools.length > 0 ? tools : undefined,
-        tool_choice: tools.length > 0 ? "auto" : undefined
-      })
+        tool_choice: tools.length > 0 ? "auto" : undefined,
+      }),
     });
-    return res.json;
+
+    const data = res.json as unknown;
+    return data as LLMResponse;
   }
 }

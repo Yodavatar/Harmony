@@ -45,7 +45,7 @@ export class CalendarModule implements IModule
 
   async onload(): Promise<void>
   {
-    (this.plugin as any).router.registerRoute(this.id,
+    this.plugin.router.registerRoute(this.id,
     {
       viewType: CALENDAR_VIEW_TYPE
     });
@@ -64,7 +64,7 @@ export class CalendarModule implements IModule
   {
     this.unsubLang?.();
 
-    (this.plugin as any).router.unregisterRoute(this.id);
+    this.plugin.router.unregisterRoute(this.id);
 
     if (this.ribbonIconEl)
     {

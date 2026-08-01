@@ -580,8 +580,10 @@ export class CalendarView extends ItemView
     recurrenceRow.createEl("label", { text: t(426) });
 
     const recContainer = recurrenceRow.createDiv({ cls: "mcal-rec-group" });
-    recContainer.style.display = "flex";
-    recContainer.style.gap = "8px";
+    recContainer.setCssStyles({
+      display: "flex",
+      gap: "8px",
+    })
 
     const freqInput = recContainer.createEl("input", { type: "number", cls: "mcal-input", attr: { min: "1", style: "width: 70px;" } });
     freqInput.value = task && task.recurrence ? String(task.recurrence.frequency) : "1";
@@ -601,7 +603,10 @@ export class CalendarView extends ItemView
       const deleteBtn  = actionsRow.createEl("button", { cls: "mcal-btn mcal-btn-danger", text: t(434) });
 
       const confirmRow = actionsRow.createDiv("mcal-confirm-row");
-      confirmRow.style.display = "none";
+      confirmRow.setCssStyles(
+      {
+        display: "none"
+      });
       confirmRow.createSpan({ cls: "mcal-confirm-label", text: t(434) });
 
       const yesBtn = confirmRow.createEl("button", { cls: "mcal-btn mcal-btn-danger",     text: t(435) });
