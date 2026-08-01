@@ -282,7 +282,6 @@ export class DashboardView extends ItemView
         wpName.textContent = "Aucun";
         await this.module.saveDashboardSettings();
         const rootEl = this.containerEl.children[1] as HTMLElement;
-        rootEl.style.setProperty("--dash-bg", "none");
         rootEl.setCssProps({"--dash-bg":"none"})
       })();
     });

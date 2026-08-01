@@ -614,14 +614,14 @@ export class CalendarView extends ItemView
 
       deleteBtn.addEventListener("click", () =>
       {
-        deleteBtn.style.display  = "none";
-        confirmRow.style.display = "flex";
+        deleteBtn.hide();
+        confirmRow.show();
       });
 
       noBtn.addEventListener("click", () =>
       {
-        confirmRow.style.display = "none";
-        deleteBtn.style.display  = "";
+        confirmRow.hide();
+        deleteBtn.show();
       });
 
       yesBtn.addEventListener("click", async () =>
