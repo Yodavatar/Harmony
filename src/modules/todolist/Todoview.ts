@@ -107,15 +107,8 @@ export class TodoView extends ItemView
   private openRadialMenu(e: MouseEvent, taskId: string)
   {
     this.closeMenu();
-    // FIX
     const menu = activeDocument.body.createDiv("utodo-radial-container");
     this.activeMenu = menu;
-    
-    menu.setCssStyles(
-    {
-      "left": `${e.clientX}px`,
-      "top": `${e.clientY}px`
-    });
 
     menu.addClass("radial-menu");
     
@@ -133,9 +126,11 @@ export class TodoView extends ItemView
       const y = Math.sin(angle) * radius;
       
       const btn = menu.createDiv("utodo-radial-btn");
-      btn.setCssStyles({
-        backgroundColor: PRIORITY_COLORS[prio],
-        transform: `translate(${x}px, ${y}px)`
+
+      btn.setCssProps({
+        "--btn-bg": PRIORITY_COLORS[prio] || "#ccc",
+        "--btn-x": `${x}px`,
+        "--btn-y": `${y}px`
       });
       
       const labelText = this.labels[prio] || prio;
