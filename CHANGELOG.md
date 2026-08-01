@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.7] - 2026-08-01
+
+### Fixed
+- **Errors**: Fixed errors in the obsidian review.
+
 ## [0.2.6] - 2026-08-01
 
 ### Added

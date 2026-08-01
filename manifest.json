@@ -1,7 +1,7 @@
 {
   "id": "harmony",
   "name": "Harmony",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "minAppVersion": "1.13.0",
   "description": "One task, multiple perspectives. The ultimate modular workspace. Instantly sync your data across Todo lists, Calendars, and Kanban views.",
   "author": "Yodavatar",
