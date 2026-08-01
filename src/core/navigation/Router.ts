@@ -12,6 +12,16 @@ export interface TargetViewWithFocus
   focusTask?: (taskId: string, context?: FocusContext) => void;
 }
 
+function isTargetViewWithFocus(view: unknown): view is TargetViewWithFocus
+{
+  return (
+    typeof view === "object" &&
+    view !== null &&
+    "focusTask" in view &&
+    typeof (view as Record<string, unknown>).focusTask === "function"
+  );
+}
+
 export class HarmonyRouter
 {
   private app: App;
@@ -32,7 +42,7 @@ export class HarmonyRouter
     this.routes.delete(moduleId);
   }
 
-  async navigateToTask(moduleId: string, taskId: string, data?: any): Promise<void>
+  async navigateToTask(moduleId: string, taskId: string, context?: FocusContext): Promise<void>
   {
     const route = this.routes.get(moduleId);
     if (!route)
@@ -49,8 +59,8 @@ export class HarmonyRouter
       targetLeaf = existingLeaves[0];
       await this.app.workspace.revealLeaf(targetLeaf);
       
-      if (onFocus) onFocus(taskId, data);
-      this.triggerViewFocus(targetLeaf, taskId, data);
+      if (onFocus) onFocus(taskId, context);
+      this.triggerViewFocus(targetLeaf, taskId, context);
     }
     else
     {
@@ -62,17 +72,26 @@ export class HarmonyRouter
       {
         if (targetLeaf)
         {
-          if (onFocus) onFocus(taskId, data);
-          this.triggerViewFocus(targetLeaf, taskId, data);
+          if (onFocus) onFocus(taskId, context);
+          this.triggerViewFocus(targetLeaf, taskId, context);
         }
       }, 100);
     }
   }
 
+  private executeFocus(route: RegisteredViewRoute, leaf: WorkspaceLeaf, taskId: string, context?: FocusContext): void
+  {
+    if (route.onFocus)
+    {
+      route.onFocus(taskId, context);
+    }
+    this.triggerViewFocus(leaf, taskId, context);
+  }
+
   private triggerViewFocus(leaf: WorkspaceLeaf, taskId: string, context?: FocusContext): void
   {
-    const view = leaf.view as unknown as TargetViewWithFocus;
-    if (view && typeof view.focusTask === "function")
+    const view: unknown = leaf.view;
+    if (isTargetViewWithFocus(view) && view.focusTask)
     {
       view.focusTask(taskId, context);
     }

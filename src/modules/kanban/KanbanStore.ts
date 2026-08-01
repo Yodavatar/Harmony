@@ -38,7 +38,7 @@ export class KanbanStore
     return normalizePath(`${DATA_DIR}/${boardId}.json`);
   }
 
-  onTaskChange(callback: (event: 'add' | 'update' | 'delete', task: any) => void)
+  onTaskChange(callback: (event: 'add' | 'update' | 'delete', task: Task) => void)
   {
     return this.taskStore.on(callback);
   }
@@ -85,9 +85,10 @@ export class KanbanStore
       try
       {
         const data = JSON.parse(raw) as KanbanBoardData;
-        for (const col of data.columns) {
-          // FIX: pass 'unsafe member access on any'
-          if ('cards' in col) {
+        for (const col of data.columns)
+        {
+          if ('cards' in col)
+          {
              delete (col as unknown as {cards?: unknown}).cards;
           }
         }

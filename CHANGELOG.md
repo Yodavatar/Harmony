@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.6] - 2026-08-01
+
+### Added
+- **Required**: add getSettingDefinitions() necessary from versions 1.13 onwards
+
+### Fixed
+- **Errors**: Fixed errors in the obsidian review.
+
 ## [0.2.5] - 2026-07-31
 
 ### Changed
@@ -132,7 +140,8 @@ To have advice, recommendations, ask to delete creates or edits tasks.
 - Todo List: add, check, sort, and delete tasks
 
 ---
-[Unreleased]: https://github.com/Yodavatar/Harmony/compare/0.2.5...HEAD
+[Unreleased]: https://github.com/Yodavatar/Harmony/compare/0.2.6...HEAD
+[0.2.4]: https://github.com/Yodavatar/Harmony/compare/0.2.5...0.2.6
 [0.2.4]: https://github.com/Yodavatar/Harmony/compare/0.2.4...0.2.5
 [0.2.4]: https://github.com/Yodavatar/Harmony/compare/0.2.3...0.2.4
 [0.2.3]: https://github.com/Yodavatar/Harmony/compare/0.2.2...0.2.3
