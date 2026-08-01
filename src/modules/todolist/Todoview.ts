@@ -131,9 +131,12 @@ export class TodoView extends ItemView
       const angle = (index * (360 / PRIORITY_ORDER.length) - 90) * (Math.PI / 180);
       const x = Math.cos(angle) * radius;
       const y = Math.sin(angle) * radius;
+      
       const btn = menu.createDiv("utodo-radial-btn");
-      btn.style.backgroundColor = PRIORITY_COLORS[prio];
-      btn.style.transform = `translate(${x}px, ${y}px)`;
+      btn.setCssStyles({
+        backgroundColor: PRIORITY_COLORS[prio],
+        transform: `translate(${x}px, ${y}px)`
+      });
       
       const labelText = this.labels[prio] || prio;
       btn.createSpan({ text: labelText });
