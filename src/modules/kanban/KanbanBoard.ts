@@ -113,8 +113,6 @@ export class KanbanBoard
 
     titleEl.addEventListener("dblclick", () => void this.editColumnTitle(titleEl, col));
 
-    colHeader.createEl("span", { text: String(cards.length), cls: "mkb-column-count" });
-
     colHeader.createSpan({ text: String(cards.length), cls: "mkb-column-count" });
 
     const menuBtn = colHeader.createEl("button", { cls: "mkb-btn-icon mkb-column-menu" });
@@ -251,17 +249,20 @@ export class KanbanBoard
     void this.store.moveCard(card.id, targetColId).then(() => this.render());
   }
 
-  private async editBoardTitle(el: HTMLElement): Promise<void> {
+  private async editBoardTitle(el: HTMLElement): Promise<void>
+  {
     const input = el.createEl("input",
     {
       type : "text",
       attr: {value : this.board.title},
       cls: "mkb-inline-input mkb-board-title-input",
     });    
+
     el.replaceWith(input);
     input.focus();
 
-    const save = async () => {
+    const save = async () =>
+    {
       const val = input.value.trim();
       if (val) this.board.title = val;
       await this.persist();

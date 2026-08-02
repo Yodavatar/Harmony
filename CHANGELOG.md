@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Delete**: double display of the number of tasks in Kanban
+- **Kanban**: the name of the Kanban section has always been "Kanban"
+
+
 ## [0.2.8] - 2026-08-01
 
 ### Fixed
