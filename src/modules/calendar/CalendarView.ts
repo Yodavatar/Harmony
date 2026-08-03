@@ -1,4 +1,4 @@
-  import { ItemView, WorkspaceLeaf, setIcon } from "obsidian";
+import { ItemView, WorkspaceLeaf, setIcon } from "obsidian";
 import type { CalendarStore } from "./CalendarStore";
 import type { Task, Priority } from "../../shared/taskstore";
 import { PRIORITY_COLORS, PRIORITY_ORDER, getPriorityLabels } from "../../shared/taskstore";
@@ -300,8 +300,11 @@ export class CalendarView extends ItemView
 
       cell.createDiv({ cls: "mcal-day-num", text: String(d) });
       
-      const addBtn = cell.createEl("button", { cls: "mcal-quick-add-btn", text: "+" });
-      addBtn.addEventListener("click", (e) => {
+      const addBtn = cell.createEl("button", { cls: "mcal-quick-add-btn"});
+      setIcon(addBtn,"plus");
+        
+      addBtn.addEventListener("click", (e) =>
+      {
         e.stopPropagation();
         this.openTaskEditor(null, ds, root);
       });
@@ -519,13 +522,13 @@ export class CalendarView extends ItemView
       const header = card.createDiv("mcal-day-card-header");
       header.createDiv({ cls: "mcal-day-card-title", text: task.title });
       
-      if (task.time) {
+      if (task.time)
+      {
         card.createDiv({ cls: "mcal-day-card-time", text: task.time });
       }
-      
       this.setupDraggable(card, task);
-      
-      card.addEventListener("click", (e) => {
+      card.addEventListener("click", (e) =>
+      {
         e.stopPropagation();
         this.openTaskEditor(task, task.dueDate ?? ds, root);
       });
@@ -580,7 +583,8 @@ export class CalendarView extends ItemView
     recurrenceRow.createEl("label", { text: t(426) });
 
     const recContainer = recurrenceRow.createDiv({ cls: "mcal-rec-group" });
-    recContainer.setCssStyles({
+    recContainer.setCssStyles(
+    {
       display: "flex",
       gap: "8px",
     })

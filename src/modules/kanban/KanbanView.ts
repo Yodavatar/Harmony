@@ -21,7 +21,7 @@ export class KanbanView extends ItemView
   }
 
   getViewType() { return KANBAN_VIEW_TYPE; }
-  getDisplayText() { return this.currentBoard?.title ?? t(100); }
+  getDisplayText() { return t(100); }
   getIcon() { return "kanban"; }
 
   private async loadBoard(boardId: string, root: HTMLElement): Promise<void>
@@ -40,7 +40,8 @@ export class KanbanView extends ItemView
     await this.renderBoardSelector();
     const unsubscribe = this.store.onTaskChange(async (event, task) =>
     {
-      if (this.currentBoard) {
+      if (this.currentBoard)
+      {
         const root = this.containerEl.children[1] as HTMLElement;
         const freshBoard = await this.store.loadBoard(this.currentBoard.id);
         if (freshBoard) this.openBoard(freshBoard, root);
@@ -272,7 +273,6 @@ export class KanbanView extends ItemView
     this.currentBoard = board;
     await this.renderBoardSelector();
   }
-
 
   public async focusTask(taskId: string, context?: FocusContext): Promise<void>
   {

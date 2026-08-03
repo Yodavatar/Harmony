@@ -3,7 +3,7 @@ import type { TaskStore, Task, Priority } from "../../shared/taskstore";
 
 export class CalendarStore
 {
-  private app:       App;
+  private app:App;
   private taskStore: TaskStore;
 
   constructor(app: App, taskStore: TaskStore)
