@@ -1,24 +1,23 @@
-{
-  "compilerOptions": {
-    "inlineSourceMap": true,
-    "inlineSources": true,
-    "ignoreDeprecations": "6.0",
-    "baseUrl": ".",
-    "module": "ESNext",
-    "target": "ES2017",
-    "allowSyntheticDefaultImports": true,
-    "moduleResolution": "bundler",
-    
-    "importHelpers": true,
-    "isolatedModules": true,
-    "strictNullChecks": true,
-    "strictPropertyInitialization": false,
-    "lib": ["ES2017", "DOM"],
-    "paths": {
-      "@core/*": ["src/core/*"],
-      "@modules/*": ["src/modules/*"],
-      "@shared/*": ["src/shared/*"]
-    }
-  },
-  "include": ["src/**/*.ts"]
-}
+  {
+    "compilerOptions": {
+      "inlineSourceMap": true,
+      "inlineSources": true,
+      "module": "ESNext",
+      "target": "ES2017",
+      "allowSyntheticDefaultImports": true,
+      "moduleResolution": "bundler",
+      
+      "importHelpers": true,
+      "isolatedModules": true,
+      "strictNullChecks": true,
+      "strictPropertyInitialization": false,
+      "lib": ["ES2017", "DOM"],
+      "paths": {
+        "*": ["./*"],
+        "@core/*": ["./src/core/*"],
+        "@modules/*": ["./src/modules/*"],
+        "@shared/*": ["./src/shared/*"]
+      }
+    },
+    "include": ["src/**/*.ts"]
+  }

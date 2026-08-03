@@ -8,10 +8,10 @@
     "build": "tsc --noEmit --skipLibCheck && node esbuild.config.mjs production"
   },
   "devDependencies": {
-    "@types/node": "^16.11.6",
+    "@types/node": "^26.1.2",
     "esbuild": "^0.28.1",
-    "obsidian": "latest",
-    "tslib": "2.4.0",
-    "typescript": "^6.0.3"
+    "obsidian": "^1.13.0",
+    "tslib": "2.8.1",
+    "typescript": "^7.0.2"
   }
 }

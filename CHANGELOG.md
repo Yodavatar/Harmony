@@ -8,8 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - **Delete**: double display of the number of tasks in Kanban
-- **Kanban**: the name of the Kanban section has always been "Kanban"
+- **Kanban**:  the name of the Kanban section has always been "Kanban"
 
+### Changed
+- **typescript**: It goes from "6.0.3" to "7.0.2"
+- **@types/node**: It goes from "16.11.6" to "26.1.2"
+- **tslib**: It goes from "2.4.0" to "2.8.1"
 
 ## [0.2.8] - 2026-08-01
 
