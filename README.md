@@ -4,7 +4,7 @@
 <br>
 
 [![Obsidian](https://img.shields.io/badge/Obsidian-1.7.2+-purple)](https://community.obsidian.md/plugins/harmony)
-[![Version](https://img.shields.io/badge/version-0.2.8-blue)](https://github.com/Yodavatar/Harmony)
+[![Version](https://img.shields.io/badge/version-0.2.9-blue)](https://github.com/Yodavatar/Harmony)
 [![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-green)](https://github.com/Yodavatar/Harmony/blob/main/LICENSE)
 [![Harmony Multilanguage Support](https://img.shields.io/badge/Harmony-Multilingual-success?style=flat-square&logo=globe)](https://github.com/Yodavatar/Harmony)
 [![Harmony Website](https://img.shields.io/badge/Website-Harmony-pink)](https://harmony.yodavatar.me)
