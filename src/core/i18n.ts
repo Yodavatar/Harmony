@@ -233,7 +233,21 @@ const EN: Record<number, string> =
   551: "I have prepared the requested actions.",
   552: "Error communicating with agent.", 
   553: "Delete the task:",
-  554: "No reason provided", 
+  554: "No reason provided",
+
+  //Natural Language Processing (NLP)
+  600: "today,auj",
+  601: "tomorrow",
+  602: "next week",
+  603: "Task Title",
+  610: "at,@",
+  620: "sunday,sun",
+  621: "monday,mon",
+  622: "tuesday,tue",
+  623: "wednesday,wed",
+  624: "thursday,thu",
+  625: "friday,fri",
+  626: "saturday,sat",
 };
 
 //French dictionary
@@ -461,6 +475,20 @@ const FR: Partial<Record<number, string>> =
   552: "Erreur de communication avec l'agent.",
   553: "Supprimer la tâche :",
   554: "Aucune raison fournie",
+
+  //Natural Language Processing (NLP)
+  600: "aujourd'hui,auj,ce soir",
+  601: "demain,dem",
+  602: "la semaine prochaine",
+  603: "Titre de la tâche",
+  610: "à,vers,@",
+  620: "dimanche,dim",
+  621: "lundi,lun",
+  622: "mardi,mar",
+  623: "mercredi,mer",
+  624: "jeudi,jeu",
+  625: "vendredi,ven",
+  626: "samedi,sam",
 };
 
 // Spanish dictionary
@@ -688,6 +716,20 @@ const ES: Partial<Record<number, string>> =
   552: "Error de comunicación con el agente.",
   553: "Eliminar la tarea:",
   554: "No se da ninguna razón",
+
+  //Natural Language Processing (NLP)
+  600: "hoy",
+  601: "mañana",
+  602: "la próxima semana",
+  603: "Título de la tarea",
+  610: "a,en,@",
+  620: "domingo,dom",
+  621: "lunes,lun",
+  622: "martes,mar",
+  623: "miércoles,mié",
+  624: "jueves,jue",
+  625: "viernes,vie",
+  626: "sábado,sáb",
 };
 
 // German dictionary
@@ -913,6 +955,20 @@ const DE: Record<number, string> =
   552: "Fehler bei der Kommunikation mit dem Agenten.",
   553: "Aufgabe löschen:",
   554: "Kein Grund angegeben",
+
+  //Natural Language Processing (NLP)
+  600: "heute",
+  601: "morgen",
+  602: "nächste woche",
+  603: "Aufgabentitel",
+  610: "um,am,@",
+  620: "sonntag,so",
+  621: "montag,mo",
+  622: "dienstag,di",
+  623: "mittwoch,mi",
+  624: "donnerstag,do",
+  625: "freitag,fr",
+  626: "samstag,sa",
 };
 
 //Language Registry

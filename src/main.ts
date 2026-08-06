@@ -1,5 +1,6 @@
 import { Plugin } from "obsidian";
 
+//Services
 import { ModuleRegistry } from "./core/ModuleRegistry";
 import { Harmony_Settings_Tab } from "./core/SettingsTab";
 import { setLanguage } from "./core/i18n";
@@ -7,14 +8,18 @@ import { LinkService } from "./core/LinkerService";
 import { HarmonyRouter } from "./core/navigation/Router";
 import { MigrationService } from "./core/MigrationService";
 
+//Types
 import { TaskStore } from "./shared/taskstore";
 import { DEFAULT_SETTINGS, type Harmony_Settings } from "./shared/types";
 
+//Modules
 import { KanbanModule } from "./modules/kanban/KanbanModule";
 import { DashboardModule } from "./modules/dashboard/DashboardModule";
 import { TodoModule } from "./modules/todolist/TodoModule";
 import { CalendarModule } from "./modules/calendar/CalendarModule";
 import { AgentModule } from "./modules/agent/AgentModule";
+import { NLPModule } from "./modules/nlp/NLPModule";
+
 
 
 export default class Harmony extends Plugin
@@ -56,6 +61,7 @@ export default class Harmony extends Plugin
     this.registry.register(new TodoModule(this.app, this, this.taskStore));
     this.registry.register(new CalendarModule(this.app, this, this.taskStore));
     this.registry.register(new AgentModule(this.app, this, this.taskStore));
+    this.registry.register(new NLPModule(this.app, this, this.taskStore));
 
     this.registry.initAll();
 

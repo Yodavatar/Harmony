@@ -41,6 +41,7 @@ export const DEFAULT_SETTINGS: Harmony_Settings =
     "todo": true,
     "calendar": true,
     "agent" : true,
+    "nlp" : true,
   },
   moduleSettings:
   {
