@@ -2,7 +2,6 @@
 
 
 <br>
-
 [![Obsidian](https://img.shields.io/badge/Obsidian-1.13.0+-purple)](https://community.obsidian.md/plugins/harmony)
 [![Version](https://img.shields.io/badge/version-0.2.10-blue)](https://github.com/Yodavatar/Harmony)
 [![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-green)](https://github.com/Yodavatar/Harmony/blob/main/LICENSE)
