@@ -542,7 +542,7 @@ export class HarmonyNLPService
     claim: (tok: NLPToken) => boolean,
   ): NLPToken | null
   {
-    const slug = (s: string) => foldText(s).replace(/[\s_\-]+/g, "");
+    const slug = (s: string) => foldText(s).replace(/[\s_-]+/g, "");
     type BoardCandidate = { name: string; b: NLPBoardRef };
     const candidates: BoardCandidate[] = boards
       .flatMap((b: NLPBoardRef): BoardCandidate[] => [{ name: b.title, b }, { name: b.id, b }])
@@ -570,7 +570,7 @@ export class HarmonyNLPService
 
       if (!tok)
       {
-        const word = /^[\p{L}\p{N}_\-]+/u.exec(rest);
+        const word = /^[\p{L}\p{N}_-]+/u.exec(rest);
         if (!word) continue;
         const found = boards.find(b => slug(b.title) === slug(word[0]) || slug(b.id) === slug(word[0])) ?? null;
         tok = make("board", start, "@" + word[0], { board: found });

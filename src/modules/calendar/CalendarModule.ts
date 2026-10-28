@@ -27,7 +27,7 @@ export class CalendarModule implements IModule
     this.store     = new CalendarStore(app, taskStore);
   }
 
-  async init(): Promise<void>
+  init(): void
   {
     this.plugin.registerView(
       CALENDAR_VIEW_TYPE,
@@ -84,11 +84,11 @@ export class CalendarModule implements IModule
     const existing = this.app.workspace.getLeavesOfType(CALENDAR_VIEW_TYPE);
     if (existing.length > 0)
     {
-      this.app.workspace.revealLeaf(existing[0]);
+      await this.app.workspace.revealLeaf(existing[0]);
       return;
     }
     const leaf = this.app.workspace.getLeaf("tab");
     await leaf.setViewState({ type: CALENDAR_VIEW_TYPE, active: true });
-    this.app.workspace.revealLeaf(leaf);
+    await this.app.workspace.revealLeaf(leaf);
   }
 }

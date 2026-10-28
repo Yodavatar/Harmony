@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.11] - 2026-10-28
+
+### Fixed
+- **Review**: Fixed automated review errors and linter warnings.
+- **Settings**: Restored `minAppVersion` to 1.7.2 and cleaned settings tab.
+- **DOM**: Replaced `document.createElement` with native `createEl`.
+- **Async**: Fixed unawaited promises and async event handlers.
+- **Styles**: Removed all `!important` occurrences.
+
 ## [0.2.10] - 2026-10-28
 
 ### Added
@@ -181,7 +190,8 @@ To have advice, recommendations, ask to delete creates or edits tasks.
 - Todo List: add, check, sort, and delete tasks
 
 ---
-[Unreleased]: https://github.com/Yodavatar/Harmony/compare/0.2.10...HEAD
+[Unreleased]: https://github.com/Yodavatar/Harmony/compare/0.2.11...HEAD
+[0.2.11]: https://github.com/Yodavatar/Harmony/compare/0.2.10...0.2.11
 [0.2.10]: https://github.com/Yodavatar/Harmony/compare/0.2.9...0.2.10
 [0.2.9]: https://github.com/Yodavatar/Harmony/compare/0.2.8...0.2.9
 [0.2.8]: https://github.com/Yodavatar/Harmony/compare/0.2.7...0.2.8

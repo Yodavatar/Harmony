@@ -5,8 +5,7 @@ import type { Language } from "../core/i18n";
  * The core calls these methods at the right time.
  */
 
-export interface IModule
-{
+export interface IModule {
   id: string;
   name: string;
   init(): void;
@@ -14,8 +13,7 @@ export interface IModule
   onunload(): void;
 }
 
-export interface ModuleSettings
-{
+export interface ModuleSettings {
   [key: string]: unknown;
 }
 
@@ -51,7 +49,7 @@ export const DEFAULT_SETTINGS: Harmony_Settings = {
     },
   },
   language: "en",
-  version: "0.2.10",
+  version: "0.2.11",
   /** New defaults */
   enableBackup: true,
   replaceNewTabs: false,

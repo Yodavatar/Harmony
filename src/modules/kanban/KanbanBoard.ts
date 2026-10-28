@@ -372,10 +372,11 @@ export class KanbanBoard
     colorBtn.addEventListener("click", (e) => {
       e.stopPropagation();
 
-      const input = document.createElement("input");
-      input.type = "color";
-      input.value = col.color || "#6c8ebf";
-      input.style.display = "none";
+      const input = createEl("input", {
+        type: "color",
+        value: col.color || "#6c8ebf",
+        cls: "harmony-hidden-input",
+      });
       activeDocument.body.appendChild(input);
 
       input.addEventListener("change", () =>
@@ -450,10 +451,11 @@ export class KanbanBoard
 
   private async editCardTitle(el: HTMLElement, card: KanbanCard, colId: string): Promise<void>
   {
-    const input = document.createElement("input");
-    input.type = "text";
-    input.value = card.title;
-    input.className = "mkb-inline-input";
+    const input = createEl("input", {
+      type: "text",
+      value: card.title,
+      cls: "mkb-inline-input"
+    });
     el.replaceWith(input);
     input.focus();
     const save = async () => {
@@ -500,18 +502,21 @@ export class KanbanBoard
     
     const saveBtn = btns.createEl("button", { text: t(118), cls: "mkb-btn mkb-btn-primary" });
     
-    saveBtn.addEventListener("click", async () =>
+    saveBtn.addEventListener("click", () =>
     {
-      await this.store.updateCard(card.id, {
-        title: card.title,
-        noteLink: card.noteLink,
-        dueDate: card.dueDate,
-        tags: card.tags,
-        priority: card.priority
-      });
-      
-      overlay.remove();
-      this.render();
+      void (async () =>
+      {
+        await this.store.updateCard(card.id, {
+          title: card.title,
+          noteLink: card.noteLink,
+          dueDate: card.dueDate,
+          tags: card.tags,
+          priority: card.priority
+        });
+        
+        overlay.remove();
+        this.render();
+      })();
     });
         
     const cancelBtn = btns.createEl("button", { text: t(119), cls: "mkb-btn mkb-btn-secondary" });

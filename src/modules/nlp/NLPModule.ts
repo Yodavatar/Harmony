@@ -37,7 +37,7 @@ export class NLPModule implements IModule {
 
   init(): void {
     this.command = this.plugin.addCommand({
-      id: "harmony-nlp-quick-add",
+      id: "nlp-quick-add",
       name: t(604),
       callback: () => {
         this.openModal();

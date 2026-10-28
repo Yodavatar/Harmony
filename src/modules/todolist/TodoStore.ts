@@ -1,4 +1,4 @@
-import { TaskStore, Task, Priority, PRIORITY_ORDER} from "../../shared/taskstore";
+import { TaskStore, Task, Priority, PRIORITY_ORDER, TaskSource } from "../../shared/taskstore";
 
 export class TodoStore
 {
@@ -13,7 +13,7 @@ export class TodoStore
   async getTasks(filter?: { source?: string }): Promise<Task[]>
   {
     if (filter?.source && filter.source !== "all") {
-      return this.taskStore.getTasks({ source: filter.source as any, archived: false });
+      return this.taskStore.getTasks({ source: filter.source as TaskSource, archived: false });
     }
     return this.taskStore.getTasks({ archived: false });
   }

@@ -132,7 +132,7 @@ export class TaskStore
       this._pendingResolvers.push(resolve);
 
       if (this._debounceTimer !== null) {
-        clearTimeout(this._debounceTimer);
+        window.clearTimeout(this._debounceTimer);
       }
 
       this._debounceTimer = window.setTimeout(async () => {

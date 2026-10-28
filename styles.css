@@ -23,6 +23,10 @@
 }
 
 
+.harmony-hidden-input {
+  display: none;
+}
+
 .harmony-warning-banner {
   background-color: var(--background-secondary-alt);
   border-left: 4px solid var(--text-accent);
@@ -729,18 +733,21 @@
   background-color: rgba(245, 158, 11, 0.22);
 }
 
+.hnlp-backdrop .hnlp-mark.is-ignored,
 .hnlp-mark.is-ignored {
-  background-color: transparent !important;
+  background-color: transparent;
   text-decoration: line-through;
 }
 
-.hnlp-input {
+.hnlp-modal .hnlp-input,
+.hnlp-input-container .hnlp-input,
+input.hnlp-input {
   position: relative;
   width: 100%;
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-  background: transparent !important;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  background: transparent;
   color: var(--text-normal);
   z-index: 1;
 }
@@ -981,12 +988,14 @@
   border-color: rgba(245, 158, 11, 0.3);
 }
 
+.hnlp-chips .hnlp-chip.is-ignored,
+.hnlp-chip.is-ignored[class*="hnlp-type-"],
 .hnlp-chip.is-ignored {
   opacity: 0.45;
   text-decoration: line-through;
-  background-color: var(--background-modifier-form-field) !important;
-  color: var(--text-muted) !important;
-  border-color: var(--background-modifier-border) !important;
+  background-color: var(--background-modifier-form-field);
+  color: var(--text-muted);
+  border-color: var(--background-modifier-border);
 }
 
 @keyframes hnlp-pop {

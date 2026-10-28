@@ -81,7 +81,7 @@ export class AgentView extends ItemView {
       this.renderConfigScreen(container);
       return;
     }
-    this.renderAgentScreen(container);
+    void this.renderAgentScreen(container);
   }
 
   private renderConfigScreen(container: HTMLElement) {
@@ -176,29 +176,31 @@ export class AgentView extends ItemView {
     const actionsDiv = configDiv.createDiv("mkb-card-actions mkb-actions-visible");
     const saveBtn = actionsDiv.createEl("button", { cls: "mkb-btn mkb-btn-primary", text: t(517) });
 
-    saveBtn.addEventListener("click", async () => {
-      if (!this.plugin.settings.moduleSettings) {
-        this.plugin.settings.moduleSettings = {};
-      }
+    saveBtn.addEventListener("click", () => {
+      void (async () => {
+        if (!this.plugin.settings.moduleSettings) {
+          this.plugin.settings.moduleSettings = {};
+        }
 
-      this.plugin.settings.moduleSettings["agent"] = {
-        apiKey: this.apiKeyInput,
-        provider: this.providerInput,
-        modelName: this.modelInput,
-        username: this.usernameInput,
-        botname: this.botnameInput
-      };
+        this.plugin.settings.moduleSettings["agent"] = {
+          apiKey: this.apiKeyInput,
+          provider: this.providerInput,
+          modelName: this.modelInput,
+          username: this.usernameInput,
+          botname: this.botnameInput
+        };
 
-      await this.plugin.saveSettings();
+        await this.plugin.saveSettings();
 
-      if (this.apiKeyInput.trim() !== "" || this.providerInput === "ollama") {
-        this.initAgentService();
-        this.isEditingConfig = false;
-      } else {
-        this.agentService = null;
-      }
+        if (this.apiKeyInput.trim() !== "" || this.providerInput === "ollama") {
+          this.initAgentService();
+          this.isEditingConfig = false;
+        } else {
+          this.agentService = null;
+        }
 
-      this.render();
+        this.render();
+      })();
     });
 
     if (this.isEditingConfig) {
@@ -289,10 +291,12 @@ export class AgentView extends ItemView {
           const controls = actionCard.createDiv({ cls: "harmony-agent-action-controls" });
 
           const acceptBtn = controls.createEl("button", { text: "✓", cls: "mkb-btn mkb-btn-primary harmony-agent-btn-action" });
-          acceptBtn.addEventListener("click", async () => {
-            await this.executeAction(action);
-            msg.actions = msg.actions?.filter((a: PendingAction) => a.id !== action.id);
-            this.render();
+          acceptBtn.addEventListener("click", () => {
+            void (async () => {
+              await this.executeAction(action);
+              msg.actions = msg.actions?.filter((a: PendingAction) => a.id !== action.id);
+              this.render();
+            })();
           });
 
           const rejectBtn = controls.createEl("button", { text: "✕", cls: "mkb-btn mkb-btn-secondary harmony-agent-btn-action" });
@@ -359,10 +363,12 @@ export class AgentView extends ItemView {
       this.render();
     };
 
-    submitBtn.addEventListener("click", handleSend);
+    submitBtn.addEventListener("click", () => {
+      void handleSend();
+    });
     input.addEventListener("keydown", (e) =>
     {
-      if (e.key === "Enter") handleSend();
+      if (e.key === "Enter") void handleSend();
     });
   }
 
