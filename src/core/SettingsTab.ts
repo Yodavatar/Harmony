@@ -12,11 +12,6 @@ export class Harmony_Settings_Tab extends PluginSettingTab
     this.plugin = plugin;
   }
 
-  getSettingDefinitions()
-  {
-    return [];
-  }
-
   display(): void
   {
     const { containerEl } = this;
@@ -125,7 +120,6 @@ export class Harmony_Settings_Tab extends PluginSettingTab
       .addSlider(slider => slider
         .setLimits(50, 1000, 50)
         .setValue(this.plugin.settings.debouncePersist ?? 200)
-        .setDynamicTooltip()
         .onChange(async (val) => {
           this.plugin.settings.debouncePersist = val;
           await this.plugin.saveSettings();
@@ -201,12 +195,12 @@ export class Harmony_Settings_Tab extends PluginSettingTab
         .setName(name)
         .setDesc(desc);
 
-      if (isEnabled && typeof (module as any).openModal === "function")
+      if (isEnabled && "openModal" in module && typeof (module as { openModal?: unknown }).openModal === "function")
       {
         s.addButton(btn => btn
           .setButtonText(t(29))
           .onClick(() => {
-            (module as any).openModal();
+            (module as { openModal: () => void }).openModal();
           })
         );
       }

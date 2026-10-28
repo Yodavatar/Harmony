@@ -6,6 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.11] - 2026-10-28
+
+### Fixed
+- **Obsidian Review**: Resolved all automated review errors, warnings, and linter notices:
+  - Fixed static style assignments and `document.createElement` usage with native Obsidian `createEl`.
+  - Reverted `minAppVersion` to `1.7.2` to support imperative settings tabs and removed deprecated declarative stub.
+  - Awaited floating promises and wrapped async callbacks in event listeners (`no-misused-promises`).
+  - Aligned `IModule.init` signature with synchronous interface contract.
+  - Removed duplicate plugin prefix in NLP command ID (`nlp-quick-add`).
+  - Strengthened type safety without `any` casts (`TaskSource` and `openModal` type-guard).
+  - Used `window.clearTimeout` for full popout window compatibility.
+  - Eliminated all `!important` occurrences in CSS by increasing selector specificity.
+
 ## [0.2.10] - 2026-10-28
 
 ### Added
@@ -181,7 +194,8 @@ To have advice, recommendations, ask to delete creates or edits tasks.
 - Todo List: add, check, sort, and delete tasks
 
 ---
-[Unreleased]: https://github.com/Yodavatar/Harmony/compare/0.2.10...HEAD
+[Unreleased]: https://github.com/Yodavatar/Harmony/compare/0.2.11...HEAD
+[0.2.11]: https://github.com/Yodavatar/Harmony/compare/0.2.10...0.2.11
 [0.2.10]: https://github.com/Yodavatar/Harmony/compare/0.2.9...0.2.10
 [0.2.9]: https://github.com/Yodavatar/Harmony/compare/0.2.8...0.2.9
 [0.2.8]: https://github.com/Yodavatar/Harmony/compare/0.2.7...0.2.8

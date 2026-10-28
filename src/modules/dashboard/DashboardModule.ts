@@ -56,7 +56,7 @@ export class DashboardModule implements IModule
       name: t(201),
       callback: () =>
       {
-        this.activateView();
+        void this.activateView();
       },
     });
   }

@@ -249,9 +249,10 @@ export class DashboardView extends ItemView
 
     const wpBtn = wpRight.createEl("button", { text: t(211), cls: "dash-btn" });
     wpBtn.addEventListener("click", () => {
-      const fileInput = document.createElement("input");
-      fileInput.type = "file";
-      fileInput.accept = "image/*";
+      const fileInput = createEl("input", {
+        type: "file",
+        attr: { accept: "image/*" },
+      });
       fileInput.addEventListener("change", () =>
       {
         void (async () =>
@@ -362,7 +363,7 @@ export class DashboardView extends ItemView
 
     if (options.length === 1)
     {
-      this.openTaskInModule(task, options[0].id);
+      void this.openTaskInModule(task, options[0].id);
       return;
     }
 
@@ -376,7 +377,7 @@ export class DashboardView extends ItemView
           .setIcon(opt.icon)
           .onClick(() =>
           {
-            this.openTaskInModule(task, opt.id);
+            void this.openTaskInModule(task, opt.id);
           });
       });
     });

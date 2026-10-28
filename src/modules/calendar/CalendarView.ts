@@ -261,16 +261,19 @@ export class CalendarView extends ItemView
   {
     el.addEventListener("dragover", (e) => { e.preventDefault(); el.addClass("mcal-drag-over"); });
     el.addEventListener("dragleave", () => el.removeClass("mcal-drag-over"));
-    el.addEventListener("drop", async (e) =>
+    el.addEventListener("drop", (e) =>
     {
-      e.preventDefault();
-      el.removeClass("mcal-drag-over");
-      const taskId = e.dataTransfer?.getData("text/plain");
-      if (taskId)
+      void (async () =>
       {
-        await this.store.updateTask(taskId, { dueDate: targetDate });
-        this.renderCalendar();
-      }
+        e.preventDefault();
+        el.removeClass("mcal-drag-over");
+        const taskId = e.dataTransfer?.getData("text/plain");
+        if (taskId)
+        {
+          await this.store.updateTask(taskId, { dueDate: targetDate });
+          this.renderCalendar();
+        }
+      })();
     });
   }
 
@@ -633,11 +636,14 @@ export class CalendarView extends ItemView
         deleteBtn.show();
       });
 
-      yesBtn.addEventListener("click", async () =>
+      yesBtn.addEventListener("click", () =>
       {
-        await this.store.deleteTask(task.id);
-        overlay.remove();
-        this.renderCalendar();
+        void (async () =>
+        {
+          await this.store.deleteTask(task.id);
+          overlay.remove();
+          this.renderCalendar();
+        })();
       });
     }
 
@@ -645,40 +651,43 @@ export class CalendarView extends ItemView
     cancelBtn.addEventListener("click", () => overlay.remove());
 
     const saveBtn = actionsRow.createEl("button", { cls: "mcal-btn mcal-btn-primary", text: t(423) });
-    saveBtn.addEventListener("click", async () =>
+    saveBtn.addEventListener("click", () =>
     {
-      const title = titleInput.value.trim();
-      if (!title) return;
-
-      const priority = prioritySelect.value as Priority;
-      const time     = timeInput.value || undefined;
-      const duration = parseInt(durationInput.value, 10) || 60;
-      const isDone   = doneInput.checked;
-
-      const recValue = unitSelect.value 
-        ? { frequency: parseInt(freqInput.value, 10) || 1, unit: unitSelect.value as 'daily' | 'weekly' | 'monthly'} 
-        : undefined;
-
-      if (task)
+      void (async () =>
       {
-        await this.store.updateTask(task.id,
+        const title = titleInput.value.trim();
+        if (!title) return;
+
+        const priority = prioritySelect.value as Priority;
+        const time     = timeInput.value || undefined;
+        const duration = parseInt(durationInput.value, 10) || 60;
+        const isDone   = doneInput.checked;
+
+        const recValue = unitSelect.value 
+          ? { frequency: parseInt(freqInput.value, 10) || 1, unit: unitSelect.value as 'daily' | 'weekly' | 'monthly'} 
+          : undefined;
+
+        if (task)
         {
-          title,
-          priority,
-          time,
-          duration,
-          done: isDone,
-          recurrence: recValue,
-          updatedAt: new Date().toISOString()
-        });
-      }
-      else
-      {
-        await this.store.createFullTask(date, title, priority, time, duration, isDone, recValue);
-      }
+          await this.store.updateTask(task.id,
+          {
+            title,
+            priority,
+            time,
+            duration,
+            done: isDone,
+            recurrence: recValue,
+            updatedAt: new Date().toISOString()
+          });
+        }
+        else
+        {
+          await this.store.createFullTask(date, title, priority, time, duration, isDone, recValue);
+        }
 
-      overlay.remove();
-      this.refresh();
+        overlay.remove();
+        this.refresh();
+      })();
     });
 
     overlay.addEventListener("click", (e) => { if (e.target === overlay) overlay.remove(); });

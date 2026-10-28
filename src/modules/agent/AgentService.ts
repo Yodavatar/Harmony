@@ -374,7 +374,7 @@ export class AgentService {
         let args: Record<string, unknown> = {};
         try {
           args = JSON.parse(call.function.arguments) as Record<string, unknown>;
-        } catch (e) {
+        } catch {
           console.warn("[AgentService] Failed to parse tool arguments:", call.function.arguments);
           continue;
         }
