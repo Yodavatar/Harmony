@@ -42,7 +42,7 @@ export class KanbanView extends ItemView
     {
       if (this.currentBoard)
       {
-        const root = this.containerEl.children[1] as HTMLElement;
+        const root = this.contentEl;
         const freshBoard = await this.store.loadBoard(this.currentBoard.id);
         if (freshBoard) this.openBoard(freshBoard, root);
       }
@@ -55,7 +55,7 @@ export class KanbanView extends ItemView
 
   public async renderBoardSelector(): Promise<void>
   {
-    const root = this.containerEl.children[1] as HTMLElement;
+    const root = this.contentEl;
     root.empty();
     root.addClass("mkb-view-root");
 
@@ -166,7 +166,7 @@ export class KanbanView extends ItemView
 
                 if (this.currentBoard)
                 {
-                  const rootContainer = this.containerEl.children[1] as HTMLElement;
+                  const rootContainer = this.contentEl;
                   const freshBoardData = await this.store.loadBoard(this.currentBoard.id);
                   if (freshBoardData) this.openBoard(freshBoardData, rootContainer);
                 }
@@ -257,7 +257,7 @@ export class KanbanView extends ItemView
   {
     const title = await new Promise<string | null>((resolve) =>
     {
-      const overlay = (this.containerEl.children[1] as HTMLElement).createDiv("mkb-editor-overlay");
+      const overlay = this.contentEl.createDiv("mkb-editor-overlay");
       const box = overlay.createDiv("mkb-prompt-box");
       box.createEl("p", { text: t(107) });
       const input = box.createEl("input", { type: "text", placeholder: t(113) });
@@ -282,7 +282,7 @@ export class KanbanView extends ItemView
 
     if (!this.currentBoard || this.currentBoard.id !== task.boardId)
     {
-      const root = this.containerEl.children[1] as HTMLElement;
+      const root = this.contentEl;
       await this.loadBoard(task.boardId, root);
     }
 
@@ -303,7 +303,7 @@ export class KanbanView extends ItemView
           window.setTimeout(() =>
           {
             cardElement.removeClass("mkb-flash-card");
-            cardElement.addClass("mkb-highlight-task");
+            cardElement.removeClass("mkb-highlight-task");
           },  2000);
         }
         else

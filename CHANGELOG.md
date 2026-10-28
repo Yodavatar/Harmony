@@ -6,6 +6,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.10] - 2026-10-28
+
+### Added
+- **Data Safety**: Automatic `.bak` backup copy of `tasks.json` before writing to disk.
+- **Data Safety**: Debounced write queue and async mutex lock to prevent concurrent write corruptions.
+- **Settings**: New "Security & Data" settings section with controls for automatic backups, write debounce delay (ms), and optional empty new tabs takeover.
+- **AI Agent**: Multi-provider support (Mistral, OpenAI, Ollama, Gemini) dynamically handled via settings.
+- **NLP Module**: Dynamic binding to real Kanban boards and automatic target column resolution.
+- **Cross-module Sync**: Real-time event subscription (`taskStore.on`) in TodoList and Calendar views.
+
+### Fixed
+- **TaskStore**: Prevented catastrophic task overwriting when `tasks.json` contains malformed JSON or corrupted data.
+- **Kanban**: Fixed card archiving, unarchiving, and inline title editing to properly persist in `TaskStore`.
+- **Kanban**: Deleting a column now properly deletes associated tasks instead of leaving ghost cards.
+- **Kanban**: Fixed memory leak from `<input type="color">` elements appended to the DOM.
+- **Kanban**: Fixed visual highlight glitch where `mkb-highlight-task` was not removed after 2 seconds.
+- **Dashboard**: Disabled intrusive automatic replacement of empty new tabs by default (now controlled via settings).
+- **Dashboard**: Prevented unintended closing of other open dashboard tabs on launch.
+- **Dashboard**: Fixed memory leak caused by global `activeDocument` click listener accumulation in the search component.
+- **ModuleRegistry**: Removed destructive loop calling `onunload()` on inactive modules before they are even loaded.
+- **LinkerService**: Fixed event listener leak by registering vault `rename` events via `plugin.registerEvent`.
+- **Obsidian API Best Practices**: Replaced fragile `containerEl.children[1]` DOM accesses with official `this.contentEl` across all views.
+- **Agent**: Added error handling for malformed tool call JSON arguments.
+
+### Changed
+- **Performance**: Optimized `CalendarStore.getTasksForMonth` by performing a single in-memory task extraction instead of 31 full list lookups.
+- **TodoList**: Relaxed strict source filtering so tasks from all modules are viewable in the Todo list.
+- **LinkerService**: Switched from sequential 1-by-1 task updates to `batchUpdateTasks` on note renames.
+
 ## [0.2.9] - 2026-08-03
 
 ### Fixed
@@ -161,7 +190,8 @@ To have advice, recommendations, ask to delete creates or edits tasks.
 - Todo List: add, check, sort, and delete tasks
 
 ---
-[Unreleased]: https://github.com/Yodavatar/Harmony/compare/0.2.9...HEAD
+[Unreleased]: https://github.com/Yodavatar/Harmony/compare/0.2.10...HEAD
+[0.2.10]: https://github.com/Yodavatar/Harmony/compare/0.2.9...0.2.10
 [0.2.9]: https://github.com/Yodavatar/Harmony/compare/0.2.8...0.2.9
 [0.2.8]: https://github.com/Yodavatar/Harmony/compare/0.2.7...0.2.8
 [0.2.7]: https://github.com/Yodavatar/Harmony/compare/0.2.6...0.2.7

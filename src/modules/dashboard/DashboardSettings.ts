@@ -5,6 +5,7 @@ export interface DashboardSettings
   showClock: boolean;
   showSeconds: boolean;
   openOnStartup: boolean;
+  replaceNewTabs: boolean;
 }
 
 export const DEFAULT_DASHBOARD_SETTINGS: DashboardSettings =
@@ -14,4 +15,5 @@ export const DEFAULT_DASHBOARD_SETTINGS: DashboardSettings =
   showClock: true,
   showSeconds: false,
   openOnStartup: true,
+  replaceNewTabs: false,
 };

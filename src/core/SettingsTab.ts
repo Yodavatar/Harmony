@@ -92,6 +92,48 @@ export class Harmony_Settings_Tab extends PluginSettingTab
 
     containerEl.createEl("hr");
 
+    // --- SÉCURITÉ & PERSISTANCE ---
+    new Setting(containerEl)
+      .setName("Sécurité & Données")
+      .setHeading();
+
+    new Setting(containerEl)
+      .setName("Sauvegarde automatique (.bak)")
+      .setDesc("Crée une copie de secours tasks.json.bak avant chaque écriture pour éviter toute perte de données.")
+      .addToggle(toggle => toggle
+        .setValue(this.plugin.settings.enableBackup ?? true)
+        .onChange(async (val) => {
+          this.plugin.settings.enableBackup = val;
+          await this.plugin.saveSettings();
+        })
+      );
+
+    new Setting(containerEl)
+      .setName("Remplacer les nouveaux onglets vides")
+      .setDesc("Ouvre automatiquement le Dashboard lorsqu'un nouvel onglet vide est créé.")
+      .addToggle(toggle => toggle
+        .setValue(this.plugin.settings.replaceNewTabs ?? false)
+        .onChange(async (val) => {
+          this.plugin.settings.replaceNewTabs = val;
+          await this.plugin.saveSettings();
+        })
+      );
+
+    new Setting(containerEl)
+      .setName("Délai de temporisation d'écriture (ms)")
+      .setDesc("Regroupe les modifications rapides avant d'écrire sur le disque (évite les surcharges I/O).")
+      .addSlider(slider => slider
+        .setLimits(50, 1000, 50)
+        .setValue(this.plugin.settings.debouncePersist ?? 200)
+        .setDynamicTooltip()
+        .onChange(async (val) => {
+          this.plugin.settings.debouncePersist = val;
+          await this.plugin.saveSettings();
+        })
+      );
+
+    containerEl.createEl("hr");
+
     // --- LIENS & COMMUNAUTÉ ---
     new Setting(containerEl)
       .setName(t(3))

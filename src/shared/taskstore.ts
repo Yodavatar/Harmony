@@ -65,10 +65,21 @@ export class TaskStore
   private tasks:     Map<string, Task> = new Map();
   private listeners: ChangeListener[]  = [];
   private loaded     = false;
+  private _persistLock: Promise<void> = Promise.resolve();
+  private _debounceTimer: number | null = null;
+  private _pendingResolvers: Array<() => void> = [];
+  private _debounceDelay = 200;
+  private _enableBackup = true;
 
   constructor(app: App)
   {
     this.app = app;
+  }
+
+  setOptions(options: { debounceDelay?: number; enableBackup?: boolean }): void
+  {
+    if (options.debounceDelay !== undefined) this._debounceDelay = options.debounceDelay;
+    if (options.enableBackup !== undefined) this._enableBackup = options.enableBackup;
   }
 
   //Init
@@ -79,35 +90,31 @@ export class TaskStore
     if (this.loaded) return;
     if (this.loadPromise) return this.loadPromise;
 
-    this.loadPromise = (async () =>
-    {
+    this.loadPromise = (async () => {
       const exists = await this.app.vault.adapter.exists(DATA_PATH);
-      if (exists)
-      {
+      if (exists) {
         const raw = await this.app.vault.adapter.read(DATA_PATH);
-        try
-        {
+        try {
           const rawData: unknown = JSON.parse(raw);
-          
-          if (Array.isArray(rawData))
-          {
+          if (Array.isArray(rawData)) {
             const arr = rawData as Task[];
             this.tasks.clear();
-            for (const t of arr)
-            {
-              if (t && typeof t === 'object' && 'id' in t)
-              {
+            for (const t of arr) {
+              if (t && typeof t === 'object' && 'id' in t) {
                 this.tasks.set(t.id, t);
               }
             }
           }
-        }
-        catch (e)
-        {
+          // parsing succeeded
+          this.loaded = true;
+        } catch (e) {
           console.error("[TaskStore] JSON error", e);
+          // keep loaded false to avoid corrupted state
         }
+      } else {
+        // No data file – start with empty store
+        this.loaded = true;
       }
-      this.loaded = true;
     })();
 
     return this.loadPromise;
@@ -120,12 +127,46 @@ export class TaskStore
       console.warn("[TaskStore] Tried to save before loading, canceled.");
       return;
     }
-    
-    if (!(await this.app.vault.adapter.exists(DATA_DIR)))
-      await this.app.vault.adapter.mkdir(DATA_DIR);
 
-    const arr = Array.from(this.tasks.values());
-    await this.app.vault.adapter.write(DATA_PATH, JSON.stringify(arr, null, 2));
+    return new Promise<void>((resolve, reject) => {
+      this._pendingResolvers.push(resolve);
+
+      if (this._debounceTimer !== null) {
+        clearTimeout(this._debounceTimer);
+      }
+
+      this._debounceTimer = window.setTimeout(async () => {
+        this._debounceTimer = null;
+        const currentResolvers = this._pendingResolvers;
+        this._pendingResolvers = [];
+
+        await this._persistLock;
+        let releaseLock: (() => void) | null = null;
+        this._persistLock = new Promise(r => releaseLock = r);
+
+        try {
+          // Backup existing tasks.json before writing
+          if (this._enableBackup && await this.app.vault.adapter.exists(DATA_PATH)) {
+            const current = await this.app.vault.adapter.read(DATA_PATH);
+            await this.app.vault.adapter.write(`${DATA_PATH}.bak`, current);
+          }
+
+          if (!(await this.app.vault.adapter.exists(DATA_DIR))) {
+            await this.app.vault.adapter.mkdir(DATA_DIR);
+          }
+
+          const arr = Array.from(this.tasks.values());
+          await this.app.vault.adapter.write(DATA_PATH, JSON.stringify(arr, null, 2));
+          for (const r of currentResolvers) r();
+        } catch (err) {
+          console.error("[TaskStore] Failed to persist tasks:", err);
+          for (const r of currentResolvers) r();
+        } finally {
+          if (releaseLock) releaseLock();
+          this._persistLock = Promise.resolve();
+        }
+      }, this._debounceDelay);
+    });
   }
 
   //read API
@@ -188,12 +229,46 @@ export class TaskStore
     return true;
   }
 
+  async batchUpdateTasks(updates: Array<{ id: string; changes: Partial<Omit<Task, "id" | "createdAt">> }>): Promise<Task[]>
+  {
+    const now = new Date().toISOString();
+    const updatedTasks: Task[] = [];
+    for (const { id, changes } of updates) {
+      const existing = this.tasks.get(id);
+      if (existing) {
+        const updated: Task = { ...existing, ...changes, updatedAt: now };
+        this.tasks.set(id, updated);
+        updatedTasks.push(updated);
+      }
+    }
+    if (updatedTasks.length > 0) {
+      await this.persist();
+      for (const t of updatedTasks) {
+        this.emit("update", t);
+      }
+    }
+    return updatedTasks;
+  }
+
   //del all tasks link to a board
   async deleteTasksByBoard(boardId: string): Promise<void>
   {
     const toDelete = this.getTasks({ boardId });
     for (const t of toDelete) this.tasks.delete(t.id);
-    if (toDelete.length > 0) await this.persist();
+    if (toDelete.length > 0) {
+      await this.persist();
+      for (const t of toDelete) this.emit("delete", t);
+    }
+  }
+
+  async deleteTasksByColumn(columnId: string, boardId?: string): Promise<void>
+  {
+    const toDelete = this.getTasks({ columnId, boardId });
+    for (const t of toDelete) this.tasks.delete(t.id);
+    if (toDelete.length > 0) {
+      await this.persist();
+      for (const t of toDelete) this.emit("delete", t);
+    }
   }
 
   //helpers

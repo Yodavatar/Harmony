@@ -201,7 +201,6 @@ export class KanbanStore
 
   async deleteCardsByColumn(boardId: string, columnId: string): Promise<void>
   {
-    const tasks = this.taskStore.getTasks({ source: "kanban", boardId, columnId });
-    for (const t of tasks) await this.taskStore.deleteTask(t.id);
+    await this.taskStore.deleteTasksByColumn(columnId, boardId);
   }
 }

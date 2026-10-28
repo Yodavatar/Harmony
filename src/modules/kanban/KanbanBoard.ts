@@ -297,6 +297,7 @@ export class KanbanBoard
     if (!confirmed) return;
     else
     {
+      await this.store.deleteCardsByColumn(this.board.id, colId);
       this.board.columns = this.board.columns.filter(c => c.id !== colId);
       await this.persist();
       this.render();
@@ -371,20 +372,23 @@ export class KanbanBoard
     colorBtn.addEventListener("click", (e) => {
       e.stopPropagation();
 
-      const input = activeDocument.body.createEl("input", {
-          type: "color",
-          attr: { value: col.color || "#6c8ebf" }
-      });
+      const input = document.createElement("input");
+      input.type = "color";
+      input.value = col.color || "#6c8ebf";
+      input.style.display = "none";
+      activeDocument.body.appendChild(input);
 
       input.addEventListener("change", () =>
       {
         void (async () =>
         {
           col.color = input.value;
+          input.remove();
           await this.persist();
           this.render();
         })();
       });
+      input.addEventListener("cancel", () => input.remove());
       input.click();
     });
 
@@ -434,29 +438,29 @@ export class KanbanBoard
 
   private async archiveCard(card: KanbanCard, colId: string): Promise<void>
   {
-    card.archived = true;
-    await this.persist();
+    await this.store.archiveCard(card.id);
     this.render();
   }
 
   private async unarchiveCard(card: KanbanCard, colId: string): Promise<void>
   {
-    card.archived = false;
-    await this.persist();
+    await this.store.unarchiveCard(card.id);
     this.render();
   }
 
   private async editCardTitle(el: HTMLElement, card: KanbanCard, colId: string): Promise<void>
   {
-    const input = activeDocument.body.createEl("input",
-    {
-      type: "text",
-      attr: { value: card.title },
-      cls: "mkb-inline-input"
-    });
+    const input = document.createElement("input");
+    input.type = "text";
+    input.value = card.title;
+    input.className = "mkb-inline-input";
     el.replaceWith(input);
     input.focus();
-    const save = async () => { card.title = input.value.trim() || card.title; await this.persist(); this.render(); };
+    const save = async () => {
+      const newTitle = input.value.trim() || card.title;
+      await this.store.updateCard(card.id, { title: newTitle });
+      this.render();
+    };
     input.addEventListener("blur", () => void save());
     input.addEventListener("keydown", (e) => { if (e.key === "Enter") input.blur(); if (e.key === "Escape") this.render(); });
   }
@@ -490,10 +494,6 @@ export class KanbanBoard
     select.addEventListener("change", () =>
     {
       card.priority = select.value as Priority;
-      void (async () =>
-      {
-        await this.persist();
-      })();
     });
 
     const btns = modal.createDiv("mkb-editor-btns");

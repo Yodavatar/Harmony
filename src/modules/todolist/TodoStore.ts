@@ -4,10 +4,18 @@ export class TodoStore
 {
   constructor(private taskStore: TaskStore) {}
 
-  //Get the tasks
-  async getTasks(): Promise<Task[]>
+  onTaskChange(callback: (event: 'add' | 'update' | 'delete', task: Task) => void)
   {
-    return this.taskStore.getTasks({ source: "todo", archived: false });
+    return this.taskStore.on(callback);
+  }
+
+  //Get the tasks
+  async getTasks(filter?: { source?: string }): Promise<Task[]>
+  {
+    if (filter?.source && filter.source !== "all") {
+      return this.taskStore.getTasks({ source: filter.source as any, archived: false });
+    }
+    return this.taskStore.getTasks({ archived: false });
   }
 
   async addTask(title: string): Promise<Task>

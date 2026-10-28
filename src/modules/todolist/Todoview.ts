@@ -22,7 +22,15 @@ export class TodoView extends ItemView
   getIcon(): string { return "check-check"; }
 
   async onOpen() {
+    const unsubscribe = this.store.onTaskChange(async () => {
+      await this.render();
+    });
+    this.register(() => unsubscribe());
     await this.render();
+  }
+
+  async onClose() {
+    this.closeMenu();
   }
 
   async render()

@@ -39,36 +39,11 @@ export class ModuleRegistry
       {
         await module.onload();
         this.activeModuleIds.add(moduleId);
-        //console.log(`[Harmony] Module "${moduleId}" activé.`);
       }
       catch (e)
       {
         console.error(`[Harmony] Erreur fatale à l'activation de ${moduleId} :`, e);
         this.activeModuleIds.delete(moduleId);
-      }
-    }
-
-    //bulldozer method (bug logo left bar)
-    for (const mod of this.getAll())
-    {
-      if (mod.id !== moduleId && !this.activeModuleIds.has(mod.id))
-      {
-        try
-        {
-          mod.onunload();
-          //console.log(`[Harmony] Nettoyage : Désactivation forcée du module "${mod.id}" avant d'activer "${moduleId}".`);
-        }
-        catch
-        {
-          //ignore
-        }
-
-        const ghostIcon = document.querySelector(`[data-harmony-module="${mod.id}"]`);
-        if (ghostIcon)
-        {
-          //console.log(`[Harmony] Bulldozer : Suppression du logo fantôme de "${mod.id}".`);
-          ghostIcon.remove();
-        }
       }
     }
   }

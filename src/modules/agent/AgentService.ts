@@ -371,7 +371,13 @@ export class AgentService {
       for (const call of toolCalls)
       {
         if (call.function.name === "searchTasks") continue;
-        const args = JSON.parse(call.function.arguments) as Record<string, unknown>;
+        let args: Record<string, unknown> = {};
+        try {
+          args = JSON.parse(call.function.arguments) as Record<string, unknown>;
+        } catch (e) {
+          console.warn("[AgentService] Failed to parse tool arguments:", call.function.arguments);
+          continue;
+        }
         
         const reason = typeof args.reason === "string" ? args.reason : `Action: ${call.function.name}`;
 
@@ -408,18 +414,38 @@ export class AgentService {
 
   private async callLLM(messages: LLMMessage[], tools: LLMTool[]): Promise<LLMResponse>
   {
+    const provider = this.settings.provider || "mistral";
+    let url = "https://api.mistral.ai/v1/chat/completions";
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+    let model = this.settings.modelName;
+
+    if (provider === "mistral") {
+      url = "https://api.mistral.ai/v1/chat/completions";
+      headers["Authorization"] = `Bearer ${this.settings.apiKey}`;
+      model = model || "mistral-small-latest";
+    } else if (provider === "openai") {
+      url = "https://api.openai.com/v1/chat/completions";
+      headers["Authorization"] = `Bearer ${this.settings.apiKey}`;
+      model = model || "gpt-4o-mini";
+    } else if (provider === "ollama") {
+      url = "http://localhost:11434/v1/chat/completions";
+      model = model || "llama3.2";
+    } else if (provider === "gemini") {
+      url = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions";
+      headers["Authorization"] = `Bearer ${this.settings.apiKey}`;
+      model = model || "gemini-1.5-flash";
+    }
+
     const res = await requestUrl(
     {
-      url: "https://api.mistral.ai/v1/chat/completions",
+      url,
       method: "POST",
-      headers:
-      {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${this.settings.apiKey}`,
-      },
+      headers,
       body: JSON.stringify(
       {
-        model: this.settings.modelName || "mistral-small-latest",
+        model,
         messages: messages,
         tools: tools.length > 0 ? tools : undefined,
         tool_choice: tools.length > 0 ? "auto" : undefined,

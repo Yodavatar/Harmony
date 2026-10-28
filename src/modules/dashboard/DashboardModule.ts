@@ -69,9 +69,10 @@ export class DashboardModule implements IModule
       for (const leaf of leaves) (leaf.view as DashboardView).render();
     });
 
-    //replace the new tab
+    //replace the new tab only if enabled in settings
     this.layoutEventRef = this.app.workspace.on("layout-change", () =>
     {
+      if (!this.settings.replaceNewTabs && !this.plugin.settings.replaceNewTabs) return;
       const emptyLeaves = this.app.workspace.getLeavesOfType("empty");
       for (const leaf of emptyLeaves)
       {

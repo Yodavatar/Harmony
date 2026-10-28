@@ -5,11 +5,19 @@ Harmony is an open project.
 Help us bring it to life by requesting features
 and reporting bugs.
 
-## Planned Releases
+## Current & Planned Releases
+
+### v0.2.10 - Core Stability, Data Safety & Synchronisation (October 2026)
+- [x] **Data Safety & Integrity**: Automatic `.bak` backups, debounce queue, and async write mutex on `TaskStore`.
+- [x] **Real-Time Synchronisation**: Cross-module event listeners across Todo, Kanban, Calendar, and Dashboard.
+- [x] **Kanban Robustness**: Card archiving, inline title editing, and column deletion cleanup synchronized with the central store.
+- [x] **Multi-Provider AI Agent**: Dynamic support for Mistral, OpenAI, Ollama (local), and Gemini.
+- [x] **Smart NLP Integration**: Dynamic Kanban board selection and automatic first-column placement.
+- [x] **Obsidian Standards**: DOM cleanup (`contentEl`), event leak removals, and customizable new-tab behavior.
 
 ### v0.3.0 - Smart entry (Todoist style) and search
 
-**Timeline** : June 2026 
+**Timeline** : Q4 2026 
 - [ ] Fast natural language processing (NLP) capture
     - Keyboard shortcut to open a quick entry plane anywhere in Obsidian.
     - Smart Analytics: Automatically extract dates (for example, "Friday," "tomorrow at 2:00 PM"), priorities and tags from the plain text.
@@ -65,4 +73,4 @@ Open an issue on [GitHub Issues](https://github.com/Yodavatar/Harmony/issues) or
 
 ---
 
-_Last updated: May 25, 2026_
+_Last updated: October 28, 2026_

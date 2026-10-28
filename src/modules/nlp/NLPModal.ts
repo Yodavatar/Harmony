@@ -7,7 +7,7 @@ export class NLPQuickAddModal extends Modal {
   private userInput: string = "";
   
   // Valeurs manuelles choisies via l'interface
-  private manualBoardId: string = "inbox";
+  private manualBoardId: string = "";
   private manualPriority: Priority = "normal"; // Doit correspondre au type strict
 
   constructor(app: App, nlpModule: NLPModule) {
@@ -36,17 +36,24 @@ export class NLPQuickAddModal extends Modal {
           })
       );
 
-    // 2. Menu Catégorie / Projet manuel
+    // 2. Menu Catégorie / Board dynamique
     new Setting(contentEl)
-      .setName("Catégorie (Board)")
-      .setDesc("Sera écrasé si tu utilises @ dans le texte")
-      .addDropdown(drop => drop
-        .addOption("inbox", "📥 Boîte de réception")
-        .addOption("travail", "💼 Travail")
-        .addOption("perso", "🏠 Personnel")
-        .addOption("pro", "🚀 Projets Pro")
-        .onChange(value => this.manualBoardId = value)
-      );
+      .setName("Tableau Kanban")
+      .setDesc("Associer à un tableau Kanban existant (optionnel)")
+      .addDropdown(drop => {
+        drop.addOption("", "Aucun (Tâche générale)");
+        this.app.vault.adapter.list("Harmony/kanban").then(files => {
+          for (const f of files.files.filter(f => f.endsWith(".json"))) {
+            this.app.vault.adapter.read(f).then(raw => {
+              try {
+                const b = JSON.parse(raw);
+                drop.addOption(b.id, b.title);
+              } catch (e) {}
+            });
+          }
+        }).catch(() => {});
+        drop.onChange(value => this.manualBoardId = value);
+      });
 
     // 3. Menu Priorité manuel
     new Setting(contentEl)

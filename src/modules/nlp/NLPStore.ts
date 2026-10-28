@@ -5,7 +5,8 @@ export interface NLPTaskPayload
   title: string;
   dueDate: Date | null;
   priority: Priority;
-  boardId: string;
+  boardId?: string;
+  columnId?: string;
   tags: string[];
   noteLink?: string;
 }
@@ -41,7 +42,8 @@ export class NLPStore
       tags: payload.tags,
       dueDate: isoDate,
       time: formattedTime,
-      boardId: payload.boardId,
+      boardId: payload.boardId || undefined,
+      columnId: payload.columnId || undefined,
       noteLink: payload.noteLink
     });
   }

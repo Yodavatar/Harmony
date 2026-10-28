@@ -58,8 +58,24 @@ export class NLPModule implements IModule {
 
     // 2. Fusion (Le texte tapé a la priorité sur le choix du menu déroulant)
     const finalPriority: Priority = result.priority || manualOverrides?.priority || "normal";
-    // Utilisation de boardId (pour mapper la catégorie) afin de respecter le TaskStore
-    const finalBoardId: string = result.boardId || manualOverrides?.boardId || "inbox";
+    let finalBoardId: string | undefined = result.boardId || manualOverrides?.boardId || undefined;
+    if (finalBoardId === "inbox" || finalBoardId === "") finalBoardId = undefined;
+
+    let finalColumnId: string | undefined = undefined;
+    if (finalBoardId) {
+      try {
+        const boardPath = `Harmony/kanban/${finalBoardId}.json`;
+        if (await this.app.vault.adapter.exists(boardPath)) {
+          const raw = await this.app.vault.adapter.read(boardPath);
+          const boardData = JSON.parse(raw);
+          if (Array.isArray(boardData.columns) && boardData.columns.length > 0) {
+            finalColumnId = boardData.columns[0].id;
+          }
+        }
+      } catch (e) {
+        console.warn("[NLPModule] Failed to resolve column for board", e);
+      }
+    }
 
     // 3. Envoi au store
     await this.store.addTask({
@@ -67,6 +83,7 @@ export class NLPModule implements IModule {
       dueDate: result.dueDate,
       priority: finalPriority,
       boardId: finalBoardId,
+      columnId: finalColumnId,
       tags: result.tags,
       noteLink: result.noteLink || undefined
     });

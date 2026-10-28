@@ -32,11 +32,6 @@ export class DashboardView extends ItemView
     const unsubscribe = this.module.taskstore.on(() => { this.render(); });
     this.register(() => unsubscribe());
 
-    this.app.workspace.getLeavesOfType(DASHBOARD_VIEW_TYPE).forEach(leaf =>
-    {
-      if (leaf !== this.leaf) leaf.detach();
-    });
-
     this.render();
   }
 
@@ -49,7 +44,7 @@ export class DashboardView extends ItemView
   {
     const labels = getPriorityLabels();
     if (this.clockInterval) { window.clearInterval(this.clockInterval); this.clockInterval = null; }
-    const root = this.containerEl.children[1] as HTMLElement;
+    const root = this.contentEl;
     root.empty();
     root.addClass("dash-root");
 
@@ -212,9 +207,16 @@ export class DashboardView extends ItemView
       if (e.key === "Escape") { input.value = ""; results.addClass("is-hidden"); }
     });
 
-    activeDocument.addEventListener("click", e =>
+    const onDocClick = (e: MouseEvent) =>
     {
-      if (!wrap.contains(e.target as Node)) results.addClass("is-hidden");
+      if (!wrap.contains(e.target as Node)) {
+        results.addClass("is-hidden");
+        activeDocument.removeEventListener("click", onDocClick);
+      }
+    };
+    input.addEventListener("focus", () =>
+    {
+      activeDocument.addEventListener("click", onDocClick);
     });
 
     window.setTimeout(() =>
@@ -224,7 +226,7 @@ export class DashboardView extends ItemView
   }
 
   private openSettings(): void {
-    const root = this.containerEl.children[1] as HTMLElement;
+    const root = this.contentEl;
     const existing = root.querySelector(".dash-overlay-modal");
     if (existing) { existing.remove(); return; }
 
@@ -235,6 +237,7 @@ export class DashboardView extends ItemView
     this.settingToggle(panel, t(206), "showClock");
     this.settingToggle(panel, t(207), "showSeconds");
     this.settingToggle(panel, t(209), "openOnStartup");
+    this.settingToggle(panel, "Remplacer les nouveaux onglets", "replaceNewTabs");
 
     const wr = panel.createDiv("dash-setting-row");
     wr.createSpan({ text: t(210), cls: "dash-setting-label" });
@@ -266,7 +269,7 @@ export class DashboardView extends ItemView
           this.s.wallpaperPath = destPath;
           wpName.textContent = file.name;
           await this.module.saveDashboardSettings();
-          const dashRoot = this.containerEl.children[1] as HTMLElement;
+          const dashRoot = this.contentEl;
           this.applyWallpaper(dashRoot);
         })();
       });
@@ -281,7 +284,7 @@ export class DashboardView extends ItemView
         this.s.wallpaperPath = "";
         wpName.textContent = "Aucun";
         await this.module.saveDashboardSettings();
-        const rootEl = this.containerEl.children[1] as HTMLElement;
+        const rootEl = this.contentEl;
         rootEl.setCssProps({"--dash-bg":"none"})
       })();
     });
@@ -325,7 +328,7 @@ export class DashboardView extends ItemView
 
   private makeOverlay(): HTMLElement
   {
-    const root = this.containerEl.children[1] as HTMLElement;
+    const root = this.contentEl;
     const overlay = root.createDiv("dash-overlay-modal");
     overlay.addEventListener("click", e =>
     {

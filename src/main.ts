@@ -43,6 +43,10 @@ export default class Harmony extends Plugin
     this.router = new HarmonyRouter(this.app);
     this.registry = new ModuleRegistry();
     this.taskStore = new TaskStore(this.app);
+    this.taskStore.setOptions({
+      debounceDelay: this.settings.debouncePersist,
+      enableBackup: this.settings.enableBackup,
+    });
 
     try
     {
@@ -53,7 +57,7 @@ export default class Harmony extends Plugin
       //ignore
     }
 
-    this.linkService = new LinkService(this.app, this.taskStore);
+    this.linkService = new LinkService(this.app, this.taskStore, this);
     this.linkService.init();
 
     this.registry.register(new DashboardModule(this.app, this, this.taskStore));

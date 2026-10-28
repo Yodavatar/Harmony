@@ -43,6 +43,11 @@ export class CalendarView extends ItemView
 
   async onOpen():  Promise<void>
   {
+    const unsubscribe = this.store.onTaskChange(() => {
+      this.refresh();
+    });
+    this.register(() => unsubscribe());
+
     this.renderCalendar();
     this.containerEl.setAttribute("tabindex", "0");
     this.containerEl.addEventListener("keydown", (e: KeyboardEvent) => 
@@ -67,7 +72,7 @@ export class CalendarView extends ItemView
 
   private renderCalendar(): void
   {
-    const root = this.containerEl.children[1] as HTMLElement;
+    const root = this.contentEl;
     root.empty();
     root.addClass("mcal-root");
 

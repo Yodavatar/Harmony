@@ -1,13 +1,17 @@
-import { App, TAbstractFile, TFile } from "obsidian";
+import { App, Plugin, TAbstractFile, TFile } from "obsidian";
 import type { TaskStore } from "../shared/taskstore";
 
 export class LinkService
 {
-    constructor(private app: App, private taskStore: TaskStore) {}
+    constructor(private app: App, private taskStore: TaskStore, private plugin?: Plugin) {}
 
-    init()
+    init(plugin?: Plugin)
     {
-    this.app.vault.on("rename", (file, oldPath) => this.handleRename(file, oldPath));
+        const p = plugin ?? this.plugin;
+        const ref = this.app.vault.on("rename", (file, oldPath) => this.handleRename(file, oldPath));
+        if (p) {
+            p.registerEvent(ref);
+        }
     }
 
     private async handleRename(file: TAbstractFile, oldPath: string)
@@ -21,10 +25,11 @@ export class LinkService
 
         const tasksToUpdate = allTasks.filter(t => t.noteLink === cleanOldPath);
 
-        for (const task of tasksToUpdate)
+        if (tasksToUpdate.length > 0)
         {
-            //console.log(`[LinkService] Match trouvé : ${task.noteLink} -> ${cleanNewPath}`);
-            await this.taskStore.updateTask(task.id, { noteLink: cleanNewPath });
+            await this.taskStore.batchUpdateTasks(
+                tasksToUpdate.map(t => ({ id: t.id, changes: { noteLink: cleanNewPath } }))
+            );
         }
     }
 }
