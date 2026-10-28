@@ -3,7 +3,8 @@
       "inlineSourceMap": true,
       "inlineSources": true,
       "module": "ESNext",
-      "target": "ES2017",
+      "target": "ES2022",
+      "useDefineForClassFields": false,
       "allowSyntheticDefaultImports": true,
       "moduleResolution": "bundler",
       
@@ -11,7 +12,7 @@
       "isolatedModules": true,
       "strictNullChecks": true,
       "strictPropertyInitialization": false,
-      "lib": ["ES2017", "DOM"],
+      "lib": ["ES2022", "DOM"],
       "paths": {
         "*": ["./*"],
         "@core/*": ["./src/core/*"],
