@@ -4,6 +4,8 @@ export interface NLPTaskPayload
 {
   title: string;
   dueDate: Date | null;
+  /** False = all-day task (no time stored). */
+  hasTime: boolean;
   priority: Priority;
   boardId?: string;
   columnId?: string;
@@ -26,15 +28,21 @@ export class NLPStore
       const day = String(payload.dueDate.getDate()).padStart(2, '0');
       isoDate = `${year}-${month}-${day}`;
 
-      const hours = String(payload.dueDate.getHours()).padStart(2, '0');
-      const minutes = String(payload.dueDate.getMinutes()).padStart(2, '0');
-      formattedTime = `${hours}:${minutes}`;
+      if (payload.hasTime) {
+        const hours = String(payload.dueDate.getHours()).padStart(2, '0');
+        const minutes = String(payload.dueDate.getMinutes()).padStart(2, '0');
+        formattedTime = `${hours}:${minutes}`;
+      }
     }
+
+    // Kanban boards only display tasks whose source is "kanban":
+    // a task sent to a board must carry that source to be visible there.
+    const onBoard = !!(payload.boardId && payload.columnId);
 
     return this.taskStore.addTask(
     {
-      id: this.taskStore.generateId("nlp"),
-      source: "nlp",
+      id: this.taskStore.generateId(onBoard ? "card" : "nlp"),
+      source: onBoard ? "kanban" : "nlp",
       title: payload.title,
       done: false,
       archived: false,
@@ -42,8 +50,8 @@ export class NLPStore
       tags: payload.tags,
       dueDate: isoDate,
       time: formattedTime,
-      boardId: payload.boardId || undefined,
-      columnId: payload.columnId || undefined,
+      boardId: onBoard ? payload.boardId : undefined,
+      columnId: onBoard ? payload.columnId : undefined,
       noteLink: payload.noteLink
     });
   }

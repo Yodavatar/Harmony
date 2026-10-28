@@ -94,12 +94,12 @@ export class Harmony_Settings_Tab extends PluginSettingTab
 
     // --- SÉCURITÉ & PERSISTANCE ---
     new Setting(containerEl)
-      .setName("Sécurité & Données")
+      .setName(t(22))
       .setHeading();
 
     new Setting(containerEl)
-      .setName("Sauvegarde automatique (.bak)")
-      .setDesc("Crée une copie de secours tasks.json.bak avant chaque écriture pour éviter toute perte de données.")
+      .setName(t(23))
+      .setDesc(t(24))
       .addToggle(toggle => toggle
         .setValue(this.plugin.settings.enableBackup ?? true)
         .onChange(async (val) => {
@@ -109,8 +109,8 @@ export class Harmony_Settings_Tab extends PluginSettingTab
       );
 
     new Setting(containerEl)
-      .setName("Remplacer les nouveaux onglets vides")
-      .setDesc("Ouvre automatiquement le Dashboard lorsqu'un nouvel onglet vide est créé.")
+      .setName(t(25))
+      .setDesc(t(26))
       .addToggle(toggle => toggle
         .setValue(this.plugin.settings.replaceNewTabs ?? false)
         .onChange(async (val) => {
@@ -120,8 +120,8 @@ export class Harmony_Settings_Tab extends PluginSettingTab
       );
 
     new Setting(containerEl)
-      .setName("Délai de temporisation d'écriture (ms)")
-      .setDesc("Regroupe les modifications rapides avant d'écrire sur le disque (évite les surcharges I/O).")
+      .setName(t(27))
+      .setDesc(t(28))
       .addSlider(slider => slider
         .setLimits(50, 1000, 50)
         .setValue(this.plugin.settings.debouncePersist ?? 200)
@@ -170,28 +170,65 @@ export class Harmony_Settings_Tab extends PluginSettingTab
 
     const modules = this.plugin.registry.getAll();
 
+    const moduleNames: Record<string, number> = {
+      dashboard: 36,
+      kanban: 37,
+      todo: 38,
+      todolist: 38,
+      calendar: 39,
+      agent: 40,
+      nlp: 41,
+    };
+
+    const moduleDescriptions: Record<string, number> = {
+      dashboard: 30,
+      kanban: 31,
+      todo: 32,
+      todolist: 32,
+      calendar: 33,
+      agent: 34,
+      nlp: 35,
+    };
+
     for (const module of modules)
     {
-      new Setting(containerEl)
-        .setName(module.name)
-        .setDesc(`ID : ${module.id}`)
-        .addToggle(toggle => toggle
-            .setValue(this.plugin.settings.enabledModules[module.id] ?? false)
-            .onChange(async (value) =>
-            {
-              this.plugin.settings.enabledModules[module.id] = value;
-              await this.plugin.saveSettings();
+      const isEnabled = this.plugin.settings.enabledModules[module.id] ?? false;
+      const nameKey = moduleNames[module.id];
+      const descKey = moduleDescriptions[module.id];
+      const name = nameKey ? t(nameKey) : module.name;
+      const desc = descKey ? t(descKey) : `ID : ${module.id}`;
+      const s = new Setting(containerEl)
+        .setName(name)
+        .setDesc(desc);
 
-              if (value)
-              {
-                await this.plugin.registry.enable(module.id);
-              }
-              else
-              {
-                this.plugin.registry.disable(module.id);
-              }
-            })
+      if (isEnabled && typeof (module as any).openModal === "function")
+      {
+        s.addButton(btn => btn
+          .setButtonText(t(29))
+          .onClick(() => {
+            (module as any).openModal();
+          })
         );
+      }
+
+      s.addToggle(toggle => toggle
+        .setValue(isEnabled)
+        .onChange(async (value) =>
+        {
+          this.plugin.settings.enabledModules[module.id] = value;
+          await this.plugin.saveSettings();
+
+          if (value)
+          {
+            await this.plugin.registry.enable(module.id);
+          }
+          else
+          {
+            this.plugin.registry.disable(module.id);
+          }
+          this.display();
+        })
+      );
     }
   }
 }
