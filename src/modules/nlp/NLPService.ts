@@ -543,10 +543,11 @@ export class HarmonyNLPService
   ): NLPToken | null
   {
     const slug = (s: string) => foldText(s).replace(/[\s_\-]+/g, "");
-    const candidates = boards
-      .flatMap(b => [{ name: b.title, b }, { name: b.id, b }])
-      .filter(c => c.name)
-      .sort((x, y) => y.name.length - x.name.length);
+    type BoardCandidate = { name: string; b: NLPBoardRef };
+    const candidates: BoardCandidate[] = boards
+      .flatMap((b: NLPBoardRef): BoardCandidate[] => [{ name: b.title, b }, { name: b.id, b }])
+      .filter((c: BoardCandidate): boolean => Boolean(c.name))
+      .sort((x: BoardCandidate, y: BoardCandidate): number => y.name.length - x.name.length);
 
     const atRe = /(?<!\S)@(?!\d)/gu;
     let m: RegExpExecArray | null;

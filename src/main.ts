@@ -24,7 +24,7 @@ import { NLPModule } from "./modules/nlp/NLPModule";
 
 export default class Harmony extends Plugin
 {
-  settings: Harmony_Settings;
+  declare settings: Harmony_Settings;
   registry: ModuleRegistry;
   taskStore: TaskStore;
   linkService: LinkService;
