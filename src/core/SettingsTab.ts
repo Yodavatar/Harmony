@@ -74,6 +74,7 @@ export class Harmony_Settings_Tab extends PluginSettingTab
           .addOption("fr", "Français")
           .addOption("es", "Español")
           .addOption("de", "Deutsch")
+          .addOption("nl", "Nederlands")
           .setValue(this.plugin.settings.language)
 
           .onChange(async (value) =>
